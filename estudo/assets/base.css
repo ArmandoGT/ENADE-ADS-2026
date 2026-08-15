@@ -1,0 +1,179 @@
+/* ENADE 2026 TADS — estilos compartilhados
+   Tokens, tipografia e componentes comuns às quatro páginas. */
+
+:root {
+  --paper:#EFF2F0; --surface:#FFFFFF; --sunk:#E5EAE7; --ink:#131E1D; --ink-2:#3D4B49;
+  --muted:#6B7A77; --rule:#D6DEDB; --rule-2:#C2CDC9;
+  --accent:#1B5A56; --accent-2:#2C7C76; --accent-in:#FFFFFF; --accent-wash:#E3EDEB;
+  --heat-1:#D5E2DF; --heat-2:#9CC2BC; --heat-3:#58978F; --heat-4:#2C7C76; --heat-5:#1B5A56;
+  --flag:#A8452A; --flag-wash:#F6E7E2; --good:#3F7A46; --good-wash:#E2EFE3; --warn:#8A6A1F;
+
+  --font-display:Georgia,'Iowan Old Style','Times New Roman',serif;
+  --font-body:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+  --font-data:ui-monospace,'Cascadia Mono',Consolas,'DejaVu Sans Mono',monospace;
+
+  --wrap:1120px; --r:3px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper:#0D1615; --surface:#151F1E; --sunk:#1D2A28; --ink:#E1E9E6; --ink-2:#B6C4C1;
+    --muted:#8A9C98; --rule:#263634; --rule-2:#354643;
+    --accent:#63B5AD; --accent-2:#7FC9C1; --accent-in:#0D1615; --accent-wash:#1B2C2A;
+    --heat-1:#243936; --heat-2:#33564F; --heat-3:#47786F; --heat-4:#5AA096; --heat-5:#7FC9C1;
+    --flag:#E08A6E; --flag-wash:#33211B; --good:#86BC79; --good-wash:#1C2A1D; --warn:#D6B25E;
+  }
+}
+
+:root[data-theme="light"] {
+  --paper:#EFF2F0; --surface:#FFFFFF; --sunk:#E5EAE7; --ink:#131E1D; --ink-2:#3D4B49;
+  --muted:#6B7A77; --rule:#D6DEDB; --rule-2:#C2CDC9;
+  --accent:#1B5A56; --accent-2:#2C7C76; --accent-in:#FFFFFF; --accent-wash:#E3EDEB;
+  --heat-1:#D5E2DF; --heat-2:#9CC2BC; --heat-3:#58978F; --heat-4:#2C7C76; --heat-5:#1B5A56;
+  --flag:#A8452A; --flag-wash:#F6E7E2; --good:#3F7A46; --good-wash:#E2EFE3; --warn:#8A6A1F;
+}
+:root[data-theme="dark"] {
+  --paper:#0D1615; --surface:#151F1E; --sunk:#1D2A28; --ink:#E1E9E6; --ink-2:#B6C4C1;
+  --muted:#8A9C98; --rule:#263634; --rule-2:#354643;
+  --accent:#63B5AD; --accent-2:#7FC9C1; --accent-in:#0D1615; --accent-wash:#1B2C2A;
+  --heat-1:#243936; --heat-2:#33564F; --heat-3:#47786F; --heat-4:#5AA096; --heat-5:#7FC9C1;
+  --flag:#E08A6E; --flag-wash:#33211B; --good:#86BC79; --good-wash:#1C2A1D; --warn:#D6B25E;
+}
+
+/* ---------- reset mínimo ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+}
+img { max-width: 100%; height: auto; display: block; }
+button, input, select, textarea { font: inherit; color: inherit; }
+
+.wrap { width: 100%; max-width: var(--wrap); margin: 0 auto; padding: 0 20px; }
+
+/* ---------- tipografia ---------- */
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 400; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(28px, 5.6vw, 48px); line-height: 1.08; letter-spacing: -.015em; }
+h2 { font-size: clamp(21px, 3.5vw, 29px); line-height: 1.18; }
+h3 { font-size: 18px; line-height: 1.3; }
+p { margin: 0; max-width: 66ch; }
+
+.eyebrow {
+  font-family: var(--font-data); font-size: 11px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 10px;
+}
+.lede { font-size: 16.5px; color: var(--ink-2); }
+.fine { font-size: 13px; color: var(--muted); }
+strong { font-weight: 650; color: var(--ink); }
+code {
+  font-family: var(--font-data); font-size: .89em;
+  background: var(--sunk); padding: 1px 5px; border-radius: 2px;
+}
+a { color: var(--accent); }
+
+section { padding: 50px 0; border-top: 1px solid var(--rule); }
+section:first-of-type { border-top: none; }
+.head { display: flex; flex-direction: column; gap: 10px; margin-bottom: 26px; }
+.stack { display: flex; flex-direction: column; gap: 20px; }
+
+/* ---------- navegação ---------- */
+nav.top {
+  position: sticky; top: 0; z-index: 60;
+  background: var(--paper); border-bottom: 1px solid var(--rule);
+}
+@supports (backdrop-filter: blur(8px)) {
+  nav.top { background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(8px); }
+}
+nav.top .wrap { display: flex; align-items: center; gap: 16px; min-height: 54px; }
+nav.top .brand {
+  font-family: var(--font-data); font-size: 12px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--accent); font-weight: 700;
+  white-space: nowrap; text-decoration: none;
+}
+nav.top .links { display: flex; gap: 15px; overflow-x: auto; scrollbar-width: none; }
+nav.top .links::-webkit-scrollbar { display: none; }
+nav.top .links a {
+  color: var(--muted); text-decoration: none; font-size: 13.5px; white-space: nowrap;
+  padding: 4px 0; border-bottom: 2px solid transparent;
+}
+nav.top .links a:hover { color: var(--ink); border-bottom-color: var(--rule-2); }
+nav.top .links a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); font-weight: 600; }
+nav.top .navsp { flex: 1; }
+
+.tema {
+  background: transparent; border: 1px solid var(--rule-2); border-radius: var(--r);
+  color: var(--muted); font-size: 12px; padding: 5px 10px; cursor: pointer; white-space: nowrap;
+}
+.tema:hover { color: var(--ink); border-color: var(--ink-2); }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- botões ---------- */
+.btn {
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  background: var(--accent); color: var(--accent-in); border: 1px solid var(--accent);
+  border-radius: var(--r); padding: 7px 13px; white-space: nowrap;
+}
+.btn:hover { background: var(--accent-2); border-color: var(--accent-2); }
+.btn.ghost { background: transparent; color: var(--muted); border-color: var(--rule-2); font-weight: 500; }
+.btn.ghost:hover { color: var(--ink); border-color: var(--ink-2); background: transparent; }
+
+/* ---------- cartões ---------- */
+.cards { display: grid; gap: 13px; grid-template-columns: 1fr; }
+@media (min-width: 720px) {
+  .cards.c2 { grid-template-columns: 1fr 1fr; }
+  .cards.c3 { grid-template-columns: repeat(3, 1fr); }
+}
+.card {
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r);
+  padding: 17px 19px; display: flex; flex-direction: column; gap: 8px;
+}
+.card.key  { border-left: 3px solid var(--accent); }
+.card.flag { border-left: 3px solid var(--flag); }
+.card h3 { font-family: var(--font-body); font-size: 14px; font-weight: 650; letter-spacing: .01em; }
+.card p { font-size: 14.5px; color: var(--ink-2); }
+
+/* ---------- listas ---------- */
+ul.dash { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+ul.dash li { position: relative; padding-left: 18px; font-size: 14.5px; color: var(--ink-2); max-width: 68ch; }
+ul.dash li::before { content: ""; position: absolute; left: 0; top: .68em; width: 8px; height: 1px; background: var(--accent); }
+
+ol.num { counter-reset: n; list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
+ol.num li { counter-increment: n; position: relative; padding-left: 34px; font-size: 14.5px; color: var(--ink-2); max-width: 68ch; }
+ol.num li::before {
+  content: counter(n, decimal-leading-zero); position: absolute; left: 0; top: 1px;
+  font-family: var(--font-data); font-size: 11px; font-weight: 700; color: var(--accent);
+  background: var(--accent-wash); border-radius: 2px; padding: 2px 5px;
+}
+
+/* ---------- etiquetas ---------- */
+.chip {
+  display: inline-block; font-family: var(--font-data); font-size: 10.5px; font-weight: 700;
+  letter-spacing: .05em; padding: 2px 7px; border-radius: 2px; white-space: nowrap;
+  background: var(--sunk); color: var(--ink-2);
+}
+.chip.ce { background: var(--accent-wash); color: var(--accent); }
+.chip.disc { background: var(--flag-wash); color: var(--flag); }
+
+/* ---------- tabelas simples ---------- */
+.scroller { width: 100%; overflow-x: auto; }
+table.plain { border-collapse: collapse; width: 100%; min-width: 620px; }
+table.plain th, table.plain td {
+  text-align: left; padding: 11px 12px; border-bottom: 1px solid var(--rule);
+  font-size: 14px; vertical-align: top;
+}
+table.plain th {
+  font-family: var(--font-data); font-size: 11px; text-transform: uppercase;
+  letter-spacing: .09em; color: var(--muted); font-weight: 700; border-bottom-color: var(--rule-2);
+}
+table.plain td.k {
+  font-family: var(--font-data); font-weight: 700; color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- rodapé ---------- */
+footer { padding: 38px 0 60px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 13px; }
+footer .wrap { display: flex; flex-direction: column; gap: 8px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

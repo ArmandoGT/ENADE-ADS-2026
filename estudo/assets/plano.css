@@ -1,0 +1,176 @@
+/* Estilos específicos da página do plano de ação. Depende de base.css. */
+
+/* ---------- sub-navegação das seções ---------- */
+.subnav {
+  position: sticky; top: 54px; z-index: 50;
+  background: var(--paper); border-bottom: 1px solid var(--rule);
+}
+@supports (backdrop-filter: blur(8px)) {
+  .subnav { background: color-mix(in srgb, var(--paper) 93%, transparent); backdrop-filter: blur(8px); }
+}
+.subnav .wrap { display: flex; gap: 16px; min-height: 46px; align-items: center; overflow-x: auto; scrollbar-width: none; }
+.subnav .wrap::-webkit-scrollbar { display: none; }
+.subnav a {
+  color: var(--muted); text-decoration: none; font-size: 13px; white-space: nowrap;
+  padding: 3px 0; border-bottom: 2px solid transparent;
+}
+.subnav a:hover { color: var(--ink); border-bottom-color: var(--accent); }
+
+/* ---------- abertura ---------- */
+header.hero { padding: 42px 0 48px; }
+.hero-grid { display: grid; gap: 32px; grid-template-columns: 1fr; }
+@media (min-width: 860px) { .hero-grid { grid-template-columns: 1.35fr 1fr; align-items: start; } }
+
+.countdown {
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r);
+  padding: 22px 24px; display: flex; flex-direction: column; gap: 14px;
+}
+.cd-num {
+  font-family: var(--font-data); font-size: clamp(46px, 11vw, 68px); line-height: .95;
+  font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; letter-spacing: -.03em;
+}
+.cd-row { display: flex; gap: 26px; flex-wrap: wrap; }
+.cd-cell { display: flex; flex-direction: column; gap: 2px; }
+.cd-cell b { font-family: var(--font-data); font-size: 20px; font-variant-numeric: tabular-nums; font-weight: 700; }
+.cd-cell span { font-size: 11.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+
+/* ---------- barra de pesos ---------- */
+.weights { display: flex; flex-direction: column; gap: 8px; }
+.wbar { display: flex; height: 46px; gap: 2px; }
+.wseg {
+  display: flex; flex-direction: column; justify-content: center; padding: 0 10px;
+  font-family: var(--font-data); font-size: 12px; font-weight: 700; overflow: hidden; border-radius: 1px;
+}
+.wseg small { display: block; font-family: var(--font-body); font-weight: 400; font-size: 10.5px; opacity: .85; }
+.wseg.a { background: var(--accent);  color: var(--accent-in); }
+.wseg.b { background: var(--heat-3);  color: var(--accent-in); }
+.wseg.c { background: var(--heat-2);  color: #0D1615; }
+.wseg.d { background: var(--heat-1);  color: #0D1615; }
+
+/* ---------- gráfico de incidência ---------- */
+.chart { display: flex; flex-direction: column; gap: 3px; }
+.crow { display: grid; grid-template-columns: 190px 1fr; align-items: center; gap: 12px; }
+@media (max-width: 640px) { .crow { grid-template-columns: 128px 1fr; gap: 8px; } }
+.clabel { font-size: 13px; color: var(--ink-2); text-align: right; line-height: 1.25; }
+.ctrack { position: relative; height: 26px; background: var(--sunk); border-radius: 1px; }
+.cfill {
+  height: 100%; border-radius: 1px 4px 4px 1px;
+  display: flex; align-items: center; justify-content: flex-end; padding-right: 8px;
+  font-family: var(--font-data); font-size: 12px; font-weight: 700;
+  font-variant-numeric: tabular-nums; color: var(--accent-in);
+  transition: width .5s cubic-bezier(.22,.8,.3,1);
+}
+.cfill.outside { justify-content: flex-start; padding-right: 0; }
+.cfill.outside span { margin-left: calc(100% + 8px); color: var(--ink-2); white-space: nowrap; }
+
+/* ---------- tabela do tripé e de habilidades ---------- */
+.tripe { width: 100%; overflow-x: auto; }
+.tripe table { border-collapse: collapse; width: 100%; min-width: 660px; }
+.tripe th, .tripe td {
+  text-align: left; padding: 11px 12px; border-bottom: 1px solid var(--rule);
+  font-size: 14px; vertical-align: top;
+}
+.tripe th {
+  font-family: var(--font-data); font-size: 11px; text-transform: uppercase; letter-spacing: .09em;
+  color: var(--muted); font-weight: 700; border-bottom-color: var(--rule-2);
+}
+.tripe td:first-child {
+  font-family: var(--font-data); font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums;
+}
+
+/* ---------- filtros e tabela de questões ---------- */
+.filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-bottom: 16px; }
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field label {
+  font-family: var(--font-data); font-size: 10.5px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted);
+}
+select, input[type="search"] {
+  font-size: 14px; color: var(--ink); background: var(--surface);
+  border: 1px solid var(--rule-2); border-radius: var(--r); padding: 7px 9px; min-width: 130px;
+}
+input[type="search"] { min-width: 190px; }
+.count {
+  font-family: var(--font-data); font-size: 12.5px; color: var(--muted);
+  font-variant-numeric: tabular-nums; margin-left: auto;
+}
+
+.tablewrap {
+  width: 100%; overflow-x: auto; border: 1px solid var(--rule);
+  border-radius: var(--r); background: var(--surface);
+}
+table.q { border-collapse: collapse; width: 100%; min-width: 800px; }
+table.q th {
+  position: sticky; top: 0; background: var(--surface); z-index: 2;
+  font-family: var(--font-data); font-size: 10.5px; text-transform: uppercase; letter-spacing: .09em;
+  color: var(--muted); font-weight: 700; text-align: left; padding: 10px 12px;
+  border-bottom: 1px solid var(--rule-2); white-space: nowrap;
+}
+table.q td { padding: 9px 12px; border-bottom: 1px solid var(--rule); font-size: 14px; vertical-align: top; }
+table.q tr:last-child td { border-bottom: none; }
+table.q tr:hover td { background: var(--accent-wash); }
+.cno { font-family: var(--font-data); font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink-2); font-size: 13px; }
+.ctema { min-width: 280px; }
+
+/* bolha do cartão-resposta, usada como marcador de gabarito */
+.gab {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 50%;
+  font-family: var(--font-data); font-size: 12px; font-weight: 700;
+  background: var(--accent); color: var(--accent-in);
+}
+.gab.null {
+  background: transparent; color: var(--flag); border: 1px dashed var(--flag);
+  width: auto; padding: 0 7px; border-radius: 11px; font-size: 10px;
+}
+.gab.dash { background: transparent; color: var(--muted); border: 1px solid var(--rule-2); }
+
+/* ---------- cronograma ---------- */
+.weeks { display: flex; flex-direction: column; gap: 8px; }
+.week {
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r);
+  display: grid; grid-template-columns: 62px 1fr;
+}
+.week .wk {
+  font-family: var(--font-data); font-size: 12px; font-weight: 700; color: var(--accent);
+  background: var(--accent-wash); display: flex; flex-direction: column;
+  align-items: center; justify-content: center; padding: 12px 4px; text-align: center;
+  border-right: 1px solid var(--rule); font-variant-numeric: tabular-nums; line-height: 1.2;
+}
+.week .wk small { font-family: var(--font-body); font-weight: 400; font-size: 10px; color: var(--muted); }
+.week .body { padding: 13px 16px; display: flex; flex-direction: column; gap: 8px; }
+.week .body > b { font-size: 15px; font-weight: 650; }
+.week .why { font-size: 13px; color: var(--muted); }
+.tasks { display: flex; flex-direction: column; gap: 5px; margin-top: 2px; }
+.task { display: flex; gap: 9px; align-items: flex-start; font-size: 14px; color: var(--ink-2); cursor: pointer; }
+.task input { margin: 4px 0 0; accent-color: var(--accent); width: 15px; height: 15px; flex: none; cursor: pointer; }
+.task.done span { text-decoration: line-through; color: var(--muted); }
+
+.progress { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+.ptrack { flex: 1; min-width: 160px; height: 8px; background: var(--sunk); border-radius: 4px; overflow: hidden; }
+.pfill { height: 100%; background: var(--good); width: 0; transition: width .35s ease; border-radius: 4px; }
+button.reset {
+  font-size: 12.5px; color: var(--muted); background: transparent;
+  border: 1px solid var(--rule-2); border-radius: var(--r); padding: 5px 11px; cursor: pointer;
+}
+button.reset:hover { color: var(--ink); border-color: var(--ink-2); }
+
+/* ---------- flashcards ---------- */
+details.fc {
+  background: var(--surface); border: 1px solid var(--rule);
+  border-radius: var(--r); padding: 0; overflow: hidden;
+}
+details.fc summary {
+  cursor: pointer; padding: 13px 16px; font-size: 14.5px; font-weight: 600;
+  list-style: none; display: flex; align-items: flex-start; gap: 10px;
+}
+details.fc summary::-webkit-details-marker { display: none; }
+details.fc summary::before {
+  content: "+"; font-family: var(--font-data); color: var(--accent);
+  font-weight: 700; flex: none; width: 14px; line-height: 1.45;
+}
+details.fc[open] summary::before { content: "\2212"; }
+details.fc .ans {
+  padding: 13px 16px 15px 40px; font-size: 14.5px; color: var(--ink-2);
+  border-top: 1px solid var(--rule); margin-top: 2px;
+}

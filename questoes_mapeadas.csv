@@ -1,0 +1,201 @@
+﻿ano,numero,bloco,tipo,area_codigo,area,tema,habilidade,formato,gabarito
+2008,"1",FG,obj,FG,"Formacao geral","Literatura e história: Machado de Assis e a Proclamação da República","Interpretacao de artefato","Grafico ou figura",C
+2008,"2",FG,obj,FG,"Formacao geral","Meio ambiente: biodiversidade e responsabilidade humana","Interpretacao de artefato","Grafico ou figura",E
+2008,"3",FG,obj,FG,"Formacao geral","Matemática aplicada: fator de proteção solar (FPS)","Calculo ou traco","Texto",D
+2008,"4",FG,obj,FG,"Formacao geral","Cidadania: direitos das mulheres e inclusão social","Conceito puro","Texto",A
+2008,"5",FG,obj,FG,"Formacao geral","História e arte: Grande Depressão e contradições do capitalismo","Interpretacao de artefato","Grafico ou figura",D
+2008,"6",FG,obj,FG,"Formacao geral","Sustentabilidade urbana: atuação estratégica em rede","Interpretacao de artefato","Grafico ou figura",B
+2008,"7",FG,obj,FG,"Formacao geral","Desigualdade de renda: leitura da curva de Lorenz","Calculo ou traco","Grafico ou figura",D
+2008,"8",FG,obj,FG,"Formacao geral","Filosofia e arte: Nietzsche e o expressionismo","Interpretacao de artefato","Grafico ou figura",C
+2008,"9",FG,disc,FG,"Formacao geral","Direitos humanos: integralidade e indivisibilidade da Declaração Universal","Estudo de caso ou producao de artefato","Texto",DISCURSIVA
+2008,"10",FG,disc,FG,"Formacao geral","Educação brasileira: avaliações oficiais x percepção social","Estudo de caso ou producao de artefato","Grafico ou figura",DISCURSIVA
+2008,"11",CE,obj,ES,"Engenharia de Software","Modelos de ciclo de vida: cascata, prototipação e incremental","Julgamento de itens","Cenario",D
+2008,"12",CE,obj,OO,"UML, projeto OO e arquitetura","POO: herança como reúso e extensão de código validado","Conceito puro","Cenario",B
+2008,"13",CE,obj,OO,"UML, projeto OO e arquitetura","UML: diagrama de sequência, linhas de vida, criação e destruição","Interpretacao de artefato","Diagrama UML",D
+2008,"14",CE,obj,ES,"Engenharia de Software","Teste de software: caixa-branca x caixa-preta e teste de mesa","Julgamento de itens","Pseudocodigo",A
+2008,"15",CE,obj,IN,"SO, redes e distribuidos","Sistemas operacionais: máquinas virtuais e emulação","Conceito puro","Texto",C
+2008,"16",CE,obj,ES,"Engenharia de Software","RUP: iterações, fases, disciplinas e artefatos","Assercao-razao","Texto",D
+2008,"17",CE,obj,ES,"Engenharia de Software","Requisitos: técnicas de elicitação (brainstorming, JAD, FAST)","Conceito puro","Cenario",E
+2008,"18",CE,obj,ES,"Engenharia de Software","Qualidade: interoperabilidade, portabilidade e usabilidade","Julgamento de itens","Cenario",A
+2008,"19",CE,obj,OO,"UML, projeto OO e arquitetura","UML: classe abstrata, sobrescrita, agregação e acoplamento","Julgamento de itens","Tabela",ANULADA
+2008,"20",CE,obj,AL,"Algoritmos e estruturas de dados","Ordenação: traço do bubble sort","Julgamento de itens","Pseudocodigo",E
+2008,"21",CE,obj,AL,"Algoritmos e estruturas de dados","Tipos de dados: erros de atribuição e expressão relacional inválida","Interpretacao de artefato","Pseudocodigo",B
+2008,"22",CE,obj,AL,"Algoritmos e estruturas de dados","Estrutura de dados: completar a busca binária","Interpretacao de artefato","Pseudocodigo",A
+2008,"23",CE,obj,ES,"Engenharia de Software","RUP: em que fase ocorre a análise de requisitos","Conceito puro","Texto",C
+2008,"24",CE,obj,OO,"UML, projeto OO e arquitetura","UML: diagrama de atividades com raias e fork/join","Interpretacao de artefato","Diagrama UML",E
+2008,"25",CE,obj,OO,"UML, projeto OO e arquitetura","UML: diagrama de casos de uso, include e extend","Estudo de caso ou producao de artefato","Cenario",D
+2008,"26",CE,obj,AL,"Algoritmos e estruturas de dados","Projeto de algoritmos: divisão e conquista, dinâmica e guloso","Conceito puro","Texto",ANULADA
+2008,"27",CE,obj,AL,"Algoritmos e estruturas de dados","Recursividade: Fibonacci, condição de parada e ineficiência","Interpretacao de artefato","Pseudocodigo",C
+2008,"28",CE,obj,ML,"Matematica, logica e estatistica","Matemática discreta: teoria dos conjuntos e diagrama de Venn","Julgamento de itens","Grafico ou figura",A
+2008,"29",CE,obj,ML,"Matematica, logica e estatistica","Lógica proposicional: formalização de sentença em linguagem natural","Interpretacao de artefato","Texto",C
+2008,"30",CE,obj,BD,"Banco de dados","SQL: SELECT com junção, WHERE e ORDER BY DESC","Interpretacao de artefato","SQL",ANULADA
+2008,"31",CE,obj,GP,"Gestao de projetos e empreendedorismo","Empreendedorismo: plano de negócios e papéis do empreendedor","Conceito puro","Texto",D
+2008,"32",CE,obj,OO,"UML, projeto OO e arquitetura","POO: private, construtores, classe abstrata e polimorfismo","Julgamento de itens","Texto",C
+2008,"33",CE,obj,GP,"Gestao de projetos e empreendedorismo","PMBOK: gerenciamento do tempo, sequenciamento e cronograma","Conceito puro","Cenario",B
+2008,"34",CE,obj,BD,"Banco de dados","Modelagem relacional: cardinalidade, chave primária composta e FK","Interpretacao de artefato","Tabela",A
+2008,"35",CE,obj,BD,"Banco de dados","Banco de dados: transações e propriedades ACID","Julgamento de itens","Tabela",E
+2008,"36",CE,obj,ES,"Engenharia de Software","Manutenção adaptativa: mudança de legislação em ERP","Conceito puro","Cenario",B
+2008,"37",CE,obj,IN,"SO, redes e distribuidos","Redes: domínio de colisão, hub x switch em LAN Ethernet","Interpretacao de artefato","Grafico ou figura",B
+2008,"38",CE,disc,OO,"UML, projeto OO e arquitetura","UML: casos de uso, descrição do fluxo principal e exceções","Estudo de caso ou producao de artefato","Cenario",DISCURSIVA
+2008,"39",CE,disc,OO,"UML, projeto OO e arquitetura","UML: diagrama de classes com atributos, métodos e visibilidade","Estudo de caso ou producao de artefato","Cenario",DISCURSIVA
+2008,"40",CE,disc,AL,"Algoritmos e estruturas de dados","Algoritmos: traço de matriz bidimensional","Calculo ou traco","Pseudocodigo",ANULADA
+2011,"1",FG,obj,FG,"Formacao geral","Literatura e sociologia: trabalho escravo e privilégio","Interpretacao de artefato","Texto",D
+2011,"2",FG,obj,FG,"Formacao geral","Exclusão digital, TICs e direito à informação","Julgamento de itens","Texto",A
+2011,"3",FG,obj,FG,"Formacao geral","Cibercultura (Pierre Lévy) e os valores do Iluminismo","Interpretacao de artefato","Texto",E
+2011,"4",FG,obj,FG,"Formacao geral","Educação e cidadania: LDB e Constituição de 1988","Assercao-razao","Texto",A
+2011,"5",FG,obj,FG,"Formacao geral","Meio ambiente: desmatamento na Amazônia Legal","Calculo ou traco","Grafico ou figura",C
+2011,"6",FG,obj,FG,"Formacao geral","Educação e trabalho: escolaridade, desemprego e salário","Interpretacao de artefato","Grafico ou figura",B
+2011,"7",FG,obj,FG,"Formacao geral","Desenvolvimento sustentável: eixos ambiental, econômico e sociopolítico","Conceito puro","Texto",B
+2011,"8",FG,obj,FG,"Formacao geral","Sociologia: desigualdade social e responsabilização individual","Julgamento de itens","Texto",E
+2011,"D1",FG,disc,FG,"Formacao geral","Educação a distância: enumerar e justificar três vantagens","Estudo de caso ou producao de artefato","Tabela",DISCURSIVA
+2011,"D2",FG,disc,FG,"Formacao geral","Analfabetismo e empregabilidade: políticas e proposta de solução","Estudo de caso ou producao de artefato","Tabela",DISCURSIVA
+2011,"9",CE,obj,ES,"Engenharia de Software","Requisitos: workshop, cenário, entrevista e prototipação","Julgamento de itens","Texto",B
+2011,"10",CE,obj,ES,"Engenharia de Software","Métodos ágeis: XP, programação em pares e integração contínua","Conceito puro","Texto",A
+2011,"11",CE,obj,OO,"UML, projeto OO e arquitetura","UML: diagrama de casos de uso e obtenção de requisitos","Assercao-razao","Diagrama UML",B
+2011,"12",CE,obj,OO,"UML, projeto OO e arquitetura","UML: linguagem x metodologia, extend e diagramas de comportamento","Julgamento de itens","Texto",B
+2011,"13",CE,obj,ES,"Engenharia de Software","Modelagem de processos de negócio: notação EPC/ARIS","Conceito puro","Texto",E
+2011,"14",CE,obj,OO,"UML, projeto OO e arquitetura","UML: diagrama de atividades com decisão, laço e fork/join","Interpretacao de artefato","Diagrama UML",C
+2011,"15",CE,obj,IH,"IHC e acessibilidade","IHC: mapas de navegação e projeto centrado no usuário","Assercao-razao","Texto",B
+2011,"16",CE,obj,IN,"SO, redes e distribuidos","IDE, JavaBeans e máquina virtual: bytecode e linguagem intermediária","Assercao-razao","Texto",B
+2011,"17",CE,obj,ES,"Engenharia de Software","BPM: gestão de processos de negócio e fase de otimização","Conceito puro","Texto",E
+2011,"18",CE,obj,ES,"Engenharia de Software","Manutenção (ISO/IEC 14764): corretiva, preventiva, adaptativa e perfectiva","Julgamento de itens","Texto",C
+2011,"19",CE,obj,ML,"Matematica, logica e estatistica","Lógica proposicional: identificação de tautologias","Calculo ou traco","Texto",B
+2011,"20",CE,obj,OO,"UML, projeto OO e arquitetura","Padrões de projeto GoF: padrões de criação e Abstract Factory","Conceito puro","Texto",A
+2011,"21",CE,obj,OO,"UML, projeto OO e arquitetura","POO: herança, reúso, extensão e herança múltipla","Julgamento de itens","Texto",C
+2011,"22",CE,obj,BD,"Banco de dados","SQL: INNER JOIN encadeado de três tabelas a partir do DER","Interpretacao de artefato","SQL",D
+2011,"23",CE,obj,BD,"Banco de dados","Modelagem ER e normalização: contagem de chaves estrangeiras","Calculo ou traco","Modelo ER",E
+2011,"24",CE,obj,ES,"Engenharia de Software","Gerência de configuração: baselines, releases e controle de mudanças","Julgamento de itens","Texto",E
+2011,"25",CE,obj,ES,"Engenharia de Software","Teste de software: definição de teste de regressão","Conceito puro","Texto",D
+2011,"26",CE,obj,GP,"Gestao de projetos e empreendedorismo","Gestão de projetos: método do caminho crítico (CPM) e folga","Calculo ou traco","Tabela",C
+2011,"27",CE,obj,ES,"Engenharia de Software","Modelo cascata: etapas sequenciais e aspectos gerenciais","Assercao-razao","Texto",D
+2011,"28",CE,obj,IN,"SO, redes e distribuidos","Virtualização: máquinas virtuais, memória e testes multiplataforma","Julgamento de itens","Texto",C
+2011,"29",CE,obj,AL,"Algoritmos e estruturas de dados","Estrutura de dados: pilha (LIFO), traço de push e pop","Calculo ou traco","Pseudocodigo",A
+2011,"30",CE,obj,ES,"Engenharia de Software","Qualidade: revisões técnicas formais e controle de defeitos","Assercao-razao","Texto",A
+2011,"31",CE,obj,SG,"Seguranca, governanca e legislacao","Segurança: ataque DDoS, botnets e o atributo disponibilidade","Julgamento de itens","Cenario",C
+2011,"32",CE,obj,ES,"Engenharia de Software","Qualidade de processo: MPS.BR e níveis de maturidade","Conceito puro","Texto",C
+2011,"33",CE,obj,ES,"Engenharia de Software","Métricas: disponibilidade, POFOD e MTBF","Calculo ou traco","Tabela",D
+2011,"34",CE,obj,GP,"Gestao de projetos e empreendedorismo","Empreendedorismo: plano de negócios como instrumento de gestão","Assercao-razao","Texto",A
+2011,"35",CE,obj,OO,"UML, projeto OO e arquitetura","POO: objeto, mensagem, método, herança e encapsulamento","Julgamento de itens","Texto",E
+2011,"D3",CE,disc,OO,"UML, projeto OO e arquitetura","UML: diagrama de classes de domínio e três requisitos funcionais","Estudo de caso ou producao de artefato","Cenario",DISCURSIVA
+2011,"D4",CE,disc,AL,"Algoritmos e estruturas de dados","Algoritmos: teste de mesa de vetores vetA e vetB","Calculo ou traco","Pseudocodigo",DISCURSIVA
+2011,"D5",CE,disc,AL,"Algoritmos e estruturas de dados","Algoritmos: construir algoritmo de progressão geométrica em vetor","Estudo de caso ou producao de artefato","Pseudocodigo",DISCURSIVA
+2014,"1",FG,obj,FG,"Formacao geral","Tecnologia digital e democratização da produção artística","Assercao-razao","Texto",A
+2014,"2",FG,obj,FG,"Formacao geral","Terceiro setor, ONGs e responsabilidade social corporativa","Julgamento de itens","Texto",C
+2014,"3",FG,obj,FG,"Formacao geral","Pegada ecológica x biocapacidade do planeta","Interpretacao de artefato","Grafico ou figura",E
+2014,"4",FG,obj,FG,"Formacao geral","Redes sociais, privacidade e processos seletivos de emprego","Interpretacao de artefato","Texto",B
+2014,"5",FG,obj,FG,"Formacao geral","Inovação de baixo custo na saúde e responsabilidade social","Julgamento de itens","Texto",D
+2014,"6",FG,obj,FG,"Formacao geral","Relações de gênero: jornada total de trabalho","Julgamento de itens","Grafico ou figura",C
+2014,"7",FG,obj,FG,"Formacao geral","Mobilidade urbana: tempo de deslocamento casa-trabalho","Julgamento de itens","Tabela",E
+2014,"8",FG,obj,FG,"Formacao geral","Industrialização, êxodo rural e transformação do espaço urbano","Interpretacao de artefato","Texto",D
+2014,"D1",FG,disc,FG,"Formacao geral","Mobilidade urbana e desenvolvimento sustentável: ações pró-bicicleta","Estudo de caso ou producao de artefato","Tabela",DISCURSIVA
+2014,"D2",FG,disc,FG,"Formacao geral","Violência urbana: duas causas e dois fatores de prevenção","Estudo de caso ou producao de artefato","Texto",DISCURSIVA
+2014,"9",CE,obj,GP,"Gestao de projetos e empreendedorismo","PMBOK: EAP/WBS e pacotes de trabalho terceirizados","Interpretacao de artefato","Grafico ou figura",A
+2014,"10",CE,obj,AL,"Algoritmos e estruturas de dados","Java: método recursivo de contagem e identificação do defeito","Interpretacao de artefato","Codigo",C
+2014,"11",CE,obj,BD,"Banco de dados","SQL: EXCEPT, INNER JOIN e IS NULL sobre modelo ER","Interpretacao de artefato","SQL",A
+2014,"12",CE,obj,SG,"Seguranca, governanca e legislacao","Governança de TI: plano de contingência e continuidade","Conceito puro","Cenario",C
+2014,"13",CE,obj,SG,"Seguranca, governanca e legislacao","Legislação: Marco Civil da Internet (Lei 12.965/2014)","Assercao-razao","Texto",B
+2014,"14",CE,obj,AL,"Algoritmos e estruturas de dados","Estrutura de dados: lista duplamente encadeada x árvores","Julgamento de itens","Codigo",A
+2014,"15",CE,obj,IN,"SO, redes e distribuidos","Sistemas distribuídos: transparência entre entidades","Interpretacao de artefato","Grafico ou figura",A
+2014,"16",CE,obj,AL,"Algoritmos e estruturas de dados","Recursividade em C: soma dos elementos positivos de um vetor","Calculo ou traco","Codigo",C
+2014,"17",CE,obj,OO,"UML, projeto OO e arquitetura","UML: casos de uso, generalização, include e extend","Julgamento de itens","Texto",B
+2014,"18",CE,obj,OO,"UML, projeto OO e arquitetura","Arquitetura: mainframe, cliente-servidor e três camadas","Julgamento de itens","Texto",C
+2014,"19",CE,obj,ES,"Engenharia de Software","Requisitos não funcionais x funcionais","Julgamento de itens","Texto",B
+2014,"20",CE,obj,AL,"Algoritmos e estruturas de dados","Árvore binária: percurso in-ordem","Calculo ou traco","Pseudocodigo",D
+2014,"21",CE,obj,BD,"Banco de dados","Modelo lógico: entidade fraca, N:M, FK e relacionamento ternário","Interpretacao de artefato","Modelo ER",A
+2014,"22",CE,obj,BD,"Banco de dados","Banco de dados: integridade semântica implementada por triggers","Conceito puro","Texto",E
+2014,"23",CE,obj,GP,"Gestao de projetos e empreendedorismo","Inovação, empreendedorismo e empreendedorismo social","Julgamento de itens","Texto",D
+2014,"24",CE,obj,ES,"Engenharia de Software","RUP: fases x fluxos de trabalho e momento dos diagramas","Conceito puro","Texto",B
+2014,"25",CE,obj,ES,"Engenharia de Software","Requisitos não funcionais: usabilidade, segurança e desempenho","Conceito puro","Texto",C
+2014,"26",CE,obj,IN,"SO, redes e distribuidos","Redes: DNS, cache, IPv6 e banco de dados distribuído","Julgamento de itens","Texto",D
+2014,"27",CE,obj,OT,"Arquitetura de computadores e IA","Arquitetura de computadores: barramentos de dados e endereços","Calculo ou traco","Texto",E
+2014,"28",CE,obj,ES,"Engenharia de Software","Testes de aplicação web: interface, usabilidade e compatibilidade","Julgamento de itens","Texto",E
+2014,"29",CE,obj,OO,"UML, projeto OO e arquitetura","Engenharia reversa: de código Java para diagrama de classes","Interpretacao de artefato","Codigo",A
+2014,"30",CE,obj,ES,"Engenharia de Software","Gerência de configuração: auditoria, baseline e item de configuração","Julgamento de itens","Texto",D
+2014,"31",CE,obj,ES,"Engenharia de Software","Teste caixa-branca: caminhos independentes e complexidade ciclomática","Interpretacao de artefato","Grafico ou figura",C
+2014,"32",CE,obj,IH,"IHC e acessibilidade","IHC: as três regras de ouro do projeto de interface","Julgamento de itens","Texto",E
+2014,"33",CE,obj,ES,"Engenharia de Software","Qualidade: V&V, gerência de configuração e gerenciamento de mudanças","Julgamento de itens","Texto",B
+2014,"34",CE,obj,GP,"Gestao de projetos e empreendedorismo","Gestão de projetos: rede de precedências e caminho crítico","Calculo ou traco","Tabela",D
+2014,"35",CE,obj,ML,"Matematica, logica e estatistica","Lógica proposicional: negação de uma condicional","Interpretacao de artefato","Texto",B
+2014,"D3",CE,disc,OO,"UML, projeto OO e arquitetura","UML: diagrama de classes com composição e multiplicidade 10..15","Estudo de caso ou producao de artefato","Cenario",DISCURSIVA
+2014,"D4",CE,disc,AL,"Algoritmos e estruturas de dados","Estrutura de dados: pilha — push, pop e palavra invertida","Estudo de caso ou producao de artefato","Pseudocodigo",DISCURSIVA
+2014,"D5",CE,disc,AL,"Algoritmos e estruturas de dados","Algoritmos: teste de mesa com matrizes 3×3","Calculo ou traco","Pseudocodigo",DISCURSIVA
+2017,"1",FG,obj,FG,"Formacao geral","Brexit: contribuições ao orçamento da União Europeia","Calculo ou traco","Grafico ou figura",C
+2017,"2",FG,obj,FG,"Formacao geral","Agricultura familiar, segurança alimentar e sustentabilidade","Julgamento de itens","Texto",C
+2017,"3",FG,obj,FG,"Formacao geral","Tarifação de energia elétrica e consumo de eletrodomésticos","Calculo ou traco","Tabela",B
+2017,"4",FG,obj,FG,"Formacao geral","Televisão: fragmentação e excesso de informação","Interpretacao de artefato","Grafico ou figura",B
+2017,"5",FG,obj,FG,"Formacao geral","Hidrogéis e polímeros superabsorventes na agricultura","Interpretacao de artefato","Grafico ou figura",C
+2017,"6",FG,obj,FG,"Formacao geral","Imigração haitiana, xenofobia e discriminação social","Interpretacao de artefato","Texto",E
+2017,"7",FG,obj,FG,"Formacao geral","Patrimônio cultural imaterial: paneleiras de Goiabeiras","Interpretacao de artefato","Texto",A
+2017,"8",FG,obj,FG,"Formacao geral","ODS e Agenda 2030: economia, sociedade e biosfera","Julgamento de itens","Grafico ou figura",D
+2017,"D1",FG,disc,FG,"Formacao geral","Sífilis congênita e relações de gênero: ações para o público masculino","Estudo de caso ou producao de artefato","Texto",DISCURSIVA
+2017,"D2",FG,disc,FG,"Formacao geral","Pessoas transgêneras: nome social e proposta de política pública","Estudo de caso ou producao de artefato","Texto",DISCURSIVA
+2017,"9",CE,obj,ML,"Matematica, logica e estatistica","Estatística descritiva: média, mediana, desvio padrão e quartil","Calculo ou traco","Tabela",B
+2017,"10",CE,obj,ML,"Matematica, logica e estatistica","Álgebra booleana: tabela-verdade e precedência de operadores","Calculo ou traco","Tabela",C
+2017,"11",CE,obj,OO,"UML, projeto OO e arquitetura","UML: diagrama de classes e multiplicidades como regras de negócio","Interpretacao de artefato","Diagrama UML",C
+2017,"12",CE,obj,ES,"Engenharia de Software","Requisitos: distinguir não funcionais de funcionais","Conceito puro","Cenario",D
+2017,"13",CE,obj,ES,"Engenharia de Software","Qualidade de processo: modelo de maturidade CMMI","Assercao-razao","Texto",C
+2017,"14",CE,obj,GP,"Gestao de projetos e empreendedorismo","Gestão de projetos: método do caminho crítico (CPM)","Calculo ou traco","Tabela",C
+2017,"15",CE,obj,SG,"Seguranca, governanca e legislacao","Segurança: políticas de senha, backup e uso aceitável","Estudo de caso ou producao de artefato","Cenario",ANULADA
+2017,"16",CE,obj,OO,"UML, projeto OO e arquitetura","UML: classe abstrata, composição e auto-associação","Interpretacao de artefato","Diagrama UML",A
+2017,"17",CE,obj,ES,"Engenharia de Software","Manutenção de software e ciclo de vida em cascata","Julgamento de itens","Texto",D
+2017,"18",CE,obj,IN,"SO, redes e distribuidos","Sistemas distribuídos: exemplos atuais","Conceito puro","Texto",A
+2017,"19",CE,obj,IN,"SO, redes e distribuidos","Sistemas operacionais: multiprogramação e pseudoparalelismo","Conceito puro","Texto",C
+2017,"20",CE,obj,OO,"UML, projeto OO e arquitetura","UML: caso de uso com extend, ponto de extensão e include","Interpretacao de artefato","Diagrama UML",E
+2017,"21",CE,obj,ES,"Engenharia de Software","Modelos de processo: incremental, espiral e cascata","Julgamento de itens","Texto",D
+2017,"22",CE,obj,ES,"Engenharia de Software","Controle de versão: checkout, commit, conflito, tag e branch","Julgamento de itens","Cenario",B
+2017,"23",CE,obj,ES,"Engenharia de Software","Testes e V&V: funcional, desempenho, aceitação e instalação","Julgamento de itens","Texto",B
+2017,"24",CE,obj,ES,"Engenharia de Software","Reengenharia de sistemas legados e refatoração para OO","Julgamento de itens","Cenario",E
+2017,"25",CE,obj,AL,"Algoritmos e estruturas de dados","Árvore binária: percurso em pré-ordem em C++","Interpretacao de artefato","Codigo",A
+2017,"26",CE,obj,OO,"UML, projeto OO e arquitetura","Padrões de projeto: Strategy, MVC e Adapter","Interpretacao de artefato","Codigo",A
+2017,"27",CE,obj,OO,"UML, projeto OO e arquitetura","Padrão Strategy: interfaces, herança e composição","Interpretacao de artefato","Codigo",D
+2017,"28",CE,obj,ES,"Engenharia de Software","Requisitos: atribuições da etapa de especificação","Conceito puro","Texto",E
+2017,"29",CE,obj,ML,"Matematica, logica e estatistica","Teoria dos conjuntos e lógica traduzidas em condicionais em C","Interpretacao de artefato","Codigo",D
+2017,"30",CE,obj,OO,"UML, projeto OO e arquitetura","POO: polimorfismo, classe abstrata e ordem de execução","Calculo ou traco","Codigo",A
+2017,"31",CE,obj,IH,"IHC e acessibilidade","IHC: segurança, usabilidade, confiabilidade e acessibilidade","Julgamento de itens","Texto",B
+2017,"32",CE,obj,BD,"Banco de dados","SQL: junção, SUM e GROUP BY a partir de diagrama ER","Interpretacao de artefato","SQL",C
+2017,"33",CE,obj,AL,"Algoritmos e estruturas de dados","Ordenação: correção do defeito no insertion sort","Calculo ou traco","Pseudocodigo",D
+2017,"34",CE,obj,BD,"Banco de dados","Modelo ER: cardinalidade, chave primária e participação","Interpretacao de artefato","Modelo ER",B
+2017,"35",CE,obj,IH,"IHC e acessibilidade","Acessibilidade web: atributo alt e leitores de tela","Estudo de caso ou producao de artefato","Codigo",C
+2017,"D3",CE,disc,AL,"Algoritmos e estruturas de dados","Algoritmos: matriz 40×40 e vetor contador de produtos","Estudo de caso ou producao de artefato","Pseudocodigo",DISCURSIVA
+2017,"D4",CE,disc,AL,"Algoritmos e estruturas de dados","Estrutura de dados: fila — desenfileirar e mostrarFila","Estudo de caso ou producao de artefato","Pseudocodigo",DISCURSIVA
+2017,"D5",CE,disc,OO,"UML, projeto OO e arquitetura","UML: diagrama de classes a partir de protótipos de tela","Estudo de caso ou producao de artefato","Cenario",DISCURSIVA
+2021,"1",FG,obj,FG,"Formacao geral","Sociologia: mobilidade social e desigualdade","Interpretacao de artefato","Texto",E
+2021,"2",FG,obj,FG,"Formacao geral","Segurança alimentar: desperdício de hortaliças e padrão estético","Assercao-razao","Grafico ou figura",C
+2021,"3",FG,obj,FG,"Formacao geral","Mobilidade urbana: bicicletas, ciclovias e qualidade de vida","Julgamento de itens","Grafico ou figura",B
+2021,"4",FG,obj,FG,"Formacao geral","Mundo do trabalho: gig economy e proteção social","Assercao-razao","Texto",B
+2021,"5",FG,obj,FG,"Formacao geral","Direitos humanos: suicídio entre crianças e adolescentes indígenas","Julgamento de itens","Grafico ou figura",A
+2021,"6",FG,obj,FG,"Formacao geral","Covid-19: expectativa de vida e vulnerabilidade social","Assercao-razao","Texto",A
+2021,"7",FG,obj,FG,"Formacao geral","Saúde e comunicação: busca de informação médica na internet","Julgamento de itens","Texto",C
+2021,"8",FG,obj,FG,"Formacao geral","Ciência política: democracia majoritária x consensual","Julgamento de itens","Texto",D
+2021,"D1",FG,disc,FG,"Formacao geral","Arte, cultura e censura: liberdade artística e duas ações educativas","Estudo de caso ou producao de artefato","Texto",DISCURSIVA
+2021,"D2",FG,disc,FG,"Formacao geral","Cidades inteligentes: sustentabilidade e proposta de intervenção","Estudo de caso ou producao de artefato","Texto",DISCURSIVA
+2021,"9",CE,obj,ES,"Engenharia de Software","Requisitos: funcional x não funcional","Conceito puro","Texto",C
+2021,"10",CE,obj,AL,"Algoritmos e estruturas de dados","C: matriz bidimensional e passagem por ponteiro","Interpretacao de artefato","Codigo",D
+2021,"11",CE,obj,AL,"Algoritmos e estruturas de dados","Estrutura de dados: pilha encadeada, implementação do push","Interpretacao de artefato","Codigo",E
+2021,"12",CE,obj,ES,"Engenharia de Software","Métodos ágeis: Scrum, XP com TDD e Kanban","Julgamento de itens","Cenario",C
+2021,"13",CE,obj,AL,"Algoritmos e estruturas de dados","Estrutura de dados: rastreio de operações de pilha e fila","Calculo ou traco","Codigo",C
+2021,"14",CE,obj,GP,"Gestao de projetos e empreendedorismo","Gerência de projetos: áreas de conhecimento e partes interessadas","Estudo de caso ou producao de artefato","Cenario",E
+2021,"15",CE,obj,OO,"UML, projeto OO e arquitetura","UML: classes com herança, agregação e classe de associação","Interpretacao de artefato","Diagrama UML",B
+2021,"16",CE,obj,OO,"UML, projeto OO e arquitetura","UML: diagrama de sequência com create e destruição de objetos","Interpretacao de artefato","Diagrama UML",E
+2021,"17",CE,obj,BD,"Banco de dados","SQL: INNER JOIN, AVG, GROUP BY e ORDER BY DESC","Interpretacao de artefato","SQL",C
+2021,"18",CE,obj,ES,"Engenharia de Software","Requisitos: artefatos de elicitação, especificação e validação","Conceito puro","Cenario",A
+2021,"19",CE,obj,OO,"UML, projeto OO e arquitetura","Arquitetura de software: monolítica, MVC e microsserviços","Julgamento de itens","Texto",A
+2021,"20",CE,obj,IH,"IHC e acessibilidade","IHC e web: usabilidade, responsividade e design participativo","Julgamento de itens","Cenario",E
+2021,"21",CE,obj,ES,"Engenharia de Software","Gerência de configuração: identificação, controle e auditoria","Conceito puro","Texto",B
+2021,"22",CE,obj,ES,"Engenharia de Software","Gerência de configuração: controle de versão e relatório de status","Julgamento de itens","Texto",A
+2021,"23",CE,obj,ES,"Engenharia de Software","Manutenção de software e sistemas legados","Interpretacao de artefato","Grafico ou figura",B
+2021,"24",CE,obj,ES,"Engenharia de Software","Testes: unitário, caixa-branca e preta, carga e teste alfa","Julgamento de itens","Cenario",D
+2021,"25",CE,obj,ES,"Engenharia de Software","Modelos de processo: cascata, espiral, incremental e RAD","Julgamento de itens","Cenario",E
+2021,"26",CE,obj,SG,"Seguranca, governanca e legislacao","Legislação: LGPD (Lei 13.709/2018) e seus fundamentos","Conceito puro","Texto",E
+2021,"27",CE,obj,OT,"Arquitetura de computadores e IA","Sistemas de numeração: conversão entre bases 2, 8, 10 e 16","Calculo ou traco","Tabela",C
+2021,"28",CE,obj,IN,"SO, redes e distribuidos","Sistemas operacionais: gerência de memória e proteção de processos","Conceito puro","Texto",B
+2021,"29",CE,obj,AL,"Algoritmos e estruturas de dados","Algoritmos: matriz 3×5 e somatório por linha","Calculo ou traco","Pseudocodigo",D
+2021,"30",CE,obj,IN,"SO, redes e distribuidos","Redes: endereçamento IP, máscara de sub-rede e gateway","Estudo de caso ou producao de artefato","Grafico ou figura",C
+2021,"31",CE,obj,OO,"UML, projeto OO e arquitetura","UML: casos de uso com include, extend e generalização","Interpretacao de artefato","Diagrama UML",D
+2021,"32",CE,obj,GP,"Gestao de projetos e empreendedorismo","Empreendedorismo: Business Model Canvas, startups e MVP","Conceito puro","Texto",B
+2021,"33",CE,obj,ES,"Engenharia de Software","Qualidade de processo: CMMi e maturidade da capacidade","Julgamento de itens","Texto",D
+2021,"34",CE,obj,OT,"Arquitetura de computadores e IA","Inteligência artificial: sistemas especialistas e regras de produção","Interpretacao de artefato","Pseudocodigo",A
+2021,"35",CE,obj,ML,"Matematica, logica e estatistica","Lógica de predicados x implementação em C","Julgamento de itens","Codigo",A
+2021,"D3",CE,disc,AL,"Algoritmos e estruturas de dados","Algoritmos: vetor de 1000 alturas — maior, menor, média e contagem","Estudo de caso ou producao de artefato","Pseudocodigo",DISCURSIVA
+2021,"D4",CE,disc,OO,"UML, projeto OO e arquitetura","UML: diagrama de classes a partir de histórias de usuário","Estudo de caso ou producao de artefato","Cenario",DISCURSIVA
+2021,"D5",CE,disc,AL,"Algoritmos e estruturas de dados","Estrutura de dados: lista encadeada com inserção por prioridade","Estudo de caso ou producao de artefato","Codigo",DISCURSIVA

@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Simulado IA — ENADE 2026 TADS</title>
+<link rel="stylesheet" href="assets/base.css" />
+<link rel="stylesheet" href="assets/simulado.css" />
+<script>window.PAGINA = "simIA";</script>
+<script src="assets/nav.js"></script>
+<style>
+  .avisoIA {
+    background: var(--flag-wash); border-left: 3px solid var(--flag);
+    border-radius: var(--r); padding: 15px 18px; font-size: 14.5px; color: var(--ink-2);
+  }
+  .avisoIA b { color: var(--flag); }
+
+  .escolha { display: flex; flex-direction: column; gap: 10px; }
+  .escolha > .rotulo { margin-bottom: 2px; }
+  .grupo { display: flex; gap: 9px; flex-wrap: wrap; }
+  .opt {
+    display: flex; flex-direction: column; gap: 3px; align-items: flex-start;
+    background: transparent; border: 1.5px solid var(--rule-2); border-radius: var(--r);
+    padding: 12px 16px; cursor: pointer; color: inherit; text-align: left; min-width: 190px;
+  }
+  .opt:hover { border-color: var(--accent); }
+  .opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-wash); }
+  .opt b { font-size: 14.5px; font-weight: 650; }
+  .opt span { font-size: 12.5px; color: var(--muted); line-height: 1.35; }
+
+  .linhaTreino { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+  .campo { display: flex; flex-direction: column; gap: 4px; }
+  .campo label {
+    font-family: var(--font-data); font-size: 10.5px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .campo select {
+    font-size: 14.5px; color: var(--ink); background: var(--surface);
+    border: 1px solid var(--rule-2); border-radius: var(--r); padding: 9px 11px; min-width: 230px;
+  }
+  #blocoTreino[hidden] { display: none; }
+
+  .cobertura { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .cobertura .ptrack { flex: 1; min-width: 180px; height: 8px; }
+  .cobertura .pfill { background: var(--good); }
+</style>
+</head>
+<body class="simulado">
+
+<div class="wrap">
+  <div id="avisoArmazenamento">
+    Este navegador está bloqueando o armazenamento local, então suas respostas não serão salvas ao
+    fechar a página. Abra o material pelo atalho <code>abrir.cmd</code>, que o serve por
+    <code>http://localhost</code> — assim tudo funciona normalmente.
+  </div>
+  <div id="app"></div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p><strong>As questões deste simulado não são do Inep.</strong> Foram escritas por mim, Claude,
+      a partir da análise de incidência das cinco edições anteriores, como exercício de previsão
+      para 2026. Os gabaritos e as explicações são meus e podem conter erros — sempre que houver
+      divergência, o material oficial em <code>../provas/</code> prevalece.</p>
+    <p>Para treinar com questões reais do Inep, use os simulados 1 a 4.
+      Prova do ENADE 2026: 29 de novembro.</p>
+  </div>
+</footer>
+
+<script src="assets/banco/es.js"></script>
+<script src="assets/banco/oo.js"></script>
+<script src="assets/banco/al.js"></script>
+<script src="assets/banco/bd.js"></script>
+<script src="assets/banco/gp.js"></script>
+<script src="assets/banco/in.js"></script>
+<script src="assets/banco/ml.js"></script>
+<script src="assets/banco/ih.js"></script>
+<script src="assets/banco/sg.js"></script>
+<script src="assets/banco/ot.js"></script>
+<script src="assets/banco/fg.js"></script>
+<script src="assets/banco/disc.js"></script>
+<script src="assets/banco/disc-oficiais.js"></script>
+<script src="assets/objetos.js"></script>
+<script src="assets/historico.js"></script>
+<script src="assets/sorteio.js"></script>
+<script src="assets/simulado.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var CHAVE_PROVA = "enade26.ia.prova";
+  var CHAVE_RESP  = "enade26.ia.respostas";
+  var app = document.getElementById("app");
+
+  var escolhaFormato = "prova";
+  var escolhaModo = "prova";
+  var escolhaArea = "ES";
+  var escolhaQtd = 10;
+
+  function el(t, c, h) {
+    var n = document.createElement(t);
+    if (c) n.className = c;
+    if (h != null) n.innerHTML = h;
+    return n;
+  }
+  function lerProva() {
+    try { return JSON.parse(localStorage.getItem(CHAVE_PROVA) || "null"); } catch (e) { return null; }
+  }
+  function gravarProva(p) {
+    try { localStorage.setItem(CHAVE_PROVA, JSON.stringify(p)); } catch (e) {}
+  }
+  function limparTudo() {
+    try {
+      localStorage.removeItem(CHAVE_PROVA);
+      localStorage.removeItem(CHAVE_RESP);
+    } catch (e) {}
+  }
+
+  /* ---------------- tela de abertura ---------------- */
+  function telaGerar() {
+    app.innerHTML = "";
+    var w = el("div", "tela");
+    var disp = window.SORTEIO.disponivel();
+    var cob = window.SORTEIO.cobertura();
+
+    w.appendChild(el("div", "",
+      '<span class="eyebrow">Simulado IA · banco de ' + cob.total + " questões autorais</span>" +
+      "<h1>Uma prova diferente a cada vez.</h1>" +
+      '<p class="lede" style="margin-top:14px">Escrevi ' + cob.total + " questões prevendo o ENADE 2026, " +
+      "distribuídas pela incidência real das cinco edições anteriores. A cada clique em " +
+      "<strong>Gerar prova</strong>, sorteio 46 delas no formato de 2026 — 15 de formação geral, " +
+      "30 do componente específico e 1 discursiva —, com as alternativas embaralhadas e " +
+      "preferência por questões que você ainda não viu.</p>"));
+
+    w.appendChild(el("div", "avisoIA",
+      "<b>Leia antes de começar:</b> estas questões <b>não são do Inep</b>. São previsões minhas, " +
+      "escritas a partir dos padrões que identifiquei no acervo. Servem para treinar volume e " +
+      "reconhecer temas — mas o gabarito é meu e pode errar. As provas reais estão nos simulados 1 a 4."));
+
+    /* formato */
+    var fmt = el("div", "escolha");
+    fmt.appendChild(el("div", "rotulo", "O que você quer fazer"));
+    var gf = el("div", "grupo");
+    [["prova", "Prova completa", "46 itens · formato 2026 · 4 horas"],
+     ["treino", "Treino por área", "10 a 30 questões de uma área só · sem cronômetro"]]
+      .forEach(function (o) {
+        var b = el("button", "opt", "<b>" + o[1] + "</b><span>" + o[2] + "</span>");
+        b.type = "button";
+        b.setAttribute("aria-pressed", escolhaFormato === o[0] ? "true" : "false");
+        b.onclick = function () { escolhaFormato = o[0]; telaGerar(); };
+        gf.appendChild(b);
+      });
+    fmt.appendChild(gf);
+    w.appendChild(fmt);
+
+    /* seletor de área, só no treino */
+    if (escolhaFormato === "treino") {
+      var bt = el("div", "escolha");
+      bt.id = "blocoTreino";
+      var linha = el("div", "linhaTreino");
+
+      var cArea = el("div", "campo");
+      cArea.innerHTML = '<label for="selArea">Área</label>';
+      var sel = el("select");
+      sel.id = "selArea";
+      Object.keys(disp).sort(function (a, b) { return disp[b] - disp[a]; }).forEach(function (k) {
+        var o = document.createElement("option");
+        o.value = k;
+        o.textContent = window.AREA_NOMES[k] + " (" + disp[k] + " questões)";
+        if (k === escolhaArea) o.selected = true;
+        sel.appendChild(o);
+      });
+      sel.onchange = function () { escolhaArea = sel.value; telaGerar(); };
+      cArea.appendChild(sel);
+      linha.appendChild(cArea);
+
+      var cQtd = el("div", "campo");
+      cQtd.innerHTML = '<label>Quantidade</label>';
+      var gq = el("div", "grupo");
+      [10, 20, 30].forEach(function (n) {
+        var b = el("button", "opt", "<b>" + n + "</b>");
+        b.type = "button";
+        b.style.minWidth = "auto";
+        b.disabled = disp[escolhaArea] < n;
+        if (b.disabled) b.title = "o banco só tem " + disp[escolhaArea] + " questões nesta área";
+        b.setAttribute("aria-pressed", escolhaQtd === n ? "true" : "false");
+        b.onclick = function () { escolhaQtd = n; telaGerar(); };
+        gq.appendChild(b);
+      });
+      cQtd.appendChild(gq);
+      linha.appendChild(cQtd);
+      bt.appendChild(linha);
+      w.appendChild(bt);
+    }
+
+    /* modo */
+    var md = el("div", "escolha");
+    md.appendChild(el("div", "rotulo", "Como você quer ser corrigido"));
+    var gm = el("div", "grupo");
+    [["prova", "Modo prova", "correção só no fim, como nos simulados 1 a 4"],
+     ["treino", "Modo treino", "mostra o gabarito e a explicação assim que você marca"]]
+      .forEach(function (o) {
+        var b = el("button", "opt", "<b>" + o[1] + "</b><span>" + o[2] + "</span>");
+        b.type = "button";
+        b.setAttribute("aria-pressed", escolhaModo === o[0] ? "true" : "false");
+        b.onclick = function () { escolhaModo = o[0]; telaGerar(); };
+        gm.appendChild(b);
+      });
+    md.appendChild(gm);
+    w.appendChild(md);
+
+    /* ação */
+    var acoes = el("div", "acoes");
+    var b = el("button", "btn grande",
+      escolhaFormato === "prova" ? "Gerar prova" : "Gerar treino de " + escolhaQtd + " questões");
+    b.type = "button";
+    b.onclick = gerar;
+    acoes.appendChild(b);
+    w.appendChild(acoes);
+
+    /* cobertura */
+    var pct = cob.total ? (cob.vistas / cob.total * 100) : 0;
+    var cb = el("div", "escolha");
+    cb.appendChild(el("div", "rotulo", "Cobertura do banco"));
+    var linhaCob = el("div", "cobertura");
+    linhaCob.innerHTML =
+      '<span class="fine">você já viu <b>' + cob.vistas + "</b> de " + cob.total + " questões</span>" +
+      '<div class="ptrack"><div class="pfill" style="width:' + pct + '%"></div></div>';
+    var zerar = el("button", "btn ghost mini", "Zerar histórico");
+    zerar.type = "button";
+    zerar.onclick = function () {
+      if (!confirm("Esquecer quais questões você já viu? Os sorteios voltarão a considerar todo o banco como inédito.")) return;
+      window.SORTEIO.zerarCobertura();
+      telaGerar();
+    };
+    linhaCob.appendChild(zerar);
+    cb.appendChild(linhaCob);
+    cb.appendChild(el("p", "fine",
+      "O sorteio dá preferência a questões que você ainda não viu. Quando o estoque inédito de uma " +
+      "área acaba, o ciclo daquela área recomeça."));
+    w.appendChild(cb);
+
+    app.appendChild(w);
+    window.scrollTo(0, 0);
+  }
+
+  /* ---------------- geração ---------------- */
+  function gerar() {
+    var itens, duracao, titulo;
+    if (escolhaFormato === "prova") {
+      itens = window.SORTEIO.prova();
+      duracao = 240;
+      titulo = "Prova completa";
+    } else {
+      itens = window.SORTEIO.treino(escolhaArea, escolhaQtd);
+      duracao = 0;
+      titulo = "Treino de " + window.AREA_NOMES[escolhaArea];
+    }
+    limparTudo();
+    gravarProva({ itens: itens, modo: escolhaModo, duracao: duracao, titulo: titulo });
+    montar();
+  }
+
+  /* ---------------- montagem ---------------- */
+  function montar() {
+    var p = lerProva();
+    if (!p) { telaGerar(); return; }
+    window.montarSimulado({
+      chave: CHAVE_RESP,
+      numero: "IA",
+      titulo: p.titulo,
+      itens: p.itens,
+      modo: p.modo,
+      duracaoMin: p.duracao,
+      aoTrocarProva: function () { limparTudo(); telaGerar(); }
+    });
+  }
+
+  if (lerProva()) montar(); else telaGerar();
+})();
+</script>
+</body>
+</html>

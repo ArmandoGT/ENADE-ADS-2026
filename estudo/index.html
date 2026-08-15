@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ENADE 2026 TADS — material de estudo</title>
+<link rel="stylesheet" href="assets/base.css" />
+<script>window.PAGINA = "index";</script>
+<script src="assets/nav.js"></script>
+<style>
+  .hero { padding: 46px 0 20px; }
+  .contagem {
+    display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+    margin: 26px 0 6px;
+  }
+  .contagem b {
+    font-family: var(--font-data); font-size: clamp(40px, 9vw, 58px); font-weight: 700;
+    color: var(--accent); font-variant-numeric: tabular-nums; letter-spacing: -.03em; line-height: 1;
+  }
+  .contagem span { font-size: 15px; color: var(--muted); }
+
+  .grelha { display: grid; gap: 14px; grid-template-columns: 1fr; margin-top: 8px; }
+  @media (min-width: 780px) { .grelha { grid-template-columns: 1fr 1fr; } }
+
+  a.painel {
+    display: flex; flex-direction: column; gap: 9px; text-decoration: none; color: inherit;
+    background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--accent);
+    border-radius: var(--r); padding: 20px 22px;
+    transition: border-color .15s ease, transform .15s ease;
+  }
+  a.painel:hover { border-color: var(--accent); transform: translateY(-1px); }
+  a.painel .k {
+    font-family: var(--font-data); font-size: 10.5px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  a.painel h3 { font-family: var(--font-display); font-size: 21px; font-weight: 400; }
+  a.painel p { font-size: 14.5px; color: var(--ink-2); }
+  a.painel .seta { font-family: var(--font-data); font-size: 13px; color: var(--accent); font-weight: 700; margin-top: 3px; }
+
+  .fichas { display: grid; gap: 10px; grid-template-columns: 1fr; margin-top: 6px; }
+  @media (min-width: 700px) { .fichas { grid-template-columns: repeat(3, 1fr); } }
+  .ficha {
+    background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r);
+    padding: 15px 17px; display: flex; flex-direction: column; gap: 3px;
+  }
+  .ficha b { font-family: var(--font-data); font-size: 23px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .ficha span { font-size: 13px; color: var(--muted); }
+
+  .arq { font-family: var(--font-data); font-size: 13px; line-height: 1.9; color: var(--ink-2); }
+  .arq i { color: var(--muted); font-style: normal; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Tecnologia em Análise e Desenvolvimento de Sistemas</span>
+    <h1>Material de estudo para o ENADE 2026.</h1>
+    <div class="contagem">
+      <b id="dias">—</b>
+      <span>dias até a prova, em 29 de novembro de 2026</span>
+    </div>
+    <p class="lede" style="margin-top:18px">
+      Tudo construído sobre as 200 questões oficiais das cinco edições anteriores — provas,
+      gabaritos e padrões de resposta lidos integralmente. Roda localmente, sem internet.
+    </p>
+  </div>
+</header>
+
+<section style="border-top:none; padding-top:26px">
+  <div class="wrap">
+    <div class="card key">
+      <h3>A prova de 2026 mudou de formato</h3>
+      <p>As portarias do Inep nº 154 e nº 169, de 14 de abril de 2026, refizeram a composição do
+        exame. <strong>Formação geral: 15 questões, todas de múltipla escolha</strong> — as duas
+        discursivas dela deixaram de existir. <strong>Componente específico: 30 objetivas e uma
+        única discursiva.</strong> São 46 itens em 4 horas, contra os 40 de 2008 a 2021, quando o
+        formato era 8 + 27 objetivas e 5 discursivas.</p>
+      <p>O Simulado IA e a aba de discursivas já seguem o formato novo. Os simulados 1 a 4 são
+        provas reais das edições anteriores e continuam no formato da época, de propósito: a
+        questão do Inep é a mesma, só a montagem do caderno mudou.</p>
+      <p class="fine">Os pesos de cada bloco ainda não saíram: o Edital 61/2026, item 16.5, remete o
+        cálculo da nota a uma nota técnica não publicada. Onde este material mostra pontuação
+        ponderada, está usando a proporção das edições anteriores — 25% para a formação geral e
+        75% para o específico.</p>
+    </div>
+  </div>
+</section>
+
+<section style="border-top:none; padding-top:26px">
+  <div class="wrap">
+    <div class="grelha">
+      <a class="painel" href="plano.html">
+        <span class="k">Comece por aqui</span>
+        <h3>Plano de ação</h3>
+        <p>O que mais cai e por quê: pesos da nota, o que esperar da discursiva, mapa filtrável
+          das 200 questões, cronograma de 17 semanas com checklist, como o Inep corrige e
+          flashcards de revisão.</p>
+        <span class="seta">Abrir →</span>
+      </a>
+      <a class="painel" href="simulado-01.html">
+        <span class="k">Prova cronometrada · comece por este</span>
+        <h3>Simulado 1</h3>
+        <p>Os temas de maior recorrência. Uma questão por tela, com a página original do caderno
+          na sua frente, cronômetro de 4 horas e correção no fim.</p>
+        <span class="seta">Abrir →</span>
+      </a>
+      <a class="painel" href="simulado-02.html">
+        <span class="k">Prova cronometrada</span>
+        <h3>Simulado 2</h3>
+        <p>Outras quarenta questões, sem repetir nenhuma do simulado 1, na mesma proporção por
+          área. Serve para checar se você domina o conceito ou só lembrava da questão.</p>
+        <span class="seta">Abrir →</span>
+      </a>
+      <a class="painel" href="simulado-03.html">
+        <span class="k">Prova cronometrada</span>
+        <h3>Simulado 3</h3>
+        <p>A terceira camada do acervo. A esta altura os temas já são familiares — o teste passa a
+          ser de consistência.</p>
+        <span class="seta">Abrir →</span>
+      </a>
+      <a class="painel" href="simulado-04.html">
+        <span class="k">Prova cronometrada</span>
+        <h3>Simulado 4</h3>
+        <p>As últimas quarenta. Fecha o acervo: depois dele sobram só 23 objetivas não usadas,
+          quase todas de 2008.</p>
+        <span class="seta">Abrir →</span>
+      </a>
+      <a class="painel" href="simulado-ia.html">
+        <span class="k">Banco infinito · questões autorais</span>
+        <h3>Simulado IA</h3>
+        <p>468 objetivas que escrevi prevendo 2026, com explicação em cada uma, cobrindo os 32
+          objetos de conhecimento que as portarias listam. Clique em gerar e
+          sai uma prova nova, sempre diferente — ou treine só a área em que você vai mal.
+          <em>Não são questões do Inep.</em></p>
+        <span class="seta">Abrir →</span>
+      </a>
+      <a class="painel" href="discursivas.html">
+        <span class="k">Uma questão na prova</span>
+        <h3>Discursivas</h3>
+        <p>As 24 discursivas oficiais do Inep mais 36 minhas, cada uma com a rubrica de correção.
+          Você escreve, revela o padrão e marca item por item o que cumpriu — a nota sai disso.
+          O ensaio oficial sorteia uma questão em 40 minutos, como em 2026; a maratona enfileira
+          quatro, para treinar volume.</p>
+        <span class="seta">Abrir →</span>
+      </a>
+      <a class="painel" href="painel.html">
+        <span class="k">Onde você erra mais</span>
+        <h3>Painel de desempenho</h3>
+        <p>Reúne todas as suas correções e mostra o acerto por objeto de conhecimento oficial e
+          por área, da mais fraca para a mais forte, com a evolução ao longo das semanas. Enche-se
+          sozinho: basta corrigir simulados.</p>
+        <span class="seta">Abrir →</span>
+      </a>
+      <a class="painel" href="revisao.html">
+        <span class="k">Só o que você errou</span>
+        <h3>Revisão espaçada</h3>
+        <p>Cada questão errada volta no dia seguinte e, a cada acerto, o intervalo cresce — 1, 3,
+          7 e 16 dias. Quatro acertos seguidos e ela sai do baralho; um erro a devolve ao começo.
+          É o jeito mais barato de não reaprender a mesma coisa três vezes.</p>
+        <span class="seta">Abrir →</span>
+      </a>
+      <a class="painel" href="../questoes_mapeadas.csv">
+        <span class="k">Planilha</span>
+        <h3>As 200 questões em CSV</h3>
+        <p>Ano, número, bloco, área, tema, habilidade cobrada, formato do enunciado e gabarito
+          oficial. Para filtrar e ordenar no Excel do seu jeito.</p>
+        <span class="seta">Abrir arquivo →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">O acervo em números</span>
+      <h2>O que está por trás do material.</h2>
+    </div>
+    <div class="fichas">
+      <div class="ficha"><b>5</b><span>edições analisadas: 2008, 2011, 2014, 2017 e 2021</span></div>
+      <div class="ficha"><b>200</b><span>questões mapeadas uma a uma</span></div>
+      <div class="ficha"><b>135</b><span>objetivas do componente específico, nas cinco edições</span></div>
+      <div class="ficha"><b>30</b><span>objetivas do específico na prova de 2026, contra 27 antes</span></div>
+      <div class="ficha"><b>1</b><span>discursiva em 2026, contra 5 em todas as edições anteriores</span></div>
+      <div class="ficha"><b>~34%</b><span>das objetivas do específico são de engenharia de software</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Como usar</span>
+      <h2>A ordem que funciona.</h2>
+    </div>
+    <ol class="num">
+      <li>Leia o <a href="plano.html#peso">plano de ação</a> inteiro uma vez. São 15 minutos e
+        definem onde vale gastar as suas horas.</li>
+      <li>Faça o <a href="simulado-01.html">simulado 1</a> cronometrado, sem consulta. Ele é o seu
+        diagnóstico: o resultado por área diz o que estudar primeiro.</li>
+      <li>Siga o <a href="plano.html#plano">cronograma de 17 semanas</a>, reordenado conforme o
+        diagnóstico. As tarefas ficam marcadas de uma sessão para a outra.</li>
+      <li>Intercale os <a href="simulado-02.html">simulados 2</a>,
+        <a href="simulado-03.html">3</a> e <a href="simulado-04.html">4</a> ao longo do cronograma —
+        um a cada três ou quatro semanas. Compare sempre o desempenho por área com o do simulado
+        anterior: queda em alguma área significa memória da questão, não domínio do assunto.</li>
+      <li>Entre um simulado oficial e outro, use o <a href="simulado-ia.html">Simulado IA</a> para
+        ganhar volume: no <em>modo treino</em> ele explica cada questão na hora, o que é ideal para
+        atacar a área fraca; no <em>modo prova</em>, funciona como simulado cronometrado extra.</li>
+      <li>Reserve tempo para a aba de <a href="discursivas.html">discursivas</a>. Em 2026 é uma
+        questão só, mas concentrada: sozinha, vale mais que qualquer objetiva, e quase ninguém
+        treina. Os três tipos que restaram são modelagem, estrutura de dados e algoritmo — use o
+        ensaio cronometrado de 40 minutos na reta final.</li>
+    </ol>
+
+    <div class="cards c2" style="margin-top:26px">
+      <div class="card key">
+        <h3>Funciona sem internet</h3>
+        <p>Nenhuma página busca nada de fora. Você pode copiar a pasta inteira para um pendrive
+          ou outro computador que continua funcionando igual.</p>
+      </div>
+      <div class="card flag">
+        <h3>Se as marcações não salvarem</h3>
+        <p>Alguns navegadores bloqueiam armazenamento em páginas abertas direto do disco.
+          Nesse caso use o atalho <code>abrir.cmd</code>, na pasta <code>estudo</code>: ele serve
+          o site em <code>http://localhost:8000</code> e resolve.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Arquivos</span>
+      <h2>O que tem nesta pasta.</h2>
+    </div>
+    <p class="arq">
+      estudo/<br />
+      &nbsp;&nbsp;index.html <i>— esta página</i><br />
+      &nbsp;&nbsp;plano.html <i>— plano de ação, mapa de incidência e cronograma</i><br />
+      &nbsp;&nbsp;simulado-01.html a simulado-04.html <i>— quatro provas cronometradas, 160 questões</i><br />
+      &nbsp;&nbsp;paginas/ <i>— as 168 páginas dos cadernos em imagem</i><br />
+      &nbsp;&nbsp;abrir.cmd <i>— abre o site por http://localhost, se precisar</i><br />
+      &nbsp;&nbsp;assets/ <i>— estilos e scripts compartilhados</i><br />
+      <br />
+      ../questoes_mapeadas.csv <i>— as 200 questões em planilha</i><br />
+      ../provas/ &nbsp; ../gabaritos_oficiais/ &nbsp; ../padroes_resposta/ <i>— o acervo do Inep</i>
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Provas, gabaritos e padrões de resposta são do Inep. A classificação por área, a contagem
+      de recorrência e a seleção dos simulados são interpretativas e servem para priorizar o estudo;
+      os gabaritos e os pesos da nota são oficiais.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var alvo = new Date(2026, 10, 29);
+  var hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+  document.getElementById("dias").textContent = Math.max(0, Math.round((alvo - hoje) / 86400000));
+})();
+</script>
+</body>
+</html>

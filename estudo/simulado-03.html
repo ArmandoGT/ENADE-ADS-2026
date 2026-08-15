@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Simulado 3 — ENADE 2026 TADS</title>
+<link rel="stylesheet" href="assets/base.css" />
+<link rel="stylesheet" href="assets/simulado.css" />
+<script>window.PAGINA = "sim3";</script>
+<script src="assets/nav.js"></script>
+</head>
+<body class="simulado">
+
+<div class="wrap">
+  <div id="avisoArmazenamento">
+    Este navegador está bloqueando o armazenamento local, então suas respostas não serão salvas ao
+    fechar a página. Abra o material pelo atalho <code>abrir.cmd</code>, que o serve por
+    <code>http://localhost</code> — assim tudo funciona normalmente.
+  </div>
+  <div id="app"></div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>Questões, gabaritos e padrões de resposta são do Inep — edições 2008, 2011, 2014, 2017 e 2021
+      de Tecnologia em Análise e Desenvolvimento de Sistemas. As imagens são as páginas originais dos
+      cadernos. A seleção, a classificação por área e a contagem de recorrência são interpretativas
+      e servem para priorizar o estudo.</p>
+    <p>Prova do ENADE 2026: 29 de novembro.</p>
+  </div>
+</footer>
+
+<script src="assets/paginas.js"></script>
+<script src="assets/banco/disc-oficiais.js"></script>
+<script src="assets/historico.js"></script>
+<script src="assets/simulado.js"></script>
+<script>
+montarSimulado({
+  chave: "enade26.simulado3.v2",
+  numero: 3,
+  titulo: "A terceira camada do acervo.",
+  resumo: "Mais quarenta questões inéditas, sem repetir nada dos simulados 1 e 2. A esta altura os temas já lhe são familiares — o teste agora é de consistência: acertar o mesmo assunto em três enunciados diferentes é o que significa dominá-lo.",
+  criterios: [
+    [
+      "Nada repetido",
+      "Descontadas as 80 questões dos simulados anteriores e as 5 anuladas, sobraram 115 itens. Estes 40 saíram daí."
+    ],
+    [
+      "Proporção preservada",
+      "8 de engenharia de software, 5 de UML e projeto OO, 4 de algoritmos, 2 de banco de dados — o acervo restante já não permitia 3 de banco de dados."
+    ],
+    [
+      "Estreia a inteligência artificial",
+      "A questão 35 é a de sistemas especialistas de 2021, que apareceu pela primeira vez naquela edição e é forte candidata a voltar em 2026."
+    ]
+  ],
+
+  FG: [
+    [1,2021,"5", "FG", "Direitos humanos: suicídio entre crianças e adolescentes indígenas", "A",4,"Direitos humanos em 4 edições"],
+    [2,2017,"1", "FG", "Brexit: contribuições ao orçamento da União Europeia", "C",5,"Cálculo percentual sobre gráfico: todas as edições"],
+    [3,2017,"4", "FG", "Televisão: fragmentação e excesso de informação", "B",3,"Mídia e comunicação em 2011, 2017 e 2021"],
+    [4,2014,"2", "FG", "Terceiro setor, ONGs e responsabilidade social corporativa", "C",3,"Cidadania e sociedade civil em 3 edições"],
+    [5,2014,"8", "FG", "Industrialização, êxodo rural e transformação do espaço urbano", "D",3,"Espaço urbano em 2014, 2017 e 2021"],
+    [6,2011,"4", "FG", "Educação e cidadania: LDB e Constituição de 1988", "A",4,"Educação em 4 edições"],
+    [7,2011,"8", "FG", "Sociologia: desigualdade social e responsabilização individual", "E",5,"Desigualdade: todas as edições"],
+    [8,2008,"7", "FG", "Desigualdade de renda: leitura da curva de Lorenz", "D",5,"Leitura de gráfico com cálculo: todas as edições"]
+  ],
+
+  CE: [
+    [9,2021,"21", "ES", "Gerência de configuração: identificação, controle e auditoria", "B",4,"Configuração em 2011, 2014, 2017 e 2021"],
+    [10,2017,"28", "ES", "Requisitos: atribuições da etapa de especificação", "E",5,"Requisitos é o tema mais cobrado do acervo"],
+    [11,2014,"24", "ES", "RUP: fases x fluxos de trabalho e momento dos diagramas", "B",5,"Modelos de processo: todas as edições"],
+    [12,2014,"28", "ES", "Testes de aplicação web: interface, usabilidade e compatibilidade", "E",5,"Testes: todas as edições"],
+    [13,2011,"18", "ES", "Manutenção (ISO/IEC 14764): corretiva, preventiva, adaptativa e perfectiva", "C",4,"Tipos de manutenção em 4 edições"],
+    [14,2011,"25", "ES", "Teste de software: definição de teste de regressão", "D",5,"Outro recorte do mesmo tema recorrente"],
+    [15,2011,"27", "ES", "Modelo cascata: etapas sequenciais e aspectos gerenciais", "D",5,"Cascata aparece em todas as edições"],
+    [16,2008,"14", "ES", "Teste de software: caixa-branca x caixa-preta e teste de mesa", "A",3,"Caixa-branca em 2008, 2014 e 2021"],
+    [17,2017,"26", "OO", "Padrões de projeto: Strategy, MVC e Adapter", "A",2,"Padrões em 2011 e 2017 — área em expansão"],
+    [18,2014,"17", "OO", "UML: casos de uso, generalização, include e extend", "B",5,"Casos de uso: todas as edições"],
+    [19,2014,"18", "OO", "Arquitetura: mainframe, cliente-servidor e três camadas", "C",2,"Arquitetura em 2014 e 2021"],
+    [20,2011,"14", "OO", "UML: diagrama de atividades com decisão, laço e fork/join", "C",2,"Atividades em 2008 e 2011"],
+    [21,2011,"35", "OO", "POO: objeto, mensagem, método, herança e encapsulamento", "E",4,"Conceitos de POO em 4 edições"],
+    [22,2021,"29", "AL", "Algoritmos: matriz 3×5 e somatório por linha", "D",5,"Matriz e vetor: todas as edições, inclusive nas discursivas"],
+    [23,2014,"14", "AL", "Estrutura de dados: lista duplamente encadeada x árvores", "A",4,"Listas e árvores em 4 edições"],
+    [24,2014,"10", "AL", "Java: método recursivo de contagem e identificação do defeito", "C",4,"Depuração de código em 4 edições"],
+    [25,2008,"20", "AL", "Ordenação: traço do bubble sort", "E",3,"Ordenação em 2008, 2014 e 2017"],
+    [26,2011,"22", "BD", "SQL: INNER JOIN encadeado de três tabelas a partir do DER", "D",5,"SQL sobre modelo ER: todas as edições"],
+    [27,2008,"34", "BD", "Modelagem relacional: cardinalidade, chave primária composta e FK", "A",4,"Modelagem ER em 4 edições"],
+    [28,2011,"26", "GP", "Gestão de projetos: método do caminho crítico (CPM) e folga", "C",3,"CPM em 2011, 2014 e 2017 — sempre como cálculo"],
+    [29,2014,"9", "GP", "PMBOK: EAP/WBS e pacotes de trabalho terceirizados", "A",4,"PMBOK em 4 edições"],
+    [30,2011,"28", "IN", "Virtualização: máquinas virtuais, memória e testes multiplataforma", "C",5,"SO e virtualização: todas as edições"],
+    [31,2008,"37", "IN", "Redes: domínio de colisão, hub x switch em LAN Ethernet", "B",3,"Redes em 2008, 2014 e 2021"],
+    [32,2017,"9", "ML", "Estatística descritiva: média, mediana, desvio padrão e quartil", "B",2,"Estatística em 2011 e 2017"],
+    [33,2017,"31", "IH", "IHC: segurança, usabilidade, confiabilidade e acessibilidade", "B",4,"IHC em 4 edições"],
+    [34,2011,"31", "SG", "Segurança: ataque DDoS, botnets e o atributo disponibilidade", "C",4,"Segurança em 2011, 2014, 2017 e 2021"],
+    [35,2021,"34", "OT", "Inteligência artificial: sistemas especialistas e regras de produção", "A",1,"Estreou em 2021 — forte candidato a voltar em 2026"]
+  ],
+
+  DISC: [
+    ["D1",2021,"D1", "FG", "Arte, cultura e censura: liberdade artística garantida pela Constituição e duas ações educativas", "10,0 pontos",["Primeiro: refletir sobre as tensões entre arte e cultura e concluir pela ilegitimidade da censura, à luz do art. 5º, IX.", "Depois: DUAS ações educativas. O rol oficial é aberto — encontros de artistas em escolas, visitas a museus, debates públicos.", "Sem a parte propositiva o texto fica incompleto, mesmo que a análise esteja boa."]],
+    ["D2",2014,"D2", "FG", "Violência urbana: duas causas do episódio relatado e dois fatores que o evitariam", "7,0 + 3,0 pontos",["Item a vale mais (7,0): DUAS causas, do rol oficial de treze.", "Item b (3,0): DOIS fatores de prevenção.", "Distribuição assimétrica: a análise das causas pesa mais que a proposta preventiva.", "O padrão manda avaliar também atitude ética e compromisso social (Portaria Inep 255/2014)."]],
+    ["D3",2017,"D5", "OO", "UML: diagrama de classes de uma rede social de projetos, a partir de protótipos de tela e requisitos", "10,0 pontos",["Herança para distinguir as categorias de projeto (Melhoria e Social).", "DUAS associações entre Colaborador e Projeto, com os papéis coordenador e participante.", "Classe de associação para os comentários — o padrão aceita alternativa equivalente.", "Criar a classe Departamento, exigida por um dos requisitos."]],
+    ["D4",2021,"D5", "AL", "Estrutura de dados: função de inserção por prioridade em lista simplesmente encadeada (triagem hospitalar)", "10,0 pontos",["Dois casos: inserção no início (não há amarelo ainda) e inserção no meio ou fim.", "Use dois ponteiros percorrendo juntos (anterior e atual) para religar os nós.", "Devolva a cabeça da lista, que pode ter mudado.", "O padrão aceita outra linguagem compatível ou pseudocódigo."]],
+    ["D5",2011,"D4", "AL", "Algoritmos: teste de mesa de dois vetores — estado ao fim das linhas 12 e 19", "10,0 pontos",["Resposta exata, em tabela posição por valor. Não há argumentação a fazer.", "Monte a tabela de variáveis linha a linha; o erro quase sempre vem de pular passos.", "São dois momentos distintos — responda os dois separadamente."]]
+  ]
+});
+</script>
+</body>
+</html>

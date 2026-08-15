@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Discursivas — ENADE 2026 TADS</title>
+<link rel="stylesheet" href="assets/base.css" />
+<link rel="stylesheet" href="assets/simulado.css" />
+<script>window.PAGINA = "disc";</script>
+<script src="assets/nav.js"></script>
+<style>
+  .filtros { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+  .filtros .campo { display: flex; flex-direction: column; gap: 4px; }
+  .filtros label {
+    font-family: var(--font-data); font-size: 10.5px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .filtros select {
+    font-size: 14px; color: var(--ink); background: var(--surface);
+    border: 1px solid var(--rule-2); border-radius: var(--r); padding: 8px 10px; min-width: 165px;
+  }
+  .contagem {
+    font-family: var(--font-data); font-size: 12.5px; color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  textarea.editor {
+    width: 100%; font-family: var(--font-body); font-size: 15px; line-height: 1.6;
+    color: var(--ink); background: var(--paper); border: 1px solid var(--rule-2);
+    border-radius: var(--r); padding: 13px 15px; resize: vertical; min-height: 200px;
+  }
+  textarea.editor:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .contador {
+    font-family: var(--font-data); font-size: 12px; color: var(--muted);
+    font-variant-numeric: tabular-nums; text-align: right;
+  }
+  .contador.estourou { color: var(--flag); font-weight: 700; }
+
+  /* barra de saída: sempre no topo da questão, para nunca ficar preso na tela */
+  .barravolta {
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+    padding-bottom: 4px; border-bottom: 1px solid var(--rule); margin-bottom: 2px;
+  }
+</style>
+</head>
+<body class="simulado">
+
+<div class="wrap">
+  <div id="avisoArmazenamento">
+    Este navegador está bloqueando o armazenamento local, então suas respostas e notas não serão
+    salvas ao fechar a página. Abra o material pelo atalho <code>abrir.cmd</code>, que o serve por
+    <code>http://localhost</code> — assim tudo funciona normalmente.
+  </div>
+  <div id="app"></div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>As discursivas marcadas como <strong>oficiais</strong> são do Inep, assim como as imagens dos
+      cadernos e dos padrões de resposta. Onde o padrão oficial declara o valor de cada item, a
+      rubrica usa esse valor; onde ele apenas lista o que se espera, a divisão dos pontos é minha e
+      está sinalizada em cada questão.</p>
+    <p>As marcadas como <strong>autorais</strong> foram escritas por mim prevendo 2026 — enunciado e
+      rubrica são meus. Nenhum sistema corrige texto livre com segurança: o que esta página faz é
+      dar a régua e obrigar a conferir item por item.</p>
+  </div>
+</footer>
+
+<script src="assets/paginas.js"></script>
+<script src="assets/banco/disc-oficiais.js"></script>
+<script src="assets/banco/disc.js"></script>
+<script src="assets/historico.js"></script>
+<script src="assets/discursivas.js"></script>
+<script>abrirDiscursivas();</script>
+</body>
+</html>

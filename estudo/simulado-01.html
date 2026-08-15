@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Simulado 1 — ENADE 2026 TADS</title>
+<link rel="stylesheet" href="assets/base.css" />
+<link rel="stylesheet" href="assets/simulado.css" />
+<script>window.PAGINA = "sim1";</script>
+<script src="assets/nav.js"></script>
+</head>
+<body class="simulado">
+
+<div class="wrap">
+  <div id="avisoArmazenamento">
+    Este navegador está bloqueando o armazenamento local, então suas respostas não serão salvas ao
+    fechar a página. Abra o material pelo atalho <code>abrir.cmd</code>, que o serve por
+    <code>http://localhost</code> — assim tudo funciona normalmente.
+  </div>
+  <div id="app"></div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>Questões, gabaritos e padrões de resposta são do Inep — edições 2008, 2011, 2014, 2017 e 2021
+      de Tecnologia em Análise e Desenvolvimento de Sistemas. As imagens são as páginas originais dos
+      cadernos. A seleção, a classificação por área e a contagem de recorrência são interpretativas
+      e servem para priorizar o estudo.</p>
+    <p>Prova do ENADE 2026: 29 de novembro.</p>
+  </div>
+</footer>
+
+<script src="assets/paginas.js"></script>
+<script src="assets/banco/disc-oficiais.js"></script>
+<script src="assets/historico.js"></script>
+<script src="assets/simulado.js"></script>
+<script>
+montarSimulado({
+  chave: "enade26.simulado1.v2",
+  numero: 1,
+  titulo: "As questões que o ENADE mais repete.",
+  resumo: "Quarenta questões reais das cinco edições anteriores, escolhidas pelos temas que mais reaparecem entre provas. Montadas no formato vigente até 2021 — 8 objetivas de formação geral, 27 do componente específico e 5 discursivas, em 4 horas.",
+  criterios: [
+    [
+      "Só o que se repete",
+      "Entraram temas presentes em três ou mais edições, salvo LGPD e Business Model Canvas, que estrearam em 2021 e são a fronteira contemporânea da prova."
+    ],
+    [
+      "Proporção real",
+      "A distribuição por área espelha a incidência histórica: 8 de engenharia de software, 5 de UML e projeto OO, 4 de algoritmos, e assim por diante."
+    ],
+    [
+      "As mais recentes primeiro",
+      "Entre duas questões do mesmo tema, ficou a mais nova. 2021 e 2017 concentram a seleção, por refletirem melhor o estilo atual da banca."
+    ]
+  ],
+
+  FG: [
+    [1,2021,"3", "FG", "Mobilidade urbana: bicicletas, ciclovias e qualidade de vida", "B",4,"Mobilidade urbana caiu em 2014, 2017 e 2021"],
+    [2,2017,"8", "FG", "ODS e Agenda 2030: economia, sociedade e biosfera", "D",5,"Sustentabilidade aparece em todas as edições"],
+    [3,2014,"6", "FG", "Relações de gênero: jornada total de trabalho", "C",3,"Gênero e diversidade em 2014, 2017 e 2021"],
+    [4,2021,"4", "FG", "Mundo do trabalho: gig economy e proteção social", "B",3,"Trabalho e desigualdade em 2011, 2014 e 2021"],
+    [5,2017,"3", "FG", "Tarifação de energia elétrica e consumo de eletrodomésticos", "B",5,"Cálculo sobre tabela: todas as edições"],
+    [6,2014,"3", "FG", "Pegada ecológica x biocapacidade do planeta", "E",5,"Leitura de gráfico: todas as edições"],
+    [7,2021,"1", "FG", "Sociologia: mobilidade social e desigualdade", "E",4,"Desigualdade social em 4 edições"],
+    [8,2011,"2", "FG", "Exclusão digital, TICs e direito à informação", "A",3,"Tecnologia e sociedade em 2011, 2014 e 2017"]
+  ],
+
+  CE: [
+    [9,2021,"9", "ES", "Requisitos: funcional x não funcional", "C",5,"O tema mais cobrado do acervo — 8 questões em 5 edições"],
+    [10,2017,"12", "ES", "Requisitos: classificar R1 a R5 como funcionais ou não funcionais", "D",5,"Mesmo tema, formato de classificação"],
+    [11,2021,"25", "ES", "Modelos de processo: cascata, espiral, incremental e RAD", "E",5,"Modelos de processo caíram em todas as edições"],
+    [12,2017,"22", "ES", "Controle de versão: checkout, commit, conflito, tag e branch", "B",4,"Gerência de configuração em 2011, 2014, 2017 e 2021"],
+    [13,2021,"23", "ES", "Manutenção de software e sistemas legados", "B",4,"Tipos de manutenção em 2008, 2011, 2017 e 2021"],
+    [14,2021,"24", "ES", "Testes: unitário, caixa-branca e preta, carga e teste alfa", "D",5,"Testes de software: todas as edições"],
+    [15,2014,"31", "ES", "Teste caixa-branca: caminhos independentes e complexidade ciclomática", "C",3,"Caixa-branca em 2008, 2014 e 2021"],
+    [16,2021,"12", "ES", "Métodos ágeis: Scrum, XP com TDD e Kanban", "C",2,"Ágil em 2011 e 2021 — em expansão"],
+    [17,2021,"31", "OO", "UML: casos de uso com include, extend e generalização", "D",5,"Casos de uso: todas as edições"],
+    [18,2021,"15", "OO", "UML: classes com herança, agregação e classe de associação", "B",4,"Diagrama de classes em 2008, 2014, 2017 e 2021"],
+    [19,2017,"16", "OO", "UML: classe abstrata, composição e auto-associação", "A",4,"Multiplicidade e composição, os quesitos mais pontuados"],
+    [20,2021,"16", "OO", "UML: diagrama de sequência com create e destruição de objetos", "E",3,"Sequência em 2008, 2011 e 2021"],
+    [21,2021,"19", "OO", "Arquitetura de software: monolítica, MVC e microsserviços", "A",2,"Arquitetura em 2014 e 2021 — fronteira atual"],
+    [22,2021,"11", "AL", "Estrutura de dados: pilha encadeada, implementação do push", "E",4,"Pilha e fila em 2011, 2014, 2017 e 2021"],
+    [23,2021,"13", "AL", "Estrutura de dados: rastreio de operações de pilha e fila", "C",4,"Mesma família, no formato de teste de mesa"],
+    [24,2017,"33", "AL", "Ordenação: encontrar o defeito no insertion sort", "D",4,"Depuração de código em 2008, 2014, 2017 e 2021"],
+    [25,2014,"20", "AL", "Árvore binária: percurso in-ordem", "D",2,"Percursos em árvore em 2014 e 2017"],
+    [26,2021,"17", "BD", "SQL: INNER JOIN, AVG, GROUP BY e ORDER BY DESC", "C",5,"SQL sobre modelo ER: todas as edições"],
+    [27,2017,"34", "BD", "Modelo ER: cardinalidade, chave primária e participação", "B",4,"Modelagem ER em 2008, 2011, 2014 e 2017"],
+    [28,2014,"21", "BD", "Modelo lógico: entidade fraca, N:M, FK e relacionamento ternário", "A",4,"Mesma família, com entidade fraca e ternário"],
+    [29,2017,"14", "GP", "Gestão de projetos: método do caminho crítico (CPM)", "C",3,"CPM em 2011, 2014 e 2017"],
+    [30,2021,"32", "GP", "Empreendedorismo: Business Model Canvas, startups e MVP", "B",1,"Estreou em 2021 — tema contemporâneo provável"],
+    [31,2021,"28", "IN", "Sistemas operacionais: gerência de memória e proteção de processos", "B",5,"SO e virtualização: todas as edições"],
+    [32,2021,"30", "IN", "Redes: endereçamento IP, máscara de sub-rede e gateway", "C",3,"Redes em 2008, 2014 e 2021"],
+    [33,2017,"10", "ML", "Álgebra booleana: tabela-verdade e precedência de operadores", "C",5,"Lógica proposicional: todas as edições"],
+    [34,2017,"35", "IH", "Acessibilidade web: atributo alt e leitores de tela", "C",4,"IHC e acessibilidade em 2011, 2014, 2017 e 2021"],
+    [35,2021,"26", "SG", "Legislação: LGPD (Lei 13.709/2018) e seus fundamentos", "E",1,"Estreou em 2021; legislação também caiu em 2014 (Marco Civil)"]
+  ],
+
+  DISC: [
+    ["D1",2021,"D2", "FG", "Cidades inteligentes: contribuição para o desenvolvimento sustentável e proposta de intervenção urbana", "5,0 + 5,0 pontos",["Item a: explicar o mecanismo — redução de consumo de energia e de emissão de CO₂.", "Item b: apresentar UMA proposta concreta de intervenção. O rol oficial é aberto (termina em “etc.”).", "Molde recorrente da formação geral: diagnóstico crítico primeiro, proposta depois."]],
+    ["D2",2014,"D1", "FG", "Mobilidade urbana e desenvolvimento sustentável: consequências do transporte motorizado e duas ações pró-bicicleta", "5,0 + 5,0 pontos",["Item a: abordar PELO MENOS DUAS consequências. Cumpra a cota exata.", "Item b: DUAS intervenções. Ciclovias, integração com metrô, bicicletários, pontos de aluguel.", "Texto dissertativo — mas pontuado por contagem de elementos válidos, não por retórica."]],
+    ["D3",2021,"D4", "OO", "UML: diagrama de classes de reserva de passagens a partir de histórias de usuário", "10,0 pontos",["Máximo seis classes — a restrição do enunciado É um quesito de correção.", "Use generalização para ida e volta. Herança é pontuada em todos os anos.", "Multiplicidade nas duas pontas de cada associação. Nunca omita.", "Pelo menos três métodos na classe Reserva, como o comando pede."]],
+    ["D4",2017,"D4", "AL", "Estrutura de dados: implementar desenfileirar e mostrarFila sobre um vetor", "6,0 + 4,0 pontos",["Trate a fila vazia e imprima a mensagem exata pedida.", "Devolva o elemento removido, não apenas remova.", "Reutilize os nomes de variável do código-base dado no enunciado.", "O item que manipula a estrutura vale mais (6,0) que o que exibe (4,0)."]],
+    ["D5",2021,"D3", "AL", "Algoritmos: vetor de 1000 alturas — maior, menor, média e quantos estão abaixo da média", "10,0 pontos",["Quatro saídas exigidas. Faltando uma, perde-se a fração correspondente.", "Inicialize maior e menor com o primeiro elemento, não com zero.", "Pseudocódigo ou linguagem de programação — a escolha é livre e declarada no padrão."]]
+  ]
+});
+</script>
+</body>
+</html>

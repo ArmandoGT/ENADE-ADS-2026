@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Revisão espaçada — ENADE 2026 TADS</title>
+<link rel="stylesheet" href="assets/base.css" />
+<link rel="stylesheet" href="assets/simulado.css" />
+<script>window.PAGINA = "revisao";</script>
+<script src="assets/nav.js"></script>
+<style>
+  /* o número da caixa ocupa o lugar do número da questão na lista compartilhada */
+  .revisao .rnum { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body class="simulado">
+
+<div class="wrap">
+  <div id="avisoArmazenamento">
+    Este navegador está bloqueando o armazenamento local, então não há como guardar o que você
+    errou nem agendar as revisões. Abra o material pelo atalho <code>abrir.cmd</code>, que o serve
+    por <code>http://localhost</code> — assim tudo funciona normalmente.
+  </div>
+  <div id="app"></div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>O baralho é montado a partir do seu histórico de correções, e não de uma lista guardada à
+      parte: cada questão do Simulado IA que você errou volta em intervalos de 1, 3, 7 e 16 dias,
+      e sai depois de quatro acertos seguidos. Errar de novo devolve a questão à primeira caixa.</p>
+    <p>A revisão abre em modo treino, com a explicação revelada assim que você responde. O objetivo
+      aqui não é medir — é entender o que falhou. A medição fica com os simulados e com o
+      <a href="painel.html">painel</a>.</p>
+  </div>
+</footer>
+
+<script src="assets/banco/es.js"></script>
+<script src="assets/banco/oo.js"></script>
+<script src="assets/banco/al.js"></script>
+<script src="assets/banco/bd.js"></script>
+<script src="assets/banco/gp.js"></script>
+<script src="assets/banco/in.js"></script>
+<script src="assets/banco/ml.js"></script>
+<script src="assets/banco/ih.js"></script>
+<script src="assets/banco/sg.js"></script>
+<script src="assets/banco/ot.js"></script>
+<script src="assets/banco/fg.js"></script>
+<script src="assets/objetos.js"></script>
+<script src="assets/historico.js"></script>
+<script src="assets/sorteio.js"></script>
+<script src="assets/simulado.js"></script>
+<script src="assets/revisao.js"></script>
+<script>abrirRevisao();</script>
+</body>
+</html>

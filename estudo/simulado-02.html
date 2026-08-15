@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Simulado 2 — ENADE 2026 TADS</title>
+<link rel="stylesheet" href="assets/base.css" />
+<link rel="stylesheet" href="assets/simulado.css" />
+<script>window.PAGINA = "sim2";</script>
+<script src="assets/nav.js"></script>
+</head>
+<body class="simulado">
+
+<div class="wrap">
+  <div id="avisoArmazenamento">
+    Este navegador está bloqueando o armazenamento local, então suas respostas não serão salvas ao
+    fechar a página. Abra o material pelo atalho <code>abrir.cmd</code>, que o serve por
+    <code>http://localhost</code> — assim tudo funciona normalmente.
+  </div>
+  <div id="app"></div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>Questões, gabaritos e padrões de resposta são do Inep — edições 2008, 2011, 2014, 2017 e 2021
+      de Tecnologia em Análise e Desenvolvimento de Sistemas. As imagens são as páginas originais dos
+      cadernos. A seleção, a classificação por área e a contagem de recorrência são interpretativas
+      e servem para priorizar o estudo.</p>
+    <p>Prova do ENADE 2026: 29 de novembro.</p>
+  </div>
+</footer>
+
+<script src="assets/paginas.js"></script>
+<script src="assets/banco/disc-oficiais.js"></script>
+<script src="assets/historico.js"></script>
+<script src="assets/simulado.js"></script>
+<script>
+montarSimulado({
+  chave: "enade26.simulado2.v2",
+  numero: 2,
+  titulo: "Os mesmos temas, provas diferentes.",
+  resumo: "Quarenta questões que não apareceram no simulado 1, na mesma proporção por área. Os grandes temas voltam de propósito: o que muda é o ano, o enunciado e o artefato. É assim que se descobre se você aprendeu o conceito ou apenas decorou uma questão.",
+  criterios: [
+    [
+      "Nenhuma repetida",
+      "As 40 do simulado 1 e as 5 anuladas saíram do universo. Estas 40 vêm dos 155 itens restantes."
+    ],
+    [
+      "Mesma proporção",
+      "Idêntica à do simulado 1, área por área, para que a comparação entre os dois resultados seja justa."
+    ],
+    [
+      "Mais 2008 e 2011",
+      "Como as questões recentes foram para o simulado 1, aqui pesam mais as edições antigas. O conteúdo segue válido — só desconfie dos temas marcados com 1 edição."
+    ]
+  ],
+
+  FG: [
+    [1,2021,"8", "FG", "Ciência política: democracia majoritária x consensual", "D",2,"Política e cidadania em 2011 e 2021"],
+    [2,2021,"6", "FG", "Covid-19: queda da expectativa de vida e vulnerabilidade social", "A",4,"Saúde e desigualdade em 4 edições"],
+    [3,2017,"2", "FG", "Agricultura familiar, segurança alimentar e sustentabilidade", "C",5,"Sustentabilidade: todas as edições"],
+    [4,2017,"6", "FG", "Imigração haitiana, xenofobia e discriminação social", "E",4,"Diversidade e direitos humanos em 4 edições"],
+    [5,2014,"7", "FG", "Mobilidade urbana: tempo de deslocamento casa-trabalho", "E",3,"Mobilidade urbana em 2014, 2017 e 2021"],
+    [6,2014,"5", "FG", "Inovação de baixo custo na saúde e responsabilidade social", "D",3,"Ciência, inovação e sociedade em 3 edições"],
+    [7,2011,"7", "FG", "Desenvolvimento sustentável: eixos ambiental, econômico e sociopolítico", "B",5,"O conceito-âncora da formação geral"],
+    [8,2011,"5", "FG", "Desmatamento na Amazônia Legal: leitura de mapa e cálculo", "C",5,"Cálculo sobre dados: todas as edições"]
+  ],
+
+  CE: [
+    [9,2021,"18", "ES", "Requisitos: artefatos de elicitação, especificação e validação", "A",5,"Requisitos é o tema mais cobrado do acervo"],
+    [10,2014,"19", "ES", "Requisitos não funcionais x funcionais", "B",5,"Mesmo tema, outro formato e outra edição"],
+    [11,2017,"21", "ES", "Modelos de processo: incremental, espiral e cascata", "D",5,"Modelos de processo: todas as edições"],
+    [12,2021,"22", "ES", "Gerência de configuração: controle de versão e relatório de status", "A",4,"Configuração em 2011, 2014, 2017 e 2021"],
+    [13,2017,"17", "ES", "Manutenção de software e ciclo de vida em cascata", "D",4,"Tipos de manutenção em 4 edições"],
+    [14,2017,"23", "ES", "Testes e V&V: funcional, desempenho, aceitação e instalação", "B",5,"Testes: todas as edições"],
+    [15,2021,"33", "ES", "Qualidade de processo: CMMi e maturidade da capacidade", "D",3,"Maturidade em 2011 (MPS.BR), 2017 e 2021"],
+    [16,2011,"10", "ES", "Métodos ágeis: XP, programação em pares e integração contínua", "A",2,"Ágil em 2011 e 2021 — tende a crescer"],
+    [17,2017,"20", "OO", "UML: caso de uso com extend, ponto de extensão e include", "E",5,"Casos de uso: todas as edições"],
+    [18,2017,"11", "OO", "UML: diagrama de classes e multiplicidades como regras de negócio", "C",4,"Multiplicidade é quesito pontuado em todo padrão"],
+    [19,2008,"13", "OO", "UML: diagrama de sequência, linhas de vida, criação e destruição", "D",3,"Sequência em 2008, 2011 e 2021"],
+    [20,2017,"30", "OO", "POO: polimorfismo, classe abstrata e ordem de execução", "A",4,"Conceitos de POO em 4 edições"],
+    [21,2011,"20", "OO", "Padrões de projeto GoF: padrões de criação e Abstract Factory", "A",2,"Padrões em 2011 e 2017 — área em expansão"],
+    [22,2011,"29", "AL", "Estrutura de dados: pilha (LIFO), traço de push e pop", "A",4,"Pilha e fila em 2011, 2014, 2017 e 2021"],
+    [23,2017,"25", "AL", "Árvore binária: percurso em pré-ordem em C++", "A",2,"Percursos em árvore em 2014 e 2017"],
+    [24,2014,"16", "AL", "Recursividade em C: soma dos elementos positivos de um vetor", "C",3,"Recursão em 2008, 2014 e 2017"],
+    [25,2021,"10", "AL", "C: matriz bidimensional e passagem por ponteiro", "D",5,"Matriz e vetor: todas as edições, inclusive nas discursivas"],
+    [26,2017,"32", "BD", "SQL: junção, SUM e GROUP BY a partir de diagrama ER", "C",5,"SQL sobre modelo ER: todas as edições"],
+    [27,2011,"23", "BD", "Modelagem ER e normalização: contagem de chaves estrangeiras", "E",4,"Modelagem ER em 2008, 2011, 2014 e 2017"],
+    [28,2008,"35", "BD", "Banco de dados: transações e propriedades ACID", "E",2,"ACID em 2008; integridade e triggers em 2014"],
+    [29,2014,"34", "GP", "Gestão de projetos: rede de precedências e caminho crítico", "D",3,"CPM em 2011, 2014 e 2017 — sempre como cálculo"],
+    [30,2021,"14", "GP", "Gerência de projetos: áreas de conhecimento e partes interessadas", "E",4,"PMBOK em 2008, 2014, 2017 e 2021"],
+    [31,2017,"19", "IN", "Sistemas operacionais: multiprogramação e pseudoparalelismo", "C",5,"SO e virtualização: todas as edições"],
+    [32,2014,"26", "IN", "Redes: DNS, cache, IPv6 e banco de dados distribuído", "D",3,"Redes em 2008, 2014 e 2021"],
+    [33,2011,"19", "ML", "Lógica proposicional: identificação de tautologias", "B",5,"Lógica: todas as edições"],
+    [34,2021,"20", "IH", "IHC e web: usabilidade, responsividade e design participativo", "E",4,"IHC em 2011, 2014, 2017 e 2021"],
+    [35,2014,"13", "SG", "Legislação: Marco Civil da Internet (Lei 12.965/2014)", "B",2,"Legislação em 2014 e 2021 (LGPD) — tende a crescer"]
+  ],
+
+  DISC: [
+    ["D1",2017,"D2", "FG", "Pessoas transgêneras: a importância do nome social e uma proposta de política pública que amplie o acesso à cidadania", "10,0 pontos",["Diagnóstico: o nome que não condiz com a identidade de gênero barra o acesso a saúde, educação, voto e trabalho.", "Proposta: UMA medida de política pública. O rol oficial tem sete opções aceitas.", "Molde clássico da formação geral: analisar primeiro, propor depois."]],
+    ["D2",2011,"D2", "FG", "Analfabetismo e desigualdades sociais: políticas de erradicação e proposta de solução", "10,0 pontos",["O padrão exige TRÊS movimentos: diagnóstico crítico das desigualdades; relação entre analfabetismo e dificuldade de emprego; avaliação das políticas existentes.", "O terceiro movimento precisa concluir que as ações, embora importantes, ainda são insuficientes.", "Faltando um dos três eixos, perde-se a fração correspondente."]],
+    ["D3",2014,"D3", "OO", "UML: diagrama de classes de revista científica, edição e artigo, com composição e multiplicidade", "10,0 pontos",["Três classes com seus atributos: Revista_Cientifica, Edicao e Artigo.", "Composição nas duas relações — a edição não existe sem a revista, o artigo não existe sem a edição.", "Multiplicidade 10..15 entre Edicao e Artigo: a restrição do enunciado é um quesito de correção.", "O padrão aceita 1..* no lugar de 0..* na relação “publica”."]],
+    ["D4",2014,"D4", "AL", "Estrutura de dados: implementar push, pop e uma rotina que imprime uma palavra invertida usando a pilha", "3,0 + 3,0 + 4,0 pontos",["push: testar pilha cheia (topo >= 50) antes de incrementar o topo.", "pop: testar pilha vazia (topo <= 0), devolver o elemento e só então decrementar.", "A rotina de inversão vale mais (4,0) que cada primitiva.", "O padrão aceita solução sem usar push e pop, e aceita Pascal, C ou Java."]],
+    ["D5",2017,"D3", "AL", "Algoritmos: ler os códigos de produtos de uma matriz 40×40 e contar as caixas de cada tipo com um vetor contador", "4,0 + 6,0 pontos",["Item a: duplo laço de leitura na matriz. Validar a entrada é opcional no padrão.", "Item b vale mais (6,0): usar o próprio código como índice — Contador[Estante[i][j]]++.", "Imprimir o nome do produto junto da contagem, como o enunciado pede.", "Pseudocódigo ou linguagem de programação, à sua escolha."]]
+  ]
+});
+</script>
+</body>
+</html>

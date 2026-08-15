@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Simulado 4 — ENADE 2026 TADS</title>
+<link rel="stylesheet" href="assets/base.css" />
+<link rel="stylesheet" href="assets/simulado.css" />
+<script>window.PAGINA = "sim4";</script>
+<script src="assets/nav.js"></script>
+</head>
+<body class="simulado">
+
+<div class="wrap">
+  <div id="avisoArmazenamento">
+    Este navegador está bloqueando o armazenamento local, então suas respostas não serão salvas ao
+    fechar a página. Abra o material pelo atalho <code>abrir.cmd</code>, que o serve por
+    <code>http://localhost</code> — assim tudo funciona normalmente.
+  </div>
+  <div id="app"></div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>Questões, gabaritos e padrões de resposta são do Inep — edições 2008, 2011, 2014, 2017 e 2021
+      de Tecnologia em Análise e Desenvolvimento de Sistemas. As imagens são as páginas originais dos
+      cadernos. A seleção, a classificação por área e a contagem de recorrência são interpretativas
+      e servem para priorizar o estudo.</p>
+    <p>Prova do ENADE 2026: 29 de novembro.</p>
+  </div>
+</footer>
+
+<script src="assets/paginas.js"></script>
+<script src="assets/banco/disc-oficiais.js"></script>
+<script src="assets/historico.js"></script>
+<script src="assets/simulado.js"></script>
+<script>
+montarSimulado({
+  chave: "enade26.simulado4.v2",
+  numero: 4,
+  titulo: "O que restou, e não é sobra.",
+  resumo: "As últimas quarenta questões montadas em formato de prova. Peso maior de 2008 e 2011, porque foi o que sobrou — mas com os temas de sempre: requisitos, casos de uso, SQL, recursão, lógica e gerência de configuração.",
+  criterios: [
+    [
+      "Fecha o ciclo",
+      "Com os quatro simulados você terá resolvido 160 das 195 questões válidas do acervo — 82% de tudo o que o Inep já cobrou. Sobram 31 objetivas e 4 discursivas."
+    ],
+    [
+      "Duas de lógica",
+      "A área ganhou uma questão a mais porque banco de dados e algoritmos já tinham se esgotado. É um bom problema: lógica cai em todas as edições."
+    ],
+    [
+      "Sem pilha nem fila nas discursivas",
+      "As quatro discursivas de estrutura de dados linear já saíram nos simulados 1 a 3. Aqui o tripé fica com UML, construção de algoritmo e traço de mesa."
+    ]
+  ],
+
+  FG: [
+    [1,2021,"2", "FG", "Segurança alimentar: desperdício de hortaliças e padrão estético", "C",4,"Sustentabilidade e consumo em 4 edições"],
+    [2,2021,"7", "FG", "Saúde e comunicação: busca de informação médica na internet", "C",3,"Tecnologia e sociedade em 3 edições"],
+    [3,2017,"7", "FG", "Patrimônio cultural imaterial: paneleiras de Goiabeiras", "A",2,"Cultura e patrimônio em 2008 e 2017"],
+    [4,2014,"1", "FG", "Tecnologia digital e democratização da produção artística", "A",3,"Arte e tecnologia em 2008, 2014 e 2021"],
+    [5,2014,"4", "FG", "Redes sociais, privacidade e processos seletivos de emprego", "B",3,"Trabalho e tecnologia em 3 edições"],
+    [6,2011,"3", "FG", "Cibercultura (Pierre Lévy) e os valores do Iluminismo", "E",3,"Cibercultura e inclusão digital em 3 edições"],
+    [7,2011,"6", "FG", "Educação e trabalho: escolaridade, desemprego e salário", "B",4,"Educação e empregabilidade em 4 edições"],
+    [8,2008,"3", "FG", "Matemática aplicada: fator de proteção solar (FPS)", "D",5,"Cálculo aplicado: todas as edições"]
+  ],
+
+  CE: [
+    [9,2017,"13", "ES", "Qualidade de processo: modelo de maturidade CMMI", "C",3,"Maturidade em 2011 (MPS.BR), 2017 e 2021"],
+    [10,2017,"24", "ES", "Reengenharia de sistemas legados e refatoração para OO", "E",2,"Legados em 2017 e 2021"],
+    [11,2014,"25", "ES", "Requisitos não funcionais: usabilidade, segurança e desempenho", "C",5,"Requisitos é o tema mais cobrado do acervo"],
+    [12,2014,"30", "ES", "Gerência de configuração: auditoria, baseline e item de configuração", "D",4,"Configuração em 4 edições"],
+    [13,2014,"33", "ES", "Qualidade: V&V, gerência de configuração e gerenciamento de mudanças", "B",4,"Qualidade e V&V em 4 edições"],
+    [14,2011,"9", "ES", "Requisitos: workshop, cenário, entrevista e prototipação", "B",4,"Técnicas de elicitação em 2008, 2011, 2017 e 2021"],
+    [15,2011,"30", "ES", "Qualidade: revisões técnicas formais e controle de defeitos", "A",2,"Revisões em 2011 e 2014"],
+    [16,2008,"11", "ES", "Modelos de ciclo de vida: cascata, prototipação e incremental", "D",5,"Modelos de processo: todas as edições"],
+    [17,2017,"27", "OO", "Padrão Strategy: interfaces, herança e composição", "D",2,"Padrões em 2011 e 2017"],
+    [18,2014,"29", "OO", "Engenharia reversa: de código Java para diagrama de classes", "A",4,"Diagrama de classes em 4 edições"],
+    [19,2011,"11", "OO", "UML: diagrama de casos de uso e obtenção de requisitos", "B",5,"Casos de uso: todas as edições"],
+    [20,2011,"12", "OO", "UML: linguagem x metodologia, extend e diagramas de comportamento", "B",5,"Outro recorte de casos de uso e extend"],
+    [21,2008,"24", "OO", "UML: diagrama de atividades com raias e fork/join", "E",2,"Atividades em 2008 e 2011"],
+    [22,2008,"22", "AL", "Estrutura de dados: completar a busca binária", "A",2,"Busca binária em 2008; complexidade em 2008 e 2014"],
+    [23,2008,"21", "AL", "Tipos de dados: erros de atribuição e expressão relacional inválida", "B",3,"Leitura e depuração de código em 4 edições"],
+    [24,2008,"27", "AL", "Recursividade: Fibonacci, condição de parada e ineficiência", "C",3,"Recursão em 2008, 2014 e 2017"],
+    [25,2014,"11", "BD", "SQL: EXCEPT, INNER JOIN e IS NULL sobre modelo ER", "A",5,"SQL sobre modelo ER: todas as edições"],
+    [26,2014,"22", "BD", "Banco de dados: integridade semântica implementada por triggers", "E",2,"Integridade em 2008 (ACID) e 2014"],
+    [27,2008,"33", "GP", "PMBOK: gerenciamento do tempo, sequenciamento e cronograma", "B",4,"PMBOK em 4 edições"],
+    [28,2014,"23", "GP", "Inovação, empreendedorismo e empreendedorismo social", "D",4,"Empreendedorismo em 2008, 2011, 2014 e 2021"],
+    [29,2017,"18", "IN", "Sistemas distribuídos: exemplos atuais", "A",3,"Distribuídos em 2014, 2017 e 2021"],
+    [30,2008,"15", "IN", "Sistemas operacionais: máquinas virtuais e emulação", "C",5,"SO e virtualização: todas as edições"],
+    [31,2021,"35", "ML", "Lógica de predicados x implementação em C", "A",5,"Lógica: todas as edições"],
+    [32,2014,"35", "ML", "Lógica proposicional: negação de uma condicional", "B",5,"Outro recorte do mesmo tema recorrente"],
+    [33,2014,"32", "IH", "IHC: as três regras de ouro do projeto de interface", "E",4,"IHC em 4 edições"],
+    [34,2014,"12", "SG", "Governança de TI: plano de contingência e continuidade", "C",4,"Segurança e governança em 4 edições"],
+    [35,2021,"27", "OT", "Sistemas de numeração: conversão entre bases 2, 8, 10 e 16", "C",2,"Arquitetura de computadores em 2014 e 2021"]
+  ],
+
+  DISC: [
+    ["D1",2017,"D1", "FG", "Sífilis congênita e relações de gênero: vulnerabilidade feminina e duas ações voltadas ao público masculino", "10,0 pontos",["Diagnóstico: fatores sociais e culturais, relações de poder e a responsabilidade que recai sobre a mulher.", "Explicar por que os homens não buscam atenção primária e como isso realimenta a reinfecção.", "DUAS ações voltadas ao público masculino, do rol oficial de oito."]],
+    ["D2",2011,"D1", "FG", "Educação a distância: enumerar e justificar três vantagens", "10,0 pontos",["TRÊS vantagens, tiradas de um rol oficial de dez.", "Aqui o padrão pede apontar, não argumentar longamente — resposta enxuta e listada pontua.", "Flexibilidade, custo, capilaridade, democratização de acesso, inclusão digital são as mais seguras."]],
+    ["D3",2011,"D3", "OO", "UML: diagrama de classes de domínio de um jogo de dados e três requisitos funcionais", "10,0 pontos",["Destacar as classes JogoDados e Dado, com Dado como parte de JogoDados.", "Face é atributo de negócio da classe Dado.", "Ignorar classes que não sejam de domínio — o padrão é explícito nisso.", "Item b: listar PELO MENOS TRÊS requisitos funcionais; variações na descrição são aceitas."]],
+    ["D4",2011,"D5", "AL", "Algoritmos: progressão geométrica sobre um tabuleiro — armazenar em vetor e somar o total", "10,0 pontos",["Item a: calcular, armazenar e escrever cada valor (potências de 2).", "Item b: o acumulador do total precisa funcionar corretamente.", "Comentários no código são dispensáveis, segundo o próprio padrão."]],
+    ["D5",2014,"D5", "AL", "Algoritmos: teste de mesa com duas matrizes 3×3 — estado ao fim das linhas 12 e 21", "5,0 + 5,0 pontos",["Dois momentos, 5,0 pontos cada. Responda os dois separadamente.", "Resposta exata: as duas matrizes completas, célula por célula.", "Como as pilhas e filas já saíram nos simulados anteriores, aqui o treino é o traço de mesa puro."]]
+  ]
+});
+</script>
+</body>
+</html>

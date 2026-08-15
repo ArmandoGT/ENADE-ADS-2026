@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Painel de desempenho — ENADE 2026 TADS</title>
+<link rel="stylesheet" href="assets/base.css" />
+<link rel="stylesheet" href="assets/simulado.css" />
+<script>window.PAGINA = "painel";</script>
+<script src="assets/nav.js"></script>
+<style>
+  /* A linha de cada objeto: rótulo à esquerda, barra, e o número sempre visível.
+     O número não é enfeite — é o que garante a leitura sem depender da cor, já que
+     atenção e crítico ficam quase idênticos para quem tem deuteranopia. */
+  .orow { grid-template-columns: 250px 1fr 92px; }
+  @media (max-width: 700px) { .orow { grid-template-columns: 130px 1fr 78px; } }
+  .alabel .num {
+    font-family: var(--font-data); font-size: 10.5px; color: var(--muted);
+    letter-spacing: .06em; margin-right: 5px;
+  }
+  .aval .pct { font-weight: 700; }
+  .aval .de { color: var(--muted); font-size: 11.5px; }
+
+  /* barra do sistema de tempo: uma coluna por correção, na ordem em que aconteceram */
+  .evolucao {
+    display: flex; align-items: flex-end; gap: 4px; height: 116px;
+    padding: 10px 12px; background: var(--surface);
+    border: 1px solid var(--rule); border-radius: var(--r); overflow-x: auto;
+  }
+  .ecol { display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
+          gap: 5px; min-width: 30px; flex: 1 1 30px; height: 100%; }
+  .ebar { width: 100%; background: var(--accent); border-radius: 4px 4px 1px 1px; min-height: 2px; }
+  .ecap { font-family: var(--font-data); font-size: 10.5px; color: var(--muted);
+          font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .vazio { text-align: center; padding: 26px 0 10px; }
+  .sembase { color: var(--muted); font-size: 13px; }
+  .legenda {
+    display: flex; gap: 16px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted);
+    align-items: center;
+  }
+  .legenda i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; }
+</style>
+</head>
+<body class="simulado">
+
+<div class="wrap">
+  <div id="avisoArmazenamento">
+    Este navegador está bloqueando o armazenamento local, então o painel não consegue guardar nem
+    ler o seu histórico. Abra o material pelo atalho <code>abrir.cmd</code>, que o serve por
+    <code>http://localhost</code> — assim tudo funciona normalmente.
+  </div>
+  <div id="app"></div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>O painel só mostra o que você respondeu <strong>neste navegador</strong>. Nada é enviado
+      para lugar nenhum: o histórico fica no armazenamento local da própria máquina.</p>
+    <p>A leitura por <strong>objeto de conhecimento</strong> usa a nomenclatura oficial das
+      portarias Inep nº 154 e nº 169, de 14 de abril de 2026, e cobre as questões do Simulado IA.
+      Os simulados 1 a 4 trazem questões reais do Inep, classificadas por área — essas entram na
+      leitura por área, que é mais grossa mas abrange tudo.</p>
+  </div>
+</footer>
+
+<script src="assets/objetos.js"></script>
+<script src="assets/historico.js"></script>
+<script src="assets/painel.js"></script>
+<script>abrirPainel();</script>
+</body>
+</html>

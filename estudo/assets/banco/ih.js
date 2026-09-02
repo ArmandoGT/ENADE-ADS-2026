@@ -62,6 +62,21 @@
 ["IH","Usabilidade","Ao projetar um sistema para pessoas idosas, uma decisão adequada é",
 ["reduzir o tamanho da fonte para exibir mais conteúdo por tela, diminuindo a necessidade de rolagem.","usar apenas ícones sem rótulos textuais, o que reduz a poluição visual e acelera o reconhecimento das funções.","adotar fontes maiores, alvos de toque generosos e alto contraste, evitando ações dependentes de tempo curto.","exigir gestos de múltiplos toques para as ações principais, o que reduz o número de botões visíveis na tela.","ocultar as opções menos usadas em menus profundos, deixando visível apenas o que é essencial à tarefa."],2,
 "Declínio de acuidade visual e de motricidade fina pede alvos maiores e mais contraste. Ícone sem rótulo e menu profundo aumentam a carga cognitiva — vão na direção contrária.",null,
- {id:"ih-0012",hab:"C"}]
+ {id:"ih-0012",hab:"C"}],
+
+["IH","Acessibilidade","Sobre acessibilidade digital, avalie as afirmações a seguir.\nI. Texto alternativo em imagens permite que leitores de tela transmitam o conteúdo visual.\nII. A navegação por teclado deve alcançar todos os controles interativos da interface.\nIII. Usar apenas cor para indicar erro em formulário é adequado, desde que o contraste seja alto.\nÉ correto apenas o que se afirma em",
+["I.","II.","II e III.","I, II e III.","I e II."],4,
+"III contraria a diretriz de que cor nunca seja o único meio de transmitir informação. Contraste alto não resolve para quem tem daltonismo, nem para quem usa leitor de tela, que não anuncia cor: é preciso rótulo, ícone ou mensagem em texto. A armadilha da afirmação é acrescentar uma condição verdadeira — contraste importa — para validar uma prática que continua errada.",null,
+ {"id":"ih-0013","hab":"J"}],
+
+["IH","Usabilidade","Sobre as heurísticas de Nielsen, avalie as afirmações a seguir.\nI. Visibilidade do estado do sistema exige manter o usuário informado sobre o que está acontecendo.\nII. Prevenção de erros e boas mensagens de erro são a mesma heurística, com nomes diferentes.\nIII. Reconhecimento em vez de memorização recomenda deixar as opções visíveis, em vez de exigir que o usuário se lembre delas.\nÉ correto apenas o que se afirma em",
+["I e III.","I.","II.","II e III.","I, II e III."],0,
+"II funde duas heurísticas distintas e apaga a hierarquia entre elas. Prevenir é impedir que a condição de erro ocorra — desabilitar o botão, restringir a entrada; ajudar a reconhecer e recuperar-se do erro é o que se faz quando a prevenção falhou. A melhor mensagem de erro é a que nunca precisa aparecer.",null,
+ {"id":"ih-0014","hab":"J"}],
+
+["IH","Interface web","Sobre design responsivo, avalie as afirmações a seguir.\nI. Design responsivo consiste em manter uma versão separada do site para cada tipo de dispositivo.\nII. Media queries permitem aplicar estilos diferentes conforme características do dispositivo, como a largura da viewport.\nIII. Projetar primeiro para telas pequenas (mobile first) tende a forçar a priorização do conteúdo essencial.\nÉ correto apenas o que se afirma em",
+["I.","II e III.","II.","I e III.","I, II e III."],1,
+"I descreve a abordagem que o design responsivo veio substituir — o site móvel em domínio separado, com o custo de manter dois conteúdos que sempre divergem. Responsivo é um código só que se adapta ao espaço disponível. II e III descrevem o mecanismo e a disciplina que ele impõe: começar pelo menor espaço obriga a decidir o que é essencial.",null,
+ {"id":"ih-0015","hab":"J"}]
 
 ]);

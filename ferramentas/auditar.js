@@ -370,6 +370,24 @@ function auditar() {
     "o rótulo tem de custar alguma coisa, senão a meta de estoque se fecha sozinha");
   achados.rotuloFrouxo = rotuloFrouxo;
 
+  /* Nas questões de julgamento de itens, quantas afirmativas são falsas também é um
+     padrão explorável. Se houver sempre exatamente uma falsa, a resposta é sempre um
+     par de algarismos — e quem percebe isso descarta de saída as alternativas com um
+     item só e a de três, resolvendo por eliminação sem julgar nada.
+
+     A medida é a fração de questões de julgamento cuja resposta é um par. O acaso não
+     é uniforme aqui, porque com três afirmativas independentes o par é o caso mais
+     provável; a meta de 70% dá folga para isso e ainda barra a regularidade. */
+  var deJulgamento = B.filter(function (q) { return habilidadeDe(q) === "J"; });
+  var pares = deJulgamento.filter(function (q) {
+    var certa = q[3][q[4]] || "";
+    return /^(I|II|III)\s+e\s+(I{1,3})\.$/.test(certa.trim());
+  });
+  var fracaoPar = deJulgamento.length ? 100 * pares.length / deJulgamento.length : 0;
+  meta_("julgamento-pares", "Julgamento de itens cuja resposta é um par de afirmativas",
+    round(fracaoPar, 1), "≤ 70%", fracaoPar <= 70, "%",
+    deJulgamento.length + " questões de julgamento; resposta sempre em par vira eliminação");
+
   /* ---- 4d. o sorteio, medido de verdade ------------------------------------- */
   /* As metas acima medem o banco. Esta mede o que a pessoa recebe: sorteia provas de
      verdade, com o mesmo código que roda no navegador, e compara a composição obtida

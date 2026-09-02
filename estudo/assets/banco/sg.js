@@ -126,4 +126,19 @@
 "Resíduo eletrônico tem metais pesados e exige cadeia própria de destinação. Doar e revender prolongam a vida útil, o que é bom, mas só adiam a mesma pergunta — e apagar os dados resolve outro risco, não este.",null,
  {id:"sg-0024",hab:"C"}],
 
+["SG","LGPD","Sobre a Lei Geral de Proteção de Dados, avalie as afirmações a seguir.\nI. O consentimento é uma entre várias bases legais que autorizam o tratamento de dados pessoais.\nII. Dados anonimizados, enquanto não puderem ser revertidos, ficam fora do alcance da lei.\nIII. A lei se aplica também a pessoas jurídicas, protegendo dados cadastrais de empresas.\nÉ correto apenas o que se afirma em",
+["I.","I e II.","II.","II e III.","I, II e III."],1,
+"III estende a lei a quem ela não alcança: o objeto da LGPD é a pessoa natural. Dado de empresa só entra quando identifica uma pessoa por trás — o sócio, o contato. I corrige o engano difundido de que tudo depende de consentimento: execução de contrato, obrigação legal e legítimo interesse também autorizam. II vale enquanto a anonimização resistir; revertida, o dado volta a ser pessoal.",null,
+ {"id":"sg-0025","hab":"J"}],
+
+["SG","Segurança","Sobre a tríade da segurança da informação, avalie as afirmações a seguir.\nI. Confidencialidade é a garantia de que a informação só é acessível a quem tem autorização.\nII. Integridade é a garantia de que a informação esteja disponível quando necessária.\nIII. Um ataque de negação de serviço atinge principalmente a disponibilidade.\nÉ correto apenas o que se afirma em",
+["I.","II.","I e III.","II e III.","I, II e III."],2,
+"II descreve disponibilidade. Integridade é a garantia de que a informação não foi alterada de forma indevida — é sobre exatidão, não sobre acesso. A troca entre as duas é frequente porque ambas soam como “o sistema funcionando”, mas elas falham de modos diferentes: um dado corrompido está disponível, e um dado íntegro pode estar fora do ar.",null,
+ {"id":"sg-0026","hab":"J"}],
+
+["SG","Criptografia","Sobre mecanismos criptográficos, avalie as afirmações a seguir.\nI. A assinatura digital garante a confidencialidade do conteúdo assinado.\nII. Uma função de hash criptográfica é projetada para não ser invertível.\nIII. Na criptografia assimétrica, o que se cifra com a chave pública só se decifra com a privada correspondente.\nÉ correto apenas o que se afirma em",
+["I.","II.","I e III.","II e III.","I, II e III."],3,
+"I atribui à assinatura uma propriedade que ela não tem: assinar prova autoria e integridade, e não esconde nada — a mensagem assinada continua legível para quem a intercepte. Quem quer sigilo precisa cifrar, que é operação distinta e em geral combinada com a assinatura. Confundir as duas leva a projetos que expõem exatamente o que pretendiam proteger.",null,
+ {"id":"sg-0027","hab":"J"}]
+
 ]);

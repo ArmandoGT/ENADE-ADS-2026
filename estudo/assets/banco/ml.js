@@ -138,4 +138,19 @@
 "Servidor A | mediana 120 ms | mínimo 110 | máximo 140\nServidor B | mediana 115 ms | mínimo  40 | máximo 480",
  {id:"ml-0026",hab:"I"}],
 
+["ML","Lógica proposicional","Sobre lógica proposicional, avalie as afirmações a seguir.\nI. A proposição condicional p → q é falsa somente quando p é verdadeira e q é falsa.\nII. A contrapositiva de p → q é ¬q → ¬p, e é logicamente equivalente à original.\nIII. A negação de p ∧ q é ¬p ∧ ¬q.\nÉ correto apenas o que se afirma em",
+["I.","II.","II e III.","I e II.","I, II e III."],3,
+"III erra a lei de De Morgan: a negação da conjunção é a DISJUNÇÃO das negações, ¬p ∨ ¬q. Negar “choveu e fez frio” não é afirmar que não choveu e não fez frio — basta que uma das duas tenha falhado. Trocar o conectivo ao negar é o deslize mais comum nessa lei.",null,
+ {"id":"ml-0027","hab":"J"}],
+
+["ML","Conjuntos","Sejam A e B conjuntos finitos. Avalie as afirmações a seguir.\nI. |A ∪ B| = |A| + |B| − |A ∩ B|.\nII. Se A ⊂ B, então A ∩ B = B.\nIII. O conjunto das partes de um conjunto com n elementos tem 2ⁿ elementos.\nÉ correto apenas o que se afirma em",
+["I.","II.","II e III.","I, II e III.","I e III."],4,
+"II inverte o resultado: se A está contido em B, a interseção é o menor dos dois, ou seja A ∩ B = A. Quem responde B está pensando na UNIÃO, que nesse caso é de fato B. I é o princípio da inclusão-exclusão, e III sai de escolher, para cada elemento, entre estar ou não estar no subconjunto.",null,
+ {"id":"ml-0028","hab":"J"}],
+
+["ML","Estatística","Sobre medidas de posição e dispersão, avalie as afirmações a seguir.\nI. Duas amostras com a mesma média têm necessariamente a mesma dispersão.\nII. A mediana é menos sensível a valores extremos que a média.\nIII. O desvio padrão é expresso na mesma unidade dos dados, ao contrário da variância.\nÉ correto apenas o que se afirma em",
+["II e III.","I.","II.","I e III.","I, II e III."],0,
+"I é falsa por contraexemplo imediato: {5, 5, 5} e {0, 5, 10} têm média 5 e dispersões muito diferentes. É por isso que média sozinha não descreve distribuição, e que relatar média sem medida de dispersão esconde o que costuma importar. III explica a preferência prática pelo desvio padrão: variância em reais ao quadrado não se interpreta.",null,
+ {"id":"ml-0029","hab":"J"}]
+
 ]);

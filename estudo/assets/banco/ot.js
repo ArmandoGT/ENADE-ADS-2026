@@ -79,4 +79,19 @@
 "A ordem acompanha a distância até a unidade de execução, e a diferença entre os extremos é de várias ordens de grandeza. Cache existe justamente para ficar entre o registrador e a memória principal, não depois dela.",null,
  {id:"ot-0015",hab:"C"}],
 
+["OT","Memória e cache","Sobre a hierarquia de memória, avalie as afirmações a seguir.\nI. A memória cache é menor e mais rápida que a memória principal.\nII. O princípio da localidade é o que torna a cache eficaz.\nIII. Aumentar o tamanho da cache elimina as faltas (misses) de memória.\nÉ correto apenas o que se afirma em",
+["I.","II.","I e II.","II e III.","I, II e III."],2,
+"III confunde reduzir com eliminar. Nem a maior das caches evita a falta compulsória — o primeiro acesso a um dado sempre erra, porque ele ainda não foi trazido. Além disso, cache maior costuma ser mais lenta e mais cara, o que é a razão de existir uma hierarquia em vez de um nível só. II nomeia o que faz a cache funcionar: programas reacessam o que acabaram de acessar e o que está ao lado.",null,
+ {"id":"ot-0016","hab":"J"}],
+
+["OT","Representação de dados","Sobre representação de dados em computadores, avalie as afirmações a seguir.\nI. Com n bits é possível representar 2ⁿ valores distintos.\nII. O padrão de ponto flutuante IEEE 754 representa exatamente qualquer número decimal.\nIII. A representação em complemento de dois permite somar números com sinal usando o mesmo circuito da soma sem sinal.\nÉ correto apenas o que se afirma em",
+["I.","II.","II e III.","I e III.","I, II e III."],3,
+"II é falsa e é a origem de uma classe inteira de defeitos: 0,1 não tem representação finita em base dois, e por isso 0,1 + 0,2 não dá exatamente 0,3 em ponto flutuante. É por essa razão que valor monetário se guarda em inteiro de centavos ou em tipo decimal próprio. III é o motivo de o complemento de dois ter vencido as outras representações com sinal.",null,
+ {"id":"ot-0017","hab":"J"}],
+
+["OT","Arquitetura de computadores","Sobre organização de processadores, avalie as afirmações a seguir.\nI. O pipeline reduz o tempo de execução de uma instrução isolada.\nII. O pipeline aumenta a vazão de instruções ao sobrepor etapas de instruções sucessivas.\nIII. Desvios condicionais podem provocar bolhas no pipeline, tratadas por predição de desvio.\nÉ correto apenas o que se afirma em",
+["I.","II.","I e III.","I, II e III.","II e III."],4,
+"I confunde vazão com latência. Uma instrução isolada não fica mais rápida no pipeline — pode até ficar ligeiramente mais lenta, pelos registradores entre estágios. O ganho é de vazão: várias instruções em etapas diferentes ao mesmo tempo. É a mesma distinção entre uma lavanderia atender mais roupa por hora e cada peça ficar pronta mais cedo.",null,
+ {"id":"ot-0018","hab":"J"}]
+
 ]);

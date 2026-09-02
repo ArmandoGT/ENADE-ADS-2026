@@ -248,4 +248,34 @@
 "01  empilha(10)\n02  empilha(20)\n03  empilha(30)\n04  x <- desempilha()\n05  empilha(40)\n06  escreva(x)\n07",
  {id:"al-0045",hab:"I"}],
 
+["AL","Complexidade","Uma equipe compara algoritmos para ordenar e buscar em um vetor de n elementos. Avalie as afirmações a seguir.\nI. A busca binária em vetor ordenado tem custo O(log n) no pior caso.\nII. O quicksort tem custo O(n log n) no pior caso, qualquer que seja o pivô escolhido.\nIII. O mergesort mantém O(n log n) no pior caso, mas exige espaço auxiliar proporcional a n.\nÉ correto apenas o que se afirma em",
+["I e III.","I.","II.","II e III.","I, II e III."],0,
+"O pior caso do quicksort é O(n²), e ocorre quando o pivô é sistematicamente o menor ou o maior elemento — vetor já ordenado com pivô na ponta é o exemplo clássico. A afirmação II descreve o caso MÉDIO como se fosse o pior, que é a confusão mais comum sobre o algoritmo. I e III estão corretas: a busca binária corta o espaço pela metade a cada passo, e o mergesort paga em memória a garantia que dá em tempo.",null,
+ {"id":"al-0046","hab":"J"}],
+
+["AL","Pilha","Sobre as estruturas pilha e fila, avalie as afirmações a seguir.\nI. A avaliação de expressões com parênteses aninhados é aplicação típica de fila.\nII. A pilha atende à disciplina LIFO, em que o último elemento inserido é o primeiro a sair.\nIII. Tanto a inserção quanto a remoção em uma pilha bem implementada custam O(1).\nÉ correto apenas o que se afirma em",
+["I.","II e III.","II.","I e III.","I, II e III."],1,
+"I troca as duas estruturas: casar parênteses exige recuperar a ÚLTIMA abertura ainda pendente, que é o comportamento da pilha. Fila é FIFO e serve a outra classe de problema — escalonamento, busca em largura, atendimento por ordem de chegada. II e III estão corretas, e a segunda decorre da primeira: mexendo só no topo, não se percorre a estrutura.",null,
+ {"id":"al-0047","hab":"J"}],
+
+["AL","Árvore","Sobre árvores binárias de busca (ABB), avalie as afirmações a seguir.\nI. O percurso em ordem (in-order) de uma ABB visita as chaves em ordem crescente.\nII. Árvores balanceadas como a AVL existem para garantir altura O(log n).\nIII. A busca em uma ABB custa O(log n) independentemente da ordem de inserção das chaves.\nÉ correto apenas o que se afirma em",
+["I.","II.","I e II.","II e III.","I, II e III."],2,
+"III ignora o caso degenerado: inserir chaves já ordenadas produz uma árvore que é uma lista encadeada disfarçada, com altura n e busca O(n). É precisamente esse risco que justifica II — AVL e rubro-negra rebalanceiam a cada inserção para que a altura não escape. Quem marca III costuma ter memorizado o custo médio sem a condição que o sustenta.",null,
+ {"id":"al-0048","hab":"J"}],
+
+["AL","Hash","Sobre tabelas de dispersão (hash), avalie as afirmações a seguir.\nI. Uma função de dispersão bem distribuída torna a busca O(1) no caso médio.\nII. Colisões são falhas de implementação e podem ser eliminadas por uma boa função de dispersão.\nIII. O encadeamento separado trata colisões mantendo, em cada posição, uma lista dos elementos que ali caíram.\nÉ correto apenas o que se afirma em",
+["I.","II.","II e III.","I e III.","I, II e III."],3,
+"II confunde reduzir com eliminar. Enquanto o universo de chaves possíveis for maior que o número de posições — e sempre é —, a colisão é inevitável por contagem, não por descuido: é o princípio da casa dos pombos. Boa dispersão torna a colisão rara; tratá-la continua obrigatório, e III descreve uma das formas de fazer isso.",null,
+ {"id":"al-0049","hab":"J"}],
+
+["AL","Ordenação","Sobre algoritmos de ordenação, avalie as afirmações a seguir.\nI. O insertion sort tem desempenho ruim em vetores quase ordenados, por percorrer sempre todo o vetor.\nII. Um algoritmo de ordenação é estável quando preserva a ordem relativa de elementos de mesma chave.\nIII. Nenhum algoritmo de ordenação por comparação pode ter pior caso melhor que O(n log n).\nÉ correto apenas o que se afirma em",
+["I.","II.","I e III.","I, II e III.","II e III."],4,
+"I inverte o comportamento do insertion sort: em vetor quase ordenado ele é excelente, chegando a O(n), porque cada elemento encontra sua posição quase de imediato. É por isso que ele aparece como etapa final de algoritmos híbridos. III é o limite inferior clássico da ordenação por comparação — counting sort e radix sort escapam dele por não comparar elementos, e sim contá-los.",null,
+ {"id":"al-0050","hab":"J"}],
+
+["AL","Grafos","Sobre percursos em grafos, avalie as afirmações a seguir.\nI. A busca em largura (BFS) encontra o caminho com menor número de arestas entre a origem e cada vértice alcançável.\nII. O algoritmo de Dijkstra pressupõe que não haja arestas de peso negativo.\nIII. A busca em profundidade (DFS) encontra sempre o caminho mais curto entre dois vértices.\nÉ correto apenas o que se afirma em",
+["I e II.","I.","II.","II e III.","I, II e III."],0,
+"III atribui à DFS uma garantia que ela não dá: a DFS encontra UM caminho, não o mais curto, porque desce o quanto puder antes de retroceder. Quem garante menor número de arestas é a BFS, e só em grafo não ponderado. II é a condição que separa Dijkstra de Bellman-Ford: com peso negativo, Dijkstra fecha um vértice cedo demais e erra.",null,
+ {"id":"al-0051","hab":"J"}]
+
 ]);

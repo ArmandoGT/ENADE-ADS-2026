@@ -131,4 +131,19 @@
 "São quatro, e todas precisam valer ao mesmo tempo: exclusão mútua, posse e espera, ausência de preempção e espera circular. Quebrar qualquer uma delas resolve — e é assim que as estratégias de prevenção funcionam.",null,
  {id:"in-0025",hab:"C"}],
 
+["IN","Sistemas operacionais","Sobre processos e threads, avalie as afirmações a seguir.\nI. Threads de um mesmo processo compartilham o espaço de endereçamento.\nII. A troca de contexto entre threads de um mesmo processo é geralmente mais barata que entre processos.\nIII. Um impasse (deadlock) ocorre sempre que dois processos disputam o mesmo recurso.\nÉ correto apenas o que se afirma em",
+["I.","II.","I e II.","II e III.","I, II e III."],2,
+"III confunde disputa com impasse. Disputa por recurso é o caso comum e se resolve com espera: um processo aguarda, o outro libera. O impasse exige as quatro condições de Coffman ao mesmo tempo — exclusão mútua, posse e espera, ausência de preempção e espera circular —, e é a espera circular que fecha o ciclo. I e II decorrem do mesmo fato: compartilhar memória é o que torna a thread mais barata.",null,
+ {"id":"in-0026","hab":"J"}],
+
+["IN","Redes","Sobre o modelo TCP/IP, avalie as afirmações a seguir.\nI. O protocolo TCP oferece entrega confiável e ordenada, com controle de fluxo e de congestionamento.\nII. O protocolo UDP oferece as mesmas garantias do TCP, com cabeçalho menor.\nIII. O endereçamento lógico entre redes distintas é responsabilidade da camada de rede.\nÉ correto apenas o que se afirma em",
+["I.","II.","II e III.","I e III.","I, II e III."],3,
+"II inverte a razão de existir do UDP: ele é mais leve exatamente porque NÃO garante entrega, ordem nem controle de congestionamento. É a troca deliberada que o torna adequado a voz, vídeo ao vivo e DNS, onde retransmitir tarde é pior que perder. Cabeçalho menor é consequência de dispensar essas garantias, não um bônus somado a elas.",null,
+ {"id":"in-0027","hab":"J"}],
+
+["IN","Nuvem","Sobre modelos de serviço em nuvem, avalie as afirmações a seguir.\nI. No SaaS, o cliente é responsável por aplicar as correções de segurança do software que utiliza.\nII. No IaaS, o cliente administra o sistema operacional e as aplicações, e o provedor cuida da infraestrutura física.\nIII. No PaaS, o provedor oferece o ambiente de execução, e o cliente se ocupa do código e dos dados.\nÉ correto apenas o que se afirma em",
+["I.","II.","I e III.","I, II e III.","II e III."],4,
+"I inverte a divisão de responsabilidade do SaaS, que é justamente o modelo em que o cliente só usa: quem corrige, atualiza e opera o software é o provedor. A afirmação descreve o que caberia ao cliente no IaaS. A régua para os três modelos é sempre a mesma pergunta — até onde vai a camada que o provedor administra.",null,
+ {"id":"in-0028","hab":"J"}]
+
 ]);

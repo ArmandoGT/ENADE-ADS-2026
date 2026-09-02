@@ -320,4 +320,19 @@
 "O cliente descreveu a solução que imaginou, não o problema que tem. Talvez o gerente só precise do número atualizado — e aí um painel resolve melhor que um anexo mensal que ninguém abre.",null,
  {id:"oo-0061",hab:"C"}],
 
+["OO","POO","Sobre os pilares da orientação a objetos, avalie as afirmações a seguir.\nI. O encapsulamento protege o estado interno do objeto, expondo comportamento em vez de dados.\nII. Herança e composição são intercambiáveis, e a escolha entre elas é questão de estilo.\nIII. O polimorfismo permite tratar objetos de tipos diferentes por uma interface comum.\nÉ correto apenas o que se afirma em",
+["I.","I e III.","II.","II e III.","I, II e III."],1,
+"II ignora a diferença de acoplamento. Herança amarra a subclasse à implementação da superclasse e só vale quando há relação de substituição — o princípio de Liskov; composição amarra a um contrato e é trocável em tempo de execução. A recomendação corrente de preferir composição existe justamente porque as duas NÃO são equivalentes.",null,
+ {"id":"oo-0062","hab":"J"}],
+
+["OO","Padrões de projeto","Sobre padrões de projeto, avalie as afirmações a seguir.\nI. O padrão Observer estabelece dependência um-para-muitos, notificando os interessados quando o objeto observado muda de estado.\nII. O padrão Strategy permite trocar o algoritmo usado por um objeto em tempo de execução.\nIII. O padrão Singleton é recomendado sempre que se deseja acesso global a um objeto, sem contraindicação relevante.\nÉ correto apenas o que se afirma em",
+["I.","II.","I e II.","II e III.","I, II e III."],2,
+"III vende como consenso o padrão mais contestado do catálogo. O Singleton introduz estado global, esconde dependências que deixariam de aparecer no construtor e atrapalha teste, porque o objeto não pode ser substituído por um dublê. Ele resolve um problema real, mas com contraindicação — que é exatamente o que a afirmação nega.",null,
+ {"id":"oo-0063","hab":"J"}],
+
+["OO","UML: casos de uso","Sobre o diagrama de casos de uso, avalie as afirmações a seguir.\nI. O relacionamento «include» indica comportamento opcional, executado apenas sob certas condições.\nII. Um ator representa um papel, e não necessariamente uma pessoa — outro sistema pode ser ator.\nIII. O diagrama descreve o que o sistema faz do ponto de vista externo, sem detalhar como faz.\nÉ correto apenas o que se afirma em",
+["I.","II.","I e III.","II e III.","I, II e III."],3,
+"I troca «include» por «extend». «include» é obrigatório: o caso de uso base sempre executa o incluído, e serve para fatorar comportamento comum. O opcional, condicionado a um ponto de extensão, é o «extend». É a confusão mais frequente nesse diagrama, e o vocabulário não ajuda — o que se inclui é justamente o que sempre entra.",null,
+ {"id":"oo-0064","hab":"J"}]
+
 ]);

@@ -141,6 +141,21 @@
 ["BD","Integridade","A integridade referencial garante que",
 ["nenhuma coluna da tabela aceite valores nulos, o que garante o preenchimento completo de todos os registros inseridos.","os tipos de dados sejam compatíveis entre colunas relacionadas, evitando conversões implícitas.","todas as tabelas do esquema tenham chave primária definida, ainda que ela seja composta por duas ou mais colunas.","não existam registros duplicados em nenhuma tabela, o que é assegurado por restrições de unicidade.","todo valor de chave estrangeira corresponda a um valor existente na chave primária referenciada, ou seja nulo."],4,
 "É a regra que impede o registro órfão. A chave estrangeira pode ser nula (relacionamento opcional), mas se tiver valor, esse valor precisa existir na tabela referenciada.",null,
- {id:"bd-0025",hab:"C"}]
+ {id:"bd-0025",hab:"C"}],
+
+["BD","Normalização","Sobre formas normais, avalie as afirmações a seguir.\nI. Uma tabela está na 1FN quando todos os seus atributos são atômicos.\nII. Uma tabela com chave primária simples pode violar a 2FN por dependência parcial.\nIII. A 3FN elimina dependências transitivas entre atributos não chave.\nÉ correto apenas o que se afirma em",
+["I.","II.","II e III.","I, II e III.","I e III."],4,
+"II é impossível por construção: dependência parcial é dependência de PARTE da chave, e chave simples não tem partes. Toda tabela na 1FN com chave primária de um único atributo já está automaticamente na 2FN. Quem marca II costuma ter decorado o enunciado da 2FN sem perceber a condição que o ativa.",null,
+ {"id":"bd-0026","hab":"J"}],
+
+["BD","Transações","Sobre as propriedades ACID das transações, avalie as afirmações a seguir.\nI. Atomicidade garante que a transação seja executada integralmente ou não deixe efeito algum.\nII. Consistência garante que a transação leve o banco de um estado válido a outro estado válido.\nIII. Durabilidade garante que transações concorrentes não interfiram umas nas outras.\nÉ correto apenas o que se afirma em",
+["I e II.","I.","II.","II e III.","I, II e III."],0,
+"III descreve isolamento, não durabilidade. Durabilidade é a garantia de que, uma vez confirmada, a transação sobrevive a queda de energia ou falha do servidor — é sobre persistência, não sobre concorrência. Trocar as duas é o erro mais comum na sigla, porque ambas soam como promessas de segurança.",null,
+ {"id":"bd-0027","hab":"J"}],
+
+["BD","Integridade","Sobre restrições de integridade em bancos relacionais, avalie as afirmações a seguir.\nI. A chave primária pode conter valor nulo, desde que seja única na tabela.\nII. A integridade referencial exige que todo valor de chave estrangeira exista na tabela referenciada ou seja nulo.\nIII. A cláusula ON DELETE CASCADE propaga a exclusão para os registros que referenciam a linha removida.\nÉ correto apenas o que se afirma em",
+["I.","II e III.","II.","I e III.","I, II e III."],1,
+"I viola a integridade de entidade: chave primária não admite nulo, porque nulo significa valor desconhecido e não serve para identificar linha nenhuma. Unicidade e não nulidade são duas exigências, e a afirmação concede uma para dispensar a outra. Quem hesita costuma estar pensando em chave candidata declarada como UNIQUE, que de fato admite nulo.",null,
+ {"id":"bd-0028","hab":"J"}]
 
 ]);

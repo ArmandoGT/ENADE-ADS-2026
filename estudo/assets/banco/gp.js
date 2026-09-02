@@ -138,4 +138,19 @@
 "O erro clássico é multiplicar a população do país por um ticket e chamar isso de mercado. O que interessa é a parcela que o negócio consegue alcançar com o canal e o preço que realmente pratica.",null,
  {id:"gp-0027",hab:"C"}],
 
+["GP","Riscos","Sobre gerência de riscos em projetos, avalie as afirmações a seguir.\nI. O risco é caracterizado por probabilidade e impacto, e a combinação dos dois orienta a priorização.\nII. Mitigar um risco é agir para reduzir sua probabilidade, seu impacto, ou ambos.\nIII. Aceitar um risco significa deixar de monitorá-lo, por se ter decidido não agir sobre ele.\nÉ correto apenas o que se afirma em",
+["I e II.","I.","II.","II e III.","I, II e III."],0,
+"III confunde aceitação com omissão. Aceitar é uma resposta deliberada — decide-se não gastar agora para tratar —, e vem acompanhada de monitoramento e, quando o caso pede, de reserva de contingência. Risco aceito que ninguém acompanha não foi aceito: foi esquecido, e a diferença aparece no dia em que ele se materializa.",null,
+ {"id":"gp-0028","hab":"J"}],
+
+["GP","Métodos","Sobre métodos ágeis, avalie as afirmações a seguir.\nI. No Scrum, o Product Owner responde pela priorização do backlog do produto.\nII. Métodos ágeis dispensam documentação, conforme estabelece o Manifesto Ágil.\nIII. A entrega incremental antecipa a validação com o cliente e reduz o custo de mudar de rumo.\nÉ correto apenas o que se afirma em",
+["I.","I e III.","II.","II e III.","I, II e III."],1,
+"II distorce o Manifesto, que diz preferir software em funcionamento A documentação abrangente — e acrescenta explicitamente que, embora haja valor nos itens à direita, valoriza-se mais os da esquerda. Preferir não é dispensar. É a leitura equivocada mais difundida do texto, e costuma servir de justificativa para não documentar nada.",null,
+ {"id":"gp-0029","hab":"J"}],
+
+["GP","Valor agregado","Em um projeto controlado por valor agregado, avalie as afirmações a seguir.\nI. O valor agregado (VA) corresponde ao valor efetivamente desembolsado no período.\nII. O índice de desempenho de custo (IDC) menor que 1 indica que se gastou mais do que o previsto para o trabalho realizado.\nIII. O índice de desempenho de prazo (IDP) menor que 1 indica atraso em relação ao planejado.\nÉ correto apenas o que se afirma em",
+["I.","II.","II e III.","I e III.","I, II e III."],2,
+"I descreve o custo real (CR), não o valor agregado. VA é o valor orçado do trabalho que foi de fato concluído — mede entrega, não desembolso. Confundir os dois esvazia a técnica inteira, porque é justamente a distância entre o que se entregou e o que se gastou que os índices medem.",null,
+ {"id":"gp-0030","hab":"J"}]
+
 ]);

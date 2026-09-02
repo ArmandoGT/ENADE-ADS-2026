@@ -124,6 +124,14 @@ var COD_FMT = {
    divergirem, a meta cota-espelhada acusa. */
 var COTA_AREA = { ES: 8, OO: 5, AL: 4, BD: 3, IN: 2, GP: 2, ML: 2, SG: 2, IH: 1, OT: 1 };
 
+/* Tamanho do banco no dia em que os ids estáveis foram introduzidos, e portanto o
+   tamanho que banco/legado-ids.js tem de manter para sempre. Ver a meta legado-ids. */
+var CONGELADAS = 468;
+/* Quantas entradas da tabela podem apontar para questão que não existe mais. Cada
+   órfã é um pedaço de histórico antigo que deixa de ser reconhecido; zero é o ideal e
+   um punhado é o preço de reescrever questão. Passar disso pede decisão consciente. */
+var LIMITE_ORFAOS = 20;
+
 /* O registro do banco tem 7 campos posicionais e um oitavo com os metadados nomeados:
    { id, hab, art }. Posicional ficaria ilegível a partir do oitavo campo. */
 function meta(q) { return (q.length > 7 && q[7]) || null; }
@@ -466,21 +474,31 @@ function auditar() {
     n + "/" + n, comId.length === n && idsDup.length === 0, "",
     idsDup.length ? "ids duplicados: " + idsDup.join(", ") : "");
 
-  /* A tabela congelada é a única ponte entre o histórico de quem usou o material
-     antes do id estável e o banco de agora. Ela descreve o passado: pode ficar menor
-     que o banco quando questões novas entrarem, nunca maior nem diferente. */
+  /* A tabela congelada é a única ponte entre o histórico de quem usou o material antes
+     do id estável e o banco de agora.
+
+     Ela descreve o PASSADO — quais ids ocupavam os índices de 0 a 467 no dia em que
+     foram congelados. Não descreve o presente, e é justamente por isso que existe: o
+     banco pode crescer, reordenar-se e perder questões sem que o progresso de ninguém
+     vire ruído. Comparar a tabela com as posições atuais, como esta meta fazia numa
+     primeira versão, seria exigir que o banco nunca mudasse.
+
+     O que se exige dela, então, é só isto: continuar do mesmo tamanho, sem id repetido,
+     e apontar para questões que ainda existem. Órfão não é erro — é o rastro de uma
+     questão removida ou reescrita a ponto de mudar de identidade —, mas é contado, para
+     que ninguém descubra tarde demais que metade do baralho de revisão evaporou. */
   var legado = b.legado;
   var vivos = new Set(comId.map(function (q) { return meta(q).id; }));
   var legadoOrfao = legado.filter(function (id) { return !vivos.has(id); });
-  var legadoDesalinhado = legado.filter(function (id, i) {
-    return B[i] && meta(B[i]) && meta(B[i]).id !== id;
-  }).length;
+  var legadoRepetido = legado.length - new Set(legado).size;
+  var okLegado = legado.length === CONGELADAS && legadoRepetido === 0 &&
+                 legadoOrfao.length <= LIMITE_ORFAOS;
   meta_("legado-ids", "Tabela congelada de migração íntegra",
-    legadoDesalinhado ? legadoDesalinhado + " desalinhadas" : "ok",
-    "ok", legadoDesalinhado === 0 && legado.length > 0, "",
-    legado.length + " entradas" + (legadoOrfao.length
-      ? " · " + legadoOrfao.length + " apontam para questões que não existem mais (esperado após remoções)"
-      : ""));
+    okLegado ? "ok" : (legado.length !== CONGELADAS ? legado.length + " entradas"
+      : legadoRepetido ? legadoRepetido + " repetidos" : legadoOrfao.length + " órfãos"),
+    "ok", okLegado, "",
+    legado.length + " entradas · " + legadoOrfao.length + " órfãs de " + LIMITE_ORFAOS +
+      " toleradas (questão removida ou reescrita perde o vínculo com o histórico antigo)");
 
   /* ---- 8. cobertura dos objetos oficiais ------------------------------------ */
   /* OBJETOS.auditar() existia sem nenhum ponto de chamada. Este é o ponto. */

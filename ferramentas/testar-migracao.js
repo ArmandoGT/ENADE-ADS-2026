@@ -93,13 +93,32 @@ var referencia = montarJanela(armazenamento({}));
 var B = referencia.BANCO_IA;
 var LEGADO = referencia.BANCO_LEGADO_IDS;
 
-conferir("tabela congelada tem uma entrada por questão",
-  LEGADO.length === B.length, LEGADO.length + " entradas para " + B.length + " questões");
+/* A tabela descreve o PASSADO: os 468 índices que existiam quando o id estável foi
+   introduzido. Depois disso o banco cresceu, e o índice de uma questão antiga mudou —
+   é exatamente por isso que a tabela precisa ser congelada. Comparar a tabela com as
+   posições de hoje seria exigir que o banco nunca mudasse, que é o contrário do que
+   ela existe para permitir. */
+var CONGELADAS = 468;
+conferir("tabela congelada mantém os " + CONGELADAS + " índices originais",
+  LEGADO.length === CONGELADAS, LEGADO.length + " entradas");
+conferir("tabela congelada não tem id repetido",
+  new Set(LEGADO).size === LEGADO.length);
 
-/* Escolhe questões espalhadas pelo banco, inclusive nas bordas. */
+var porId = {};
+B.forEach(function (q, i) { porId[(q[7] || {}).id] = i; });
+var perdidos = LEGADO.filter(function (id) { return porId[id] === undefined; });
+conferir("todo id da tabela ainda existe no banco",
+  perdidos.length === 0,
+  perdidos.length + " sem correspondência (esperado só após remover questões): " +
+    perdidos.slice(0, 5).join(" "));
+
+/* Escolhe índices antigos espalhados, inclusive nas bordas. O id esperado sai da
+   tabela congelada, não da posição atual. */
 var escolhidas = [0, 1, 93, 94, 200, 467].map(function (i, k) {
-  var q = B[i];
-  return { id: i, area: q[0], subtema: q[1], objeto: null, ok: k % 2 === 0, esperado: q[7].id };
+  var esperado = LEGADO[i];
+  var q = B[porId[esperado]];
+  return { id: i, area: q[0], subtema: q[1], objeto: null, ok: k % 2 === 0,
+           esperado: esperado, enunciado: q[2] };
 });
 
 /* ---- 1. migração traduz cada índice para o id certo ----------------------- */
@@ -163,7 +182,7 @@ conferir("o sorteio remonta exatamente as questões erradas",
   remontadas.length === erradas.length,
   remontadas.length + " de " + erradas.length);
 conferir("cada questão remontada é a que a pessoa errou",
-  remontadas.every(function (it, k) { return it.enunciado === B[erradas[k].id][2]; }));
+  remontadas.every(function (it, k) { return it.enunciado === erradas[k].enunciado; }));
 
 /* ---- 6. o estoque de já-vistas migra junto -------------------------------- */
 var ls3 = armazenamento({ "enade26.ia.vistas": JSON.stringify([0, 93, 94, "ia-fg-01"]) });
@@ -172,7 +191,7 @@ j3.SORTEIO.cobertura();                       // força a leitura, que dispara a
 var vistas = JSON.parse(ls3._dados["enade26.ia.vistas"]);
 
 conferir("vistas: índices viraram ids estáveis",
-  vistas.indexOf(B[0][7].id) >= 0 && vistas.indexOf(B[93][7].id) >= 0 && vistas.indexOf(B[94][7].id) >= 0,
+  vistas.indexOf(LEGADO[0]) >= 0 && vistas.indexOf(LEGADO[93]) >= 0 && vistas.indexOf(LEGADO[94]) >= 0,
   JSON.stringify(vistas));
 conferir("vistas: id textual de discursiva permanece", vistas.indexOf("ia-fg-01") >= 0);
 conferir("vistas: nada se perde no caminho", vistas.length === 4, vistas.length + " entradas");

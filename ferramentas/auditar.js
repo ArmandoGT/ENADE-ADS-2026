@@ -415,15 +415,26 @@ function auditar() {
   /* ---- 5. formato do enunciado --------------------------------------------- */
   var tams = B.map(function (q) { return q[2].length; });
   var med = mediana(tams);
-  meta_("enunciado-mediana", "Mediana do enunciado", Math.round(med), "≥ 400 ch", med >= 400, " ch",
+  /* Informativa, e não porteira, por honestidade de método: os enunciados oficiais só
+     existem como imagem de PDF, então não tenho como medir a mediana deles. Um alvo de
+     400 caracteres seria opinião minha vestida de número — exatamente o que o resto
+     deste arquivo existe para não fazer. O que se pode afirmar com base em medida é a
+     composição por habilidade e por formato, e isso as metas acima já cobram. */
+  meta_("enunciado-mediana", "Mediana do enunciado (informativo)", Math.round(med), "informativo", true, " ch",
     "o ENADE é feito de situações-problema; " + br(pct(B.filter(function (q) { return q[2].length < 150; }).length, n)) + "% abaixo de 150 ch");
 
+  /* Artefato se mede na PROVA SORTEADA, pela mesma razão que o mix de habilidade: o
+     banco não precisa ter a composição do exame, precisa ter estoque para o sorteio
+     montá-la. O alvo sai do acervo — a proporção de questões oficiais cujo formato não
+     é apenas texto. Uma tolerância de 10 pontos porque a cota trabalha em vagas
+     inteiras e nem toda questão de uma habilidade traz artefato. */
   var comArtefato = B.filter(function (q) { var m = meta(q); return !!(q[6] || (m && m.art)); }).length;
-  /* Alvo tirado do acervo: proporção de questões oficiais cujo formato não é "Texto". */
   var alvoArtefato = 100 * oficialObj.filter(function (r) { return r.formato !== "Texto"; }).length / oficialObj.length;
-  meta_("artefatos", "Questões com artefato (código, tabela, gráfico, UML, ER)",
-    pct(comArtefato, n), "≥ " + round(alvoArtefato, 0) + "%", 100 * comArtefato / n >= alvoArtefato, "%",
-    "alvo medido no acervo oficial");
+  meta_("artefatos", "Itens com artefato na prova sorteada",
+    round(sim.artefatoMedio, 1), "≥ " + round(alvoArtefato - 10, 0) + "%",
+    sim.artefatoMedio >= alvoArtefato - 10, "%",
+    "alvo " + round(alvoArtefato, 0) + "% medido no acervo, com 10 pp de folga · banco: " +
+      br(pct(comArtefato, n)) + "%");
 
   /* ---- 6. explicações ------------------------------------------------------- */
   var citaPos = [];
@@ -603,7 +614,7 @@ function simularSorteios(b, n) {
   if (!SORTEIO || !SORTEIO.prova) return { n: 0, areaExata: 0, repetidas: 0, desvioMedio: 0 };
 
   SORTEIO._semente(comSemente(20261129));   // a data da prova, por gosto
-  var areaExata = 0, repetidas = 0, somaDesvio = 0;
+  var areaExata = 0, repetidas = 0, somaDesvio = 0, somaArtefato = 0;
 
   for (var k = 0; k < n; k++) {
     SORTEIO.zerarCobertura();               // cada simulação parte do estoque cheio
@@ -620,13 +631,18 @@ function simularSorteios(b, n) {
     var ids = objs.map(function (x) { return x.qid; });
     repetidas += ids.length - new Set(ids).size;
 
+    /* Cada item deslocado aparece duas vezes na soma — falta numa habilidade é sobra
+       em outra —, daí a divisão por dois. */
     var d = SORTEIO.ultimoDiag || { desvio: [] };
     somaDesvio += d.desvio.reduce(function (s, x) { return s + Math.abs(x.saiu - x.alvo); }, 0) / 2;
+
+    somaArtefato += objs.filter(function (x) { return !!(x.codigo || x.artefatos); }).length / objs.length;
   }
   SORTEIO._semente(null);
   SORTEIO.zerarCobertura();
 
-  return { n: n, areaExata: areaExata, repetidas: repetidas, desvioMedio: somaDesvio / n };
+  return { n: n, areaExata: areaExata, repetidas: repetidas,
+           desvioMedio: somaDesvio / n, artefatoMedio: 100 * somaArtefato / n };
 }
 
 /* ------------------------------------------------------------------- utilidades */

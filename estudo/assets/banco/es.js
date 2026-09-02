@@ -486,4 +486,59 @@
 "A distinção é a origem da mudança: o software não tinha defeito, o mundo em volta mudou. Corretiva é para defeito preexistente, perfectiva para melhoria pedida, preventiva para risco antecipado pela equipe.",null,
  {id:"es-0094",hab:"C"}],
 
+["ES","Testes","Um analista deseja cobrir todas as saídas possíveis do método acima com o menor número de casos de teste, usando análise de valores-limite. O conjunto mínimo que exercita as quatro saídas e testa as fronteiras é",
+["{−1, 0, 17, 18, 59, 60}.","{0, 18, 60}.","{−1, 30, 70}.","{1, 2, 3, 4}.","{0, 1, 2, 3, 4, 5}."],0,
+"As fronteiras estão em 0, 18 e 60, e a análise de valores-limite exige testar imediatamente antes e depois de cada uma: −1 e 0, 17 e 18, 59 e 60. O conjunto {0, 18, 60} atinge as quatro saídas mas não exercita nenhum limite inferior, e é justamente aí que mora o erro de trocar < por <=. {−1, 30, 70} cobre três saídas com valores centrais, sem fronteira nenhuma. Os dois últimos conjuntos nem alcançam as quatro saídas.","public int classificar(int idade) {\n    if (idade < 0)   return -1;   // inválido\n    if (idade < 18)  return 0;    // menor\n    if (idade < 60)  return 1;    // adulto\n    return 2;                     // idoso\n}",
+ {"id":"es-0095","hab":"I"}],
+
+["ES","Gerência de configuração","Ao integrar o ramo ajuste em main, o sistema de controle de versão",
+["aplicará automaticamente o valor mais recente por data de commit, sem intervenção.","sinalizará conflito na linha 42, por haver alterações divergentes a partir de um ancestral comum.","descartará silenciosamente as alterações do ramo ajuste, por main ser o ramo principal.","impedirá a integração até que o ramo ajuste seja recriado a partir do estado atual de main.","duplicará a linha 42, mantendo os dois valores no arquivo integrado."],1,
+"Os dois ramos partem de a1b2c3 com 0.05 e alteram a MESMA linha para valores diferentes. A fusão de três vias compara cada lado com o ancestral comum: como os dois mudaram, não há como decidir sozinho, e o conflito é sinalizado para alguém resolver. Escolher pela data seria arbitrário — commit mais recente não é o mais correto —, e é exatamente por isso que a ferramenta não escolhe.",null,
+ {"id":"es-0096","hab":"I","art":[{"t":"tabela","cap":"Histórico de um arquivo em dois ramos","cab":["Ramo","Commit","Alteração na linha 42"],"al":["","",""],"linhas":[["main","a1b2c3","taxa = 0.05"],["main","d4e5f6","taxa = 0.07"],["ajuste","a1b2c3","taxa = 0.05"],["ajuste","9g8h7i","taxa = 0.09"]]}]}],
+
+["ES","Estimativas","Pela distribuição beta do PERT, cuja média é (O + 4M + P) / 6, a duração esperada da atividade é de",
+["13 dias.","14 dias.","12 dias.","15 dias.","11 dias."],0,
+"(6 + 4×12 + 24) / 6 = (6 + 48 + 24) / 6 = 78 / 6 = 13 dias. A alternativa de 12 dias toma o valor mais provável como se fosse a esperada, o que ignora a assimetria: o pessimista está 12 dias acima do mais provável e o otimista apenas 6 abaixo, e é essa cauda mais longa que empurra a média para cima. A média aritmética simples dos três daria 14, que é o outro distrator.",null,
+ {"id":"es-0097","hab":"X","art":[{"t":"tabela","cap":"Estimativa por três pontos de uma atividade","cab":["Cenário","Duração (dias)"],"al":["","num"],"linhas":[["Otimista (O)","6"],["Mais provável (M)","12"],["Pessimista (P)","24"]]}]}],
+
+["ES","Testes","Considerando a cobertura de condição/decisão modificada (MC/DC) para o comando acima, o número mínimo de casos de teste necessários é",
+["2.","3.","4.","6.","8."],1,
+"MC/DC exige que cada condição isolada demonstre afetar o resultado, mantendo as demais fixas. Com (V,V) → libera, (F,V) → bloqueia e (V,F) → bloqueia, provam-se as duas condições em três casos. Dois casos cobririam decisão, mas não isolariam cada condição; quatro é o total de combinações, que é cobertura de condição múltipla e mais do que o MC/DC pede.","if (idade >= 18 && possuiDocumento) {\n    liberar();\n} else {\n    bloquear();\n}",
+ {"id":"es-0098","hab":"X"}],
+
+["ES","Qualidade","O custo total de correção dos defeitos encontrados em produção representa, do custo total de correção do projeto, aproximadamente",
+["10%.","25%.","42%.","56%.","7%."],3,
+"Produção: 10 × 10.000 = 100.000. Demais: 40×100 + 30×500 + 60×1.000 = 4.000 + 15.000 + 60.000 = 79.000. Total 179.000, e 100.000 / 179.000 ≈ 0,56, ou seja cerca de 56%. A alternativa de 10% usa a proporção de defeitos (10 de 140) em vez do custo, e é exatamente o erro que a tabela existe para desmontar: dez defeitos em produção custam mais que os cento e trinta anteriores somados.",null,
+ {"id":"es-0099","hab":"X","art":[{"t":"tabela","cap":"Defeitos encontrados por fase em um projeto","cab":["Fase","Defeitos","Custo médio de correção (R$)"],"al":["","num","num"],"linhas":[["Requisitos","40","100"],["Projeto","30","500"],["Codificação","60","1.000"],["Produção","10","10.000"]]}]}],
+
+["ES","Manutenção","A manutenção perfectiva representa, do total de horas de manutenção do semestre, aproximadamente",
+["21%.","30%.","43%.","53%.","62%."],3,
+"Total: 180 + 120 + 420 + 80 = 800 horas, e 420 / 800 = 0,525, ou seja cerca de 53%. O resultado é coerente com o que a literatura relata: a maior parte do esforço de manutenção não é conserto de defeito, e sim melhoria e evolução do que já funciona — o que costuma surpreender quem imagina manutenção como sinônimo de corrigir erro.",null,
+ {"id":"es-0100","hab":"X","art":[{"t":"tabela","cap":"Horas de manutenção por tipo em um semestre","cab":["Tipo","Horas"],"al":["","num"],"linhas":[["Corretiva","180"],["Adaptativa","120"],["Perfectiva","420"],["Preventiva","80"]]}]}],
+
+["ES","Ágil","Restando 150 pontos no backlog e mantida a velocidade média das quatro sprints, o número de sprints ainda necessárias é de aproximadamente",
+["3.","4.","6.","7.","5."],4,
+"Velocidade média: (26 + 31 + 28 + 35) / 4 = 120 / 4 = 30 pontos por sprint. Restando 150 pontos, 150 / 30 = 5 sprints. A alternativa de 4 usa a maior velocidade já alcançada, que é o erro de planejar pelo melhor caso — a média existe justamente porque a velocidade oscila, e projetar pelo pico produz compromisso que a equipe não cumpre.",null,
+ {"id":"es-0101","hab":"X","art":[{"t":"tabela","cap":"Velocidade da equipe nas últimas quatro sprints","cab":["Sprint","Pontos entregues"],"al":["","num"],"linhas":[["1","26"],["2","31"],["3","28"],["4","35"]]}]}],
+
+["ES","Riscos","Ordenando os riscos pelo valor monetário esperado, do maior para o menor, obtém-se",
+["A, B, C.","B, C, A.","C, A, B.","A, C, B.","B, A, C."],4,
+"Valor esperado é probabilidade vezes impacto: A dá 0,10 × 200.000 = 20.000; C dá 0,25 × 80.000 = 20.000; B dá 0,40 × 60.000 = 24.000. Logo B (24.000), depois A e C empatados em 20.000 — e a ordem A antes de C é a que respeita o maior impacto no desempate. Priorizar só pelo impacto poria A na frente, e só pela probabilidade poria B; é a combinação das duas que orienta, e o empate entre A e C mostra por quê.",null,
+ {"id":"es-0102","hab":"X","art":[{"t":"tabela","cap":"Riscos identificados e suas estimativas","cab":["Risco","Probabilidade","Impacto (R$)"],"al":["","num","num"],"linhas":[["A","0,10","200.000"],["B","0,40","60.000"],["C","0,25","80.000"]]}]}],
+
+["ES","Requisitos","Uma equipe desenvolve um sistema de agendamento para uma rede de clínicas. Durante a homologação, a coordenadora de enfermagem afirma que o sistema precisa impedir o agendamento de dois procedimentos no mesmo horário para o mesmo profissional. O documento de requisitos aprovado seis meses antes não menciona essa restrição, e a arquitetura já implementada permite agendamentos simultâneos por depender de uma fila assíncrona sem verificação de conflito. Faltam três semanas para a entrada em produção, e o contrato prevê multa por atraso. A equipe precisa decidir como proceder.\nA conduta mais adequada é",
+["implementar a mudança imediatamente, sem registro formal, para não comprometer o prazo contratado.","recusar a solicitação, uma vez que a restrição não constava do documento de requisitos aprovado.","registrar a solicitação como mudança, avaliar o impacto sobre arquitetura, prazo e custo, e submeter a decisão ao patrocinador do projeto.","entrar em produção como está e tratar os conflitos manualmente, sem informar o cliente.","reiniciar o levantamento de requisitos do zero, já que o documento aprovado se mostrou incompleto."],2,
+"A restrição é um requisito legítimo, e provavelmente crítico em contexto clínico — recusá-la por não constar do documento seria cumprir o contrato e entregar um sistema que agenda dois procedimentos ao mesmo tempo para o mesmo profissional. Implementá-la sem registro é o extremo oposto: some o rastro do impacto sobre prazo e a multa fica sem justificativa. O caminho é o controle de mudanças, que existe para que a decisão de trocar prazo por qualidade seja tomada por quem responde por ela. Reiniciar tudo é desproporcional a uma omissão pontual.",null,
+ {"id":"es-0103","hab":"E"}],
+
+["ES","Testes","Um sistema de folha de pagamento em produção há quatro anos não possui testes automatizados. A equipe recebeu a tarefa de alterar o cálculo de horas extras, que está distribuído por três classes com 1.200 linhas no total, sem separação clara entre regra de negócio e acesso a dados. Alterações anteriores nesse trecho provocaram defeitos em produção duas vezes no último ano. O prazo é de duas semanas e não há orçamento para reescrever o módulo.\nA estratégia mais adequada é",
+["reescrever o módulo inteiro com arquitetura limpa antes de tocar na regra de horas extras.","alterar diretamente o cálculo e ampliar a bateria de testes manuais na homologação.","adiar a alteração até que haja orçamento para a reescrita completa do módulo.","escrever testes de caracterização que fixem o comportamento atual do cálculo, alterar em seguida e usar esses testes como rede de proteção.","isolar o módulo atrás de uma nova interface, sem escrever testes, e sinalizar o trecho como legado."],3,
+"Teste de caracterização — capturar o que o código faz hoje, sem julgar se é o que deveria fazer — é a técnica canônica para mexer em código legado sem cobertura: primeiro a rede, depois o salto. Reescrever antes de ter testes é trocar um risco conhecido por um maior, sem meio de saber se o comportamento foi preservado. Confiar em teste manual é repetir o que já falhou duas vezes. E adiar não é opção quando a regra de negócio mudou.",null,
+ {"id":"es-0104","hab":"E"}],
+
+["ES","Processo","Uma equipe de seis pessoas mantém um produto com entregas quinzenais. As últimas quatro entregas atrasaram, e a retrospectiva apontou sempre a mesma causa: itens começados que ficam parados aguardando revisão de código, às vezes por três dias. O quadro de tarefas mostra, em média, onze itens simultaneamente em andamento. A equipe já tenta trabalhar mais rápido e faz horas extras.\nA intervenção mais promissora é",
+["contratar mais duas pessoas, para aumentar a capacidade de revisão da equipe.","eliminar a etapa de revisão de código, que é o gargalo identificado no fluxo.","aumentar a duração da iteração de duas para quatro semanas, para acomodar o tempo de revisão.","estabelecer prioridade de revisão sobre início de tarefa nova, para que o trabalho pare de se acumular.","limitar o trabalho em andamento, de modo que a equipe termine o que começou antes de puxar item novo."],4,
+"Onze itens em andamento para seis pessoas significa que quase todo mundo tem duas frentes, e a fila de revisão é consequência disso, não causa. Limitar o trabalho em andamento é a intervenção que ataca o mecanismo: com menos itens abertos, revisar deixa de competir com começar. Priorizar revisão ajuda e é meio caminho, mas sem limite o acúmulo volta. Contratar aumenta a vazão e também o número de itens abertos; eliminar a revisão troca atraso por defeito; e alongar a iteração esconde o problema em vez de resolvê-lo.",null,
+ {"id":"es-0105","hab":"E"}]
+
 ]);

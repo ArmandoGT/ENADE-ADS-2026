@@ -337,6 +337,39 @@ function auditar() {
     deficit, "0", deficit === 0, "",
     excedente + " questões de excedente disponíveis para conversão");
 
+  /* ---- 4b-bis. a habilidade declarada bate com a estrutura? ------------------ */
+  /* Sem isto, a meta de estoque por célula se fecha sozinha: bastaria rotular como
+     "julgamento de itens" uma questão que continua sendo definição a completar, e o
+     número ficaria verde sem que uma única questão tivesse melhorado. O rótulo tem de
+     custar alguma coisa.
+
+     A verificação é de forma, não de mérito — só o que dá para checar sem ler:
+     asserção-razão precisa das duas proposições e do PORQUE; julgamento de itens
+     precisa da lista em algarismo romano; interpretação precisa de artefato; estudo
+     de caso precisa de enunciado longo o bastante para haver caso. */
+  var VERIFICA_HAB = {
+    A: { teste: function (q) { return /\bPORQUE\b/.test(q[2]); },
+         exige: "as duas proposições e o conectivo PORQUE no enunciado" },
+    J: { teste: function (q) { return /(^|\n)\s*I{1,3}V?\.\s/.test(q[2]); },
+         exige: "a lista de afirmativas em algarismo romano" },
+    I: { teste: function (q) { var m = meta(q); return !!(q[6] || (m && m.art)); },
+         exige: "um artefato para interpretar (código, tabela, gráfico, UML ou ER)" },
+    E: { teste: function (q) { return q[2].length >= 400; },
+         exige: "enunciado de 400 caracteres ou mais, para haver caso" }
+  };
+  var rotuloFrouxo = [];
+  B.forEach(function (q, i) {
+    var h = habilidadeDe(q);
+    var v = VERIFICA_HAB[h];
+    if (v && !v.teste(q)) {
+      rotuloFrouxo.push((meta(q) || {}).id + " diz \"" + h + "\" mas não tem " + v.exige);
+    }
+  });
+  meta_("habilidade-estrutura", "Habilidades declaradas sem a estrutura correspondente",
+    rotuloFrouxo.length, "0", rotuloFrouxo.length === 0, "",
+    "o rótulo tem de custar alguma coisa, senão a meta de estoque se fecha sozinha");
+  achados.rotuloFrouxo = rotuloFrouxo;
+
   /* ---- 4d. o sorteio, medido de verdade ------------------------------------- */
   /* As metas acima medem o banco. Esta mede o que a pessoa recebe: sorteia provas de
      verdade, com o mesmo código que roda no navegador, e compara a composição obtida

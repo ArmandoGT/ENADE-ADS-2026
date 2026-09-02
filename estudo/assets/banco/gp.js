@@ -3,13 +3,13 @@
 (window.BANCO_IA = window.BANCO_IA || []).push(...[
 
 ["GP","Caminho crítico","Considere a tabela de atividades abaixo. A duração mínima do projeto é",
-["12 dias","14 dias","16 dias","18 dias","20 dias"],2,
+["16 dias","14 dias","12 dias","18 dias","20 dias"],0,
 "Há dois caminhos: A→B→D = 4+6+3 = 13 e A→C→D = 4+9+3 = 16. O caminho crítico é o mais longo, logo o projeto não pode terminar antes de 16 dias. Atrasar C atrasa o projeto; atrasar B tem 3 dias de folga.",
 "Atividade | Duração | Predecessora\n    A     |  4 dias |     —\n    B     |  6 dias |     A\n    C     |  9 dias |     A\n    D     |  3 dias |   B e C",
  {id:"gp-0001",hab:"I"}],
 
 ["GP","Caminho crítico","A folga total de uma atividade que pertence ao caminho crítico é",
-["igual à sua duração.","zero.","igual à duração do projeto.","sempre maior que zero.","indefinida."],1,
+["igual à sua duração.","indefinida.","igual à duração do projeto.","sempre maior que zero.","zero."],4,
 "Folga zero é a definição operacional do caminho crítico: qualquer atraso ali propaga-se integralmente para o término do projeto.",null,
  {id:"gp-0002",hab:"C"}],
 
@@ -20,32 +20,32 @@
  {id:"gp-0003",hab:"I"}],
 
 ["GP","EAP","A Estrutura Analítica do Projeto (EAP/WBS) decompõe o projeto em",
-["fases cronológicas sucessivas, do início ao encerramento formal do projeto.","entregas e pacotes de trabalho, do maior para o menor nível de detalhe.","atividades agrupadas pelo responsável por sua execução dentro da equipe.","riscos identificados e as respostas planejadas para cada um deles.","custos previstos, distribuídos pelos centros contábeis da organização."],1,
+["fases cronológicas sucessivas, do início ao encerramento formal do projeto.","atividades agrupadas pelo responsável por sua execução dentro da equipe.","entregas e pacotes de trabalho, do maior para o menor nível de detalhe.","riscos identificados e as respostas planejadas para cada um deles.","custos previstos, distribuídos pelos centros contábeis da organização."],2,
 "A EAP é orientada a ENTREGAS, não a atividades nem ao tempo. O menor nível é o pacote de trabalho, base para estimar custo e prazo.",null,
  {id:"gp-0004",hab:"C"}],
 
 ["GP","EAP","A regra dos 100% aplicada à EAP estabelece que",
-["cada pacote de trabalho da estrutura deve consumir no máximo cem horas de esforço da equipe alocada ao projeto.","a soma dos elementos de um nível deve representar a totalidade do escopo do elemento superior, sem faltas nem excessos.","o projeto só pode ser encerrado quando a totalidade das atividades previstas estiver concluída e formalmente aceita pelo cliente.","cada entrega prevista na estrutura deve atingir 100% de conformidade com os critérios de qualidade acordados.","a estrutura deve conter no máximo cem elementos, para que continue legível e gerenciável pela equipe do projeto."],1,
+["cada pacote de trabalho da estrutura deve consumir no máximo cem horas de esforço da equipe alocada ao projeto.","o projeto só pode ser encerrado quando a totalidade das atividades previstas estiver concluída e formalmente aceita pelo cliente.","a soma dos elementos de um nível deve representar a totalidade do escopo do elemento superior, sem faltas nem excessos.","cada entrega prevista na estrutura deve atingir 100% de conformidade com os critérios de qualidade acordados.","a estrutura deve conter no máximo cem elementos, para que continue legível e gerenciável pela equipe do projeto."],2,
 "Se algo não está na EAP, não está no escopo. E nada pode aparecer num nível inferior que não decorra do superior — é o que garante a consistência da decomposição.",null,
  {id:"gp-0005",hab:"C"}],
 
 ["GP","PMBOK","A área de conhecimento responsável por identificar as partes interessadas e gerenciar seu engajamento é",
-["gerenciamento do escopo.","gerenciamento das partes interessadas.","gerenciamento das comunicações.","gerenciamento dos recursos.","gerenciamento da qualidade."],1,
+["gerenciamento das partes interessadas.","gerenciamento do escopo.","gerenciamento das comunicações.","gerenciamento dos recursos.","gerenciamento da qualidade."],0,
 "Identificar, analisar e engajar stakeholders é área própria. Comunicações trata do fluxo de informação; as duas se apoiam, mas não se confundem.",null,
  {id:"gp-0006",hab:"C"}],
 
 ["GP","PMBOK","O termo de abertura do projeto (project charter) tem por função",
-["detalhar o cronograma das atividades e a alocação dos recursos previstos.","autorizar formalmente o projeto e conferir ao gerente autoridade para aplicar recursos.","registrar as lições aprendidas ao longo da execução para uso futuro.","definir os critérios de aceitação de cada entrega acordada com o cliente.","estabelecer o orçamento detalhado por pacote de trabalho da estrutura."],1,
+["autorizar formalmente o projeto e conferir ao gerente autoridade para aplicar recursos.","detalhar o cronograma das atividades e a alocação dos recursos previstos.","registrar as lições aprendidas ao longo da execução para uso futuro.","definir os critérios de aceitação de cada entrega acordada com o cliente.","estabelecer o orçamento detalhado por pacote de trabalho da estrutura."],0,
 "É o documento de autorização, emitido pelo patrocinador. Cronograma e orçamento detalhados vêm depois, no planejamento.",null,
  {id:"gp-0007",hab:"C"}],
 
 ["GP","PMBOK","Na gestão do escopo, o fenômeno conhecido como scope creep refere-se a",
-["redução deliberada do escopo por decisão formal do patrocinador do projeto.","crescimento não controlado do escopo, sem ajuste correspondente de prazo, custo e recursos.","divisão do escopo já aprovado em pacotes de trabalho dentro da estrutura analítica do projeto.","validação do escopo entregue pelo cliente ao término de cada fase do projeto.","documentação do escopo preliminar no termo de abertura assinado no início."],1,
+["crescimento não controlado do escopo, sem ajuste correspondente de prazo, custo e recursos.","redução deliberada do escopo por decisão formal do patrocinador do projeto.","divisão do escopo já aprovado em pacotes de trabalho dentro da estrutura analítica do projeto.","validação do escopo entregue pelo cliente ao término de cada fase do projeto.","documentação do escopo preliminar no termo de abertura assinado no início."],0,
 "O problema não é mudar — é mudar sem passar pelo controle integrado de mudanças. Cada acréscimo “pequeno” não negociado corrói prazo e orçamento.",null,
  {id:"gp-0008",hab:"C"}],
 
 ["GP","Estimativas","Na estimativa de três pontos PERT, a duração esperada é calculada por",
-["(otimista + pessimista) / 2, média simples entre os dois extremos","(otimista + 4 × mais provável + pessimista) / 6","(otimista + mais provável + pessimista) / 3","mais provável × 1,5, aplicando margem fixa de contingência","pessimista − otimista, amplitude entre os cenários extremos"],1,
+["(otimista + 4 × mais provável + pessimista) / 6","(otimista + pessimista) / 2, média simples entre os dois extremos","(otimista + mais provável + pessimista) / 3","mais provável × 1,5, aplicando margem fixa de contingência","pessimista − otimista, amplitude entre os cenários extremos"],0,
 "A média ponderada dá peso 4 ao valor mais provável, suavizando os extremos. A média simples dos três valores é a estimativa triangular, fórmula diferente.",null,
  {id:"gp-0009",hab:"C"}],
 
@@ -60,17 +60,17 @@
  {id:"gp-0011",hab:"C"}],
 
 ["GP","Riscos","Um risco identificado com alta probabilidade e alto impacto deve ser tratado prioritariamente com estratégia de",
-["aceitação passiva, com registro no plano e acompanhamento periódico.","mitigação ou eliminação, reduzindo probabilidade ou impacto.","transferência a terceiro por meio de apólice de seguro específica.","escalonamento ao patrocinador, por exceder a alçada do gerente.","registro no relatório final, para servir de lição aprendida."],1,
+["mitigação ou eliminação, reduzindo probabilidade ou impacto.","aceitação passiva, com registro no plano e acompanhamento periódico.","transferência a terceiro por meio de apólice de seguro específica.","escalonamento ao patrocinador, por exceder a alçada do gerente.","registro no relatório final, para servir de lição aprendida."],0,
 "Alta exposição exige ação. Aceitação passiva reserva-se a riscos de baixa exposição; transferência é uma opção, mas não a única, e raramente elimina o impacto reputacional.",null,
  {id:"gp-0012",hab:"C"}],
 
 ["GP","Riscos","No registro de riscos, um risco de oportunidade (positivo) pode ser tratado com a estratégia de",
-["mitigar, reduzindo a probabilidade de que o evento venha efetivamente a ocorrer.","explorar, aumentando a probabilidade de que se concretize.","evitar, alterando o plano do projeto para que o evento deixe de ser possível.","transferir a um terceiro, por meio de contrato de seguro ou de terceirização.","aceitar de forma passiva, sem qualquer ação preventiva ou reserva de contingência."],1,
+["explorar, aumentando a probabilidade de que se concretize.","mitigar, reduzindo a probabilidade de que o evento venha efetivamente a ocorrer.","evitar, alterando o plano do projeto para que o evento deixe de ser possível.","transferir a um terceiro, por meio de contrato de seguro ou de terceirização.","aceitar de forma passiva, sem qualquer ação preventiva ou reserva de contingência."],0,
 "Riscos positivos têm estratégias próprias: explorar, melhorar, compartilhar e aceitar. Mitigar e evitar aplicam-se apenas a riscos negativos.",null,
  {id:"gp-0013",hab:"C"}],
 
 ["GP","Gestão de equipes","Segundo o modelo de Tuckman, a fase em que os conflitos entre membros da equipe emergem é a de",
-["formação (forming).","tormenta (storming).","normatização (norming).","desempenho (performing).","dissolução (adjourning)."],1,
+["formação (forming).","desempenho (performing).","normatização (norming).","tormenta (storming).","dissolução (adjourning)."],3,
 "Storming é a fase do atrito, quando papéis e liderança são disputados. Atravessá-la — e não evitá-la — é o que leva à normatização e ao desempenho.",null,
  {id:"gp-0014",hab:"C"}],
 
@@ -80,37 +80,37 @@
  {id:"gp-0015",hab:"C"}],
 
 ["GP","Empreendedorismo","No Business Model Canvas, o bloco “Proposta de Valor” responde à pergunta",
-["quanto custa operar o negócio e como os custos se distribuem?","que problema do cliente resolvemos e por que ele nos escolheria?","quais parceiros são indispensáveis para viabilizar a operação?","por quais canais o produto chega até o cliente e é comunicado?","quais recursos e capacidades são necessários para entregar?"],1,
+["quanto custa operar o negócio e como os custos se distribuem?","quais parceiros são indispensáveis para viabilizar a operação?","que problema do cliente resolvemos e por que ele nos escolheria?","por quais canais o produto chega até o cliente e é comunicado?","quais recursos e capacidades são necessários para entregar?"],2,
 "A proposta de valor é o centro do quadro, ao qual todos os outros oito blocos se conectam. Confundi-la com descrição do produto é o erro mais comum.",null,
  {id:"gp-0016",hab:"C"}],
 
 ["GP","Empreendedorismo","O Business Model Canvas é composto por",
-["quatro blocos.","sete blocos.","nove blocos.","doze blocos.","quinze blocos."],2,
+["quatro blocos.","sete blocos.","doze blocos.","nove blocos.","quinze blocos."],3,
 "São nove: segmentos de clientes, proposta de valor, canais, relacionamento, fontes de receita, recursos-chave, atividades-chave, parcerias-chave e estrutura de custos.",null,
  {id:"gp-0017",hab:"C"}],
 
 ["GP","Empreendedorismo","Um Produto Mínimo Viável (MVP) caracteriza-se por",
-["ser a versão final do produto com todas as funcionalidades.","ser a menor versão capaz de gerar aprendizado validado sobre a hipótese de negócio.","ser um protótipo descartável, construído sem qualquer contato com usuários.","prescindir de métricas de acompanhamento, por ser uma versão exploratória.","exigir o investimento máximo previsto antes do primeiro lançamento."],1,
+["ser a versão final do produto com todas as funcionalidades.","exigir o investimento máximo previsto antes do primeiro lançamento.","ser um protótipo descartável, construído sem qualquer contato com usuários.","prescindir de métricas de acompanhamento, por ser uma versão exploratória.","ser a menor versão capaz de gerar aprendizado validado sobre a hipótese de negócio."],4,
 "O objetivo do MVP é APRENDER, não entregar. Ele existe para testar a hipótese mais arriscada com o menor esforço, antes que se invista em construir o produto completo.",null,
  {id:"gp-0018",hab:"C"}],
 
 ["GP","Empreendedorismo","O conceito de pivô (pivot), no vocabulário de startups, significa",
-["encerrar as operações da empresa assim que a hipótese inicial do negócio se mostra falsa.","mudar de forma estruturada um elemento central do modelo de negócio, mantendo o aprendizado acumulado.","ampliar o investimento em marketing para sustentar o modelo já validado.","admitir novos sócios que tragam capital e experiência de mercado.","registrar a marca e a identidade visual da empresa antes do lançamento comercial do produto no mercado."],1,
+["encerrar as operações da empresa assim que a hipótese inicial do negócio se mostra falsa.","admitir novos sócios que tragam capital e experiência de mercado.","ampliar o investimento em marketing para sustentar o modelo já validado.","mudar de forma estruturada um elemento central do modelo de negócio, mantendo o aprendizado acumulado.","registrar a marca e a identidade visual da empresa antes do lançamento comercial do produto no mercado."],3,
 "Pivô é correção de rota fundamentada em evidência, não desistência nem mudança aleatória. Preserva-se o aprendizado e altera-se a hipótese que se mostrou falsa.",null,
  {id:"gp-0019",hab:"C"}],
 
 ["GP","Empreendedorismo","O plano de negócios distingue-se do Canvas principalmente por",
-["ser mais curto e visual, cabendo em uma única página e dispensando qualquer detalhamento financeiro.","ser um documento detalhado, com projeções financeiras e análise de mercado, adequado à captação de recursos.","não incluir análise de concorrência, que é considerada informação estratégica e por isso mantida sigilosa.","ser exclusivo de empresas de base tecnológica, cujo modelo de negócio exige projeções de crescimento acelerado.","dispensar a definição do público-alvo, que só é exigida em documentos apresentados a investidores externos."],1,
+["ser mais curto e visual, cabendo em uma única página e dispensando qualquer detalhamento financeiro.","não incluir análise de concorrência, que é considerada informação estratégica e por isso mantida sigilosa.","ser um documento detalhado, com projeções financeiras e análise de mercado, adequado à captação de recursos.","ser exclusivo de empresas de base tecnológica, cujo modelo de negócio exige projeções de crescimento acelerado.","dispensar a definição do público-alvo, que só é exigida em documentos apresentados a investidores externos."],2,
 "Canvas é ferramenta de visualização e hipótese, de uma página. O plano de negócios é o documento formal e detalhado, exigido por bancos, investidores e editais.",null,
  {id:"gp-0020",hab:"C"}],
 
 ["GP","Governança","O escritório de projetos (PMO) tem como função típica",
-["executar tecnicamente todos os projetos da organização, assumindo as entregas no lugar das áreas.","padronizar práticas, apoiar as equipes e consolidar informações de portfólio para a alta gestão.","substituir os gerentes de projeto na condução técnica das entregas sob responsabilidade da área.","aprovar os orçamentos financeiros dos projetos e das demais áreas da empresa.","realizar a contratação e o desligamento do pessoal alocado aos projetos da organização."],1,
+["padronizar práticas, apoiar as equipes e consolidar informações de portfólio para a alta gestão.","executar tecnicamente todos os projetos da organização, assumindo as entregas no lugar das áreas.","substituir os gerentes de projeto na condução técnica das entregas sob responsabilidade da área.","aprovar os orçamentos financeiros dos projetos e das demais áreas da empresa.","realizar a contratação e o desligamento do pessoal alocado aos projetos da organização."],0,
 "O PMO pode ser de suporte, de controle ou diretivo, mas sua função central é padronização e visão consolidada do portfólio — não a execução técnica.",null,
  {id:"gp-0021",hab:"C"}],
 
 ["GP","Métodos","A principal diferença entre gerenciamento de projetos preditivo e adaptativo é que, no adaptativo,",
-["o planejamento é feito uma única vez, no início, e não sofre revisões posteriores.","o escopo é elaborado progressivamente, e prazo e custo tendem a ser fixados.","o custo total tende a ser menor, pois há menos documentação formal a produzir.","os indicadores quantitativos são substituídos por avaliações qualitativas da equipe.","a participação do cliente se limita à aprovação formal das entregas contratadas."],1,
+["o planejamento é feito uma única vez, no início, e não sofre revisões posteriores.","o custo total tende a ser menor, pois há menos documentação formal a produzir.","o escopo é elaborado progressivamente, e prazo e custo tendem a ser fixados.","os indicadores quantitativos são substituídos por avaliações qualitativas da equipe.","a participação do cliente se limita à aprovação formal das entregas contratadas."],2,
 "É a inversão do triângulo: no preditivo fixa-se o escopo e variam prazo e custo; no adaptativo fixam-se prazo e custo (a iteração) e o escopo é a variável negociada.",null,
  {id:"gp-0022",hab:"C"}],
 ["GP","Empreendedorismo","No Business Model Canvas, o bloco proposta de valor descreve",
@@ -119,22 +119,22 @@
  {id:"gp-0023",hab:"C"}],
 
 ["GP","Empreendedorismo","Uma startup desenvolve durante dezoito meses um produto completo antes de apresentá-lo ao mercado, e descobre no lançamento que o problema atacado não era relevante para o público. O conceito que orienta a prática oposta é",
-["a análise de viabilidade econômica, que projeta o retorno do investimento antes do início do desenvolvimento.","o produto mínimo viável, que busca validar a hipótese central do negócio com o menor esforço de construção possível.","o planejamento estratégico de longo prazo, que define metas e marcos para os primeiros anos de operação.","a pesquisa de mercado quantitativa, que dimensiona o tamanho do público potencial antes de qualquer investimento.","a proteção da propriedade intelectual, que garante exclusividade sobre a solução desenvolvida pela empresa."],1,
+["a análise de viabilidade econômica, que projeta o retorno do investimento antes do início do desenvolvimento.","o planejamento estratégico de longo prazo, que define metas e marcos para os primeiros anos de operação.","o produto mínimo viável, que busca validar a hipótese central do negócio com o menor esforço de construção possível.","a pesquisa de mercado quantitativa, que dimensiona o tamanho do público potencial antes de qualquer investimento.","a proteção da propriedade intelectual, que garante exclusividade sobre a solução desenvolvida pela empresa."],2,
 "O MVP não é uma versão capenga do produto: é o menor experimento que responde à pergunta mais arriscada. Dezoito meses de construção só adiaram a descoberta que uma semana de conversa poderia ter antecipado.",null,
  {id:"gp-0024",hab:"C"}],
 
 ["GP","Empreendedorismo","O termo pivotar, no vocabulário de startups, designa",
-["a substituição da equipe fundadora por gestores profissionais contratados no mercado após a entrada de investidores.","a mudança de rumo em um elemento central do modelo de negócio, mantendo o aprendizado já acumulado.","a captação de recursos junto a investidores em troca de participação societária na empresa recém-criada.","a expansão da operação para novos mercados geográficos após a consolidação no mercado de origem.","o encerramento das atividades e a devolução do capital remanescente aos investidores da empresa."],1,
+["a substituição da equipe fundadora por gestores profissionais contratados no mercado após a entrada de investidores.","a captação de recursos junto a investidores em troca de participação societária na empresa recém-criada.","a mudança de rumo em um elemento central do modelo de negócio, mantendo o aprendizado já acumulado.","a expansão da operação para novos mercados geográficos após a consolidação no mercado de origem.","o encerramento das atividades e a devolução do capital remanescente aos investidores da empresa."],2,
 "Pivotar é trocar uma hipótese, não recomeçar do zero: mantém-se o que se aprendeu sobre o cliente e muda-se o segmento, o canal ou o problema atacado. Trocar tudo ao mesmo tempo não é pivô, é outra empresa.",null,
  {id:"gp-0025",hab:"C"}],
 
 ["GP","Empreendedorismo","Uma empresa de software adota modelo de receita por assinatura em vez de venda de licença perpétua. A principal implicação dessa escolha é",
-["o aumento imediato da receita, já que o valor total do contrato é reconhecido no momento da assinatura.","a receita passa a depender da retenção contínua do cliente, o que desloca o esforço da venda para o uso recorrente.","a redução dos custos de suporte, uma vez que o cliente assume a manutenção da versão instalada em seu ambiente.","a eliminação da necessidade de atualizações, pois o cliente permanece na versão contratada durante toda a vigência.","a impossibilidade de atender clientes corporativos, que exigem contratos com prazo determinado e valor fechado."],1,
+["o aumento imediato da receita, já que o valor total do contrato é reconhecido no momento da assinatura.","a redução dos custos de suporte, uma vez que o cliente assume a manutenção da versão instalada em seu ambiente.","a receita passa a depender da retenção contínua do cliente, o que desloca o esforço da venda para o uso recorrente.","a eliminação da necessidade de atualizações, pois o cliente permanece na versão contratada durante toda a vigência.","a impossibilidade de atender clientes corporativos, que exigem contratos com prazo determinado e valor fechado."],2,
 "Na licença perpétua o dinheiro entra uma vez e a relação praticamente termina ali. Na assinatura, o cliente decide de novo todo mês — e é por isso que o cancelamento vira a métrica que mais importa.",null,
  {id:"gp-0026",hab:"C"}],
 
 ["GP","Empreendedorismo","Ao avaliar a oportunidade de um novo produto digital, a análise do mercado endereçável serve para",
-["definir o preço de venda do produto com base nos valores praticados pelos concorrentes já estabelecidos no setor.","dimensionar o tamanho do público que efetivamente pode ser alcançado, evitando decisões apoiadas em números irreais.","identificar as funcionalidades que os concorrentes oferecem e que precisam constar da primeira versão do produto.","estimar o prazo necessário para o desenvolvimento completo da solução até a sua disponibilização ao mercado.","selecionar a tecnologia mais adequada às características do público que será atendido pelo produto proposto."],1,
+["dimensionar o tamanho do público que efetivamente pode ser alcançado, evitando decisões apoiadas em números irreais.","definir o preço de venda do produto com base nos valores praticados pelos concorrentes já estabelecidos no setor.","identificar as funcionalidades que os concorrentes oferecem e que precisam constar da primeira versão do produto.","estimar o prazo necessário para o desenvolvimento completo da solução até a sua disponibilização ao mercado.","selecionar a tecnologia mais adequada às características do público que será atendido pelo produto proposto."],0,
 "O erro clássico é multiplicar a população do país por um ticket e chamar isso de mercado. O que interessa é a parcela que o negócio consegue alcançar com o canal e o preço que realmente pratica.",null,
  {id:"gp-0027",hab:"C"}],
 

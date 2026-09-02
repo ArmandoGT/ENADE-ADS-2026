@@ -8,7 +8,7 @@
  {id:"ot-0001",hab:"C"}],
 
 ["OT","Arquitetura de computadores","A memória cache existe para",
-["substituir permanentemente a memória principal, que passa a guardar apenas os dados de acesso menos frequente do sistema.","reduzir o tempo médio de acesso, guardando os dados mais recentemente ou frequentemente usados perto do processador.","armazenar dados de forma persistente mesmo após o desligamento da máquina, preservando o estado corrente do sistema.","aumentar a capacidade total de armazenamento disponível para os processos em execução.","controlar o barramento de endereços, arbitrando o acesso simultâneo de vários dispositivos."],1,
+["substituir permanentemente a memória principal, que passa a guardar apenas os dados de acesso menos frequente do sistema.","armazenar dados de forma persistente mesmo após o desligamento da máquina, preservando o estado corrente do sistema.","reduzir o tempo médio de acesso, guardando os dados mais recentemente ou frequentemente usados perto do processador.","aumentar a capacidade total de armazenamento disponível para os processos em execução.","controlar o barramento de endereços, arbitrando o acesso simultâneo de vários dispositivos."],2,
 "A cache explora localidade temporal e espacial. Ela é pequena e cara por byte; sua função é diminuir a latência média, não ampliar a capacidade.",null,
  {id:"ot-0002",hab:"C"}],
 
@@ -19,12 +19,12 @@
  {id:"ot-0003",hab:"I"}],
 
 ["OT","Inteligência artificial","No aprendizado de máquina, o overfitting ocorre quando o modelo",
-["não consegue aprender os padrões nem sobre os próprios dados de treinamento.","ajusta-se em excesso aos dados de treino, incluindo o ruído, e generaliza mal para dados novos.","usa poucos parâmetros para representar o fenômeno, o que o impede de capturar padrões relevantes.","é treinado com um volume de dados muito superior ao necessário para aquela tarefa.","não possui função de custo definida para orientar o ajuste dos parâmetros."],1,
+["não consegue aprender os padrões nem sobre os próprios dados de treinamento.","é treinado com um volume de dados muito superior ao necessário para aquela tarefa.","usa poucos parâmetros para representar o fenômeno, o que o impede de capturar padrões relevantes.","ajusta-se em excesso aos dados de treino, incluindo o ruído, e generaliza mal para dados novos.","não possui função de custo definida para orientar o ajuste dos parâmetros."],3,
 "Sinal típico: acurácia alta no treino e baixa na validação. Combate-se com mais dados, regularização, validação cruzada ou modelos menos complexos. O oposto é o underfitting.",null,
  {id:"ot-0004",hab:"C"}],
 
 ["OT","Inteligência artificial","A diferença entre aprendizado supervisionado e não supervisionado é que, no supervisionado,",
-["não há dados de treinamento, sendo o modelo construído por regras manuais.","os dados de treinamento vêm rotulados com a resposta esperada.","o modelo aprende sem função objetivo definida, por tentativa e erro puro.","não é possível realizar classificação, apenas agrupamento por similaridade.","o resultado é sempre determinístico, independente da inicialização."],1,
+["não há dados de treinamento, sendo o modelo construído por regras manuais.","o modelo aprende sem função objetivo definida, por tentativa e erro puro.","os dados de treinamento vêm rotulados com a resposta esperada.","não é possível realizar classificação, apenas agrupamento por similaridade.","o resultado é sempre determinístico, independente da inicialização."],2,
 "Supervisionado aprende de exemplos rotulados (classificação e regressão). Não supervisionado busca estrutura em dados sem rótulo — agrupamento e redução de dimensionalidade são os casos típicos.",null,
  {id:"ot-0005",hab:"C"}],
 /* ---------- arquitetura e organização de computadores (10) ---------- */
@@ -34,17 +34,17 @@
  {id:"ot-0006",hab:"C"}],
 
 ["OT","Memória e cache","Um programa percorre uma matriz de inteiros somando seus elementos. A versão que varre a matriz linha a linha executa mais rápido que a versão que varre coluna a coluna, embora ambas façam o mesmo número de somas. A explicação está",
-["no compilador, que otimiza laços com incremento crescente e ignora os de ordem decrescente na geração do código.","na localidade espacial: em memória a matriz é contígua por linha, e cada falta de cache traz também os vizinhos que serão usados em seguida.","na quantidade de instruções executadas, já que percorrer a matriz por coluna exige mais operações aritméticas para calcular cada índice acessado.","no sistema operacional, que concede prioridade de escalonamento aos processos com padrão de acesso sequencial à memória.","no tamanho do tipo inteiro, que ocupa mais espaço quando os elementos são lidos fora da ordem de armazenamento."],1,
+["no compilador, que otimiza laços com incremento crescente e ignora os de ordem decrescente na geração do código.","na quantidade de instruções executadas, já que percorrer a matriz por coluna exige mais operações aritméticas para calcular cada índice acessado.","na localidade espacial: em memória a matriz é contígua por linha, e cada falta de cache traz também os vizinhos que serão usados em seguida.","no sistema operacional, que concede prioridade de escalonamento aos processos com padrão de acesso sequencial à memória.","no tamanho do tipo inteiro, que ocupa mais espaço quando os elementos são lidos fora da ordem de armazenamento."],2,
 "Mesmo número de somas, número muito diferente de faltas de cache. A linha de cache traz um bloco inteiro; varrendo por linha, os próximos elementos já vêm junto. Por coluna, cada acesso pula um trecho e desperdiça o bloco.",null,
  {id:"ot-0007",hab:"C"}],
 
 ["OT","Representação de dados","Em complemento de dois com 8 bits, a faixa de valores inteiros representáveis é",
-["de 0 a 255, pois cada um dos oito bits contribui com uma potência de dois para o valor final armazenado.","de -128 a 127.","de -127 a 127, com duas representações distintas para o valor zero, uma positiva e outra negativa.","de -255 a 255, já que o bit mais significativo apenas indica o sinal e os demais indicam a magnitude.","de 0 a 128, metade da faixa sendo reservada para o registro de valores negativos em outra área."],1,
+["de 0 a 255, pois cada um dos oito bits contribui com uma potência de dois para o valor final armazenado.","de -127 a 127, com duas representações distintas para o valor zero, uma positiva e outra negativa.","de -128 a 127.","de -255 a 255, já que o bit mais significativo apenas indica o sinal e os demais indicam a magnitude.","de 0 a 128, metade da faixa sendo reservada para o registro de valores negativos em outra área."],2,
 "São 256 combinações, distribuídas de forma assimétrica: metade para negativos, e a metade positiva perde uma posição para o zero. Complemento de dois tem representação única do zero, e é justamente essa a vantagem sobre sinal-magnitude.",null,
  {id:"ot-0008",hab:"C"}],
 
 ["OT","Representação de dados","Em um sistema financeiro, a soma de 0,1 com 0,2 armazenados em ponto flutuante não resulta exatamente em 0,3. Esse comportamento decorre de",
-["erro de implementação da biblioteca matemática da linguagem, corrigível com atualização do compilador utilizado.","impossibilidade de representar exatamente essas frações em base dois, o que introduz aproximação já no armazenamento.","perda de precisão que ocorre apenas na exibição do valor, permanecendo o número correto na memória do processo.","arredondamento aplicado pelo processador ao converter o resultado para a base decimal antes de devolvê-lo ao programa.","excesso de casas decimais no resultado, que ultrapassa o limite suportado pelo tipo de dado escolhido."],1,
+["impossibilidade de representar exatamente essas frações em base dois, o que introduz aproximação já no armazenamento.","erro de implementação da biblioteca matemática da linguagem, corrigível com atualização do compilador utilizado.","perda de precisão que ocorre apenas na exibição do valor, permanecendo o número correto na memória do processo.","arredondamento aplicado pelo processador ao converter o resultado para a base decimal antes de devolvê-lo ao programa.","excesso de casas decimais no resultado, que ultrapassa o limite suportado pelo tipo de dado escolhido."],0,
 "0,1 em binário é dízima periódica, como 1/3 em decimal. O erro nasce na conversão, antes de qualquer conta. Por isso valor monetário se guarda em inteiro de centavos ou em tipo decimal — não em ponto flutuante.",null,
  {id:"ot-0009",hab:"C"}],
 
@@ -55,12 +55,12 @@
  {id:"ot-0010",hab:"I"}],
 
 ["OT","Desempenho","Um sistema gasta 80% do tempo em uma rotina paralelizável e 20% em trecho estritamente sequencial. Ainda que a parte paralelizável se torne instantânea, o ganho máximo de desempenho do sistema é",
-["de 80%, proporcional à fração do tempo que pôde ser distribuída entre os núcleos disponíveis na máquina.","de 5 vezes.","ilimitado, bastando acrescentar núcleos suficientes para reduzir o tempo total tanto quanto se queira.","de 4 vezes, correspondente à razão entre a parte paralelizável e a parte que permanece sequencial no programa.","impossível de estimar sem conhecer o número exato de núcleos disponíveis no processador utilizado."],1,
+["de 80%, proporcional à fração do tempo que pôde ser distribuída entre os núcleos disponíveis na máquina.","impossível de estimar sem conhecer o número exato de núcleos disponíveis no processador utilizado.","ilimitado, bastando acrescentar núcleos suficientes para reduzir o tempo total tanto quanto se queira.","de 4 vezes, correspondente à razão entre a parte paralelizável e a parte que permanece sequencial no programa.","de 5 vezes."],4,
 "Zerando os 80%, restam os 20% sequenciais: o tempo cai para um quinto, e o teto é 5x. É a lei de Amdahl — quem limita o ganho não é o que se paraleliza, é o que sobra sem paralelizar.",null,
  {id:"ot-0011",hab:"C"}],
 
 ["OT","Arquitetura de computadores","A distinção entre as arquiteturas RISC e CISC está principalmente em que",
-["RISC executa apenas números inteiros, cabendo às arquiteturas CISC o processamento de operações em ponto flutuante.","RISC adota conjunto reduzido de instruções simples e regulares, favorecendo pipeline; CISC oferece instruções mais complexas por instrução.","RISC é usada exclusivamente em dispositivos móveis e de baixo consumo, e CISC exclusivamente em servidores e computadores de mesa de uso geral.","CISC é mais rápida em qualquer cenário, por resolver em uma única instrução o que RISC precisa de várias para completar a mesma tarefa.","RISC dispensa o uso de memória cache, já que suas instruções têm largura fixa e tempo de execução previsível."],1,
+["RISC executa apenas números inteiros, cabendo às arquiteturas CISC o processamento de operações em ponto flutuante.","CISC é mais rápida em qualquer cenário, por resolver em uma única instrução o que RISC precisa de várias para completar a mesma tarefa.","RISC é usada exclusivamente em dispositivos móveis e de baixo consumo, e CISC exclusivamente em servidores e computadores de mesa de uso geral.","RISC adota conjunto reduzido de instruções simples e regulares, favorecendo pipeline; CISC oferece instruções mais complexas por instrução.","RISC dispensa o uso de memória cache, já que suas instruções têm largura fixa e tempo de execução previsível."],3,
 "Regularidade é o ponto: instruções de largura fixa e poucos formatos tornam o pipeline previsível. A contrapartida é precisar de mais instruções para a mesma tarefa — a disputa entre as duas famílias é sobre onde pagar essa conta.",null,
  {id:"ot-0012",hab:"C"}],
 
@@ -70,7 +70,7 @@
  {id:"ot-0013",hab:"C"}],
 
 ["OT","Representação de dados","Um disco anunciado como de 1 TB é exibido pelo sistema operacional com cerca de 931 GB. A diferença ocorre porque",
-["parte do espaço é consumida pela formatação, que reserva blocos inteiros para a tabela de alocação do sistema de arquivos.","o fabricante usa potências de dez e o sistema operacional exibe o valor em potências de dois, sem que haja perda real de espaço.","o fabricante inclui na medida anunciada a área reservada para substituição de setores defeituosos ao longo da vida útil do disco.","o sistema operacional oculta uma partição de recuperação, criada automaticamente durante a instalação do sistema.","a compressão aplicada pelo sistema de arquivos altera a contagem de bytes efetivamente disponíveis ao usuário."],1,
+["parte do espaço é consumida pela formatação, que reserva blocos inteiros para a tabela de alocação do sistema de arquivos.","a compressão aplicada pelo sistema de arquivos altera a contagem de bytes efetivamente disponíveis ao usuário.","o fabricante inclui na medida anunciada a área reservada para substituição de setores defeituosos ao longo da vida útil do disco.","o sistema operacional oculta uma partição de recuperação, criada automaticamente durante a instalação do sistema.","o fabricante usa potências de dez e o sistema operacional exibe o valor em potências de dois, sem que haja perda real de espaço."],4,
 "10^12 contra 2^40: são unidades diferentes para o mesmo número de bytes. Formatação e setores reservados consomem algo, mas explicam pouco perto dessa diferença de quase 7%.",null,
  {id:"ot-0014",hab:"C"}],
 

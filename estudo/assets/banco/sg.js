@@ -4,7 +4,7 @@
 
 ["SG","LGPD","Segundo a LGPD (Lei 13.709/2018), dado pessoal sensível é aquele que se refere a",
 ["qualquer informação relativa a pessoa natural identificada ou identificável, como nome, endereço, telefone e número de documento.","origem racial ou étnica, convicção religiosa, opinião política, saúde, vida sexual, dado genético ou biométrico.","informações de natureza financeira da pessoa, como renda declarada, movimentação bancária e histórico de crédito no mercado.","dados de pessoas jurídicas, como faturamento, quadro societário e informações contratuais.","qualquer dado armazenado em nuvem, independentemente de seu conteúdo ou de quem o forneceu."],1,
-"A definição de sensível é taxativa na lei e implica tratamento mais restrito. A primeira alternativa define dado pessoal comum; a LGPD não protege dados de pessoa jurídica.",null],
+"A definição de sensível é taxativa no art. 5º, II, e implica tratamento mais restrito. A alternativa que fala em nome, endereço e documento define dado pessoal comum (art. 5º, I) — é o distrator mais atrativo, porque a definição está correta, só não é a que se pediu. Dado financeiro é pessoal comum, não sensível. E a LGPD não protege pessoa jurídica: seu objeto é a pessoa natural.",null],
 
 ["SG","LGPD","Na LGPD, o agente que decide sobre as finalidades e os meios de tratamento dos dados é o",
 ["operador.","controlador.","encarregado.","titular.","fiscal."],1,

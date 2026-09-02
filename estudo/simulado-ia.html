@@ -15,6 +15,13 @@
   }
   .avisoIA b { color: var(--flag); }
 
+  .avisoFormato {
+    background: var(--sunk); border-left: 3px solid var(--rule-2);
+    border-radius: var(--r); padding: 15px 18px; font-size: 14px; color: var(--muted);
+    line-height: 1.55;
+  }
+  .avisoFormato b { color: var(--ink-2); }
+
   .escolha { display: flex; flex-direction: column; gap: 10px; }
   .escolha > .rotulo { margin-bottom: 2px; }
   .grupo { display: flex; gap: 9px; flex-wrap: wrap; }
@@ -80,6 +87,7 @@
 <script src="assets/banco/fg.js"></script>
 <script src="assets/banco/disc.js"></script>
 <script src="assets/banco/disc-oficiais.js"></script>
+<script src="assets/acervo.js"></script>
 <script src="assets/objetos.js"></script>
 <script src="assets/banco/legado-ids.js"></script>
 <script src="assets/historico.js"></script>
@@ -138,6 +146,31 @@
       "<b>Leia antes de começar:</b> estas questões <b>não são do Inep</b>. São previsões minhas, " +
       "escritas a partir dos padrões que identifiquei no acervo. Servem para treinar volume e " +
       "reconhecer temas — mas o gabarito é meu e pode errar. As provas reais estão nos simulados 1 a 4."));
+
+    /* O sorteio compõe a prova em duas dimensões: de que assunto trata e o que pede.
+       A segunda é medida no acervo oficial, e o banco ainda não tem estoque em todas
+       as células. Onde falta, a prova completa por área e sai com mais questão de
+       conceito puro do que o exame traz. Dizer isso aqui é o contrário de detalhe:
+       uma prova que se apresenta como simulado do ENADE sem estar no formato do ENADE
+       ensina a estudar para a coisa errada. */
+    if (window.SORTEIO.viabilidade && window.ACERVO) {
+      var vb = window.SORTEIO.viabilidade();
+      var curtas = vb.filter(function (c) { return c.estoque < c.demanda; });
+      if (curtas.length) {
+        var faltando = {};
+        curtas.forEach(function (c) { faltando[c.hab] = (faltando[c.hab] || 0) + 1; });
+        var lista = Object.keys(faltando).map(function (h) {
+          return (window.ACERVO.HAB[h] || h).toLowerCase();
+        }).join(", ");
+        w.appendChild(el("div", "avisoFormato",
+          "<b>Sobre o formato:</b> além da proporção por área, o sorteio tenta reproduzir " +
+          "o que o ENADE <i>pede</i> — a distribuição por habilidade medida nas 175 objetivas " +
+          "oficiais. O banco ainda não tem estoque suficiente em " + curtas.length +
+          " combinações de área e habilidade (" + lista + "), e nessas a prova completa " +
+          "por área, saindo com mais questão de conceito puro do que o exame traz. " +
+          "A conversão dessas questões está em andamento."));
+      }
+    }
 
     /* formato */
     var fmt = el("div", "escolha");

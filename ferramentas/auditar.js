@@ -37,7 +37,16 @@ var AREAS = ["es", "oo", "al", "bd", "gp", "in", "ml", "ih", "sg", "ot", "fg"];
 /* Os arquivos do banco são scripts de navegador que se penduram em `window`.
    Em vez de reimplementar o formato, damos a eles o `window` que esperam. */
 function carregarBanco() {
-  var janela = { BANCO_IA: [] };
+  /* localStorage de mentirinha: sorteio.js grava nele o estoque de já-vistas, e sem
+     ele a simulação de sorteios não roda. Some ao fim do processo, que é o certo —
+     auditar não pode deixar rastro. */
+  var mem = {};
+  var ls = {
+    getItem: function (k) { return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null; },
+    setItem: function (k, v) { mem[k] = String(v); },
+    removeItem: function (k) { delete mem[k]; }
+  };
+  var janela = { BANCO_IA: [], localStorage: ls };
   var sandbox = { window: janela };
   AREAS.forEach(function (a) {
     var src = fs.readFileSync(path.join(BANCO, a + ".js"), "utf8");
@@ -51,6 +60,8 @@ function carregarBanco() {
     new Function("window", fs.readFileSync(path.join(ASSETS, f), "utf8"))(janela);
   });
   new Function("window", fs.readFileSync(path.join(BANCO, "legado-ids.js"), "utf8"))(janela);
+  new Function("window", "localStorage",
+    fs.readFileSync(path.join(ASSETS, "sorteio.js"), "utf8"))(janela, ls);
   return {
     obj: janela.BANCO_IA || [],
     disc: janela.BANCO_IA_DISC || [],
@@ -326,6 +337,22 @@ function auditar() {
     deficit, "0", deficit === 0, "",
     excedente + " questões de excedente disponíveis para conversão");
 
+  /* ---- 4d. o sorteio, medido de verdade ------------------------------------- */
+  /* As metas acima medem o banco. Esta mede o que a pessoa recebe: sorteia provas de
+     verdade, com o mesmo código que roda no navegador, e compara a composição obtida
+     com o alvo. Semente fixa para o número ser reprodutível — com Math.random cada
+     execução daria um valor diferente e a meta não serviria de porteiro. */
+  var sim = simularSorteios(b, 200);
+  achados.sorteio = sim;
+  meta_("sorteio-area", "Provas com a cota por área exata",
+    sim.areaExata + "/" + sim.n, sim.n + "/" + sim.n, sim.areaExata === sim.n, "",
+    "a cota por área é dura: é a proporção que a Portaria 169 sustenta");
+  meta_("sorteio-repetidas", "Questões repetidas dentro de uma mesma prova",
+    sim.repetidas, "0", sim.repetidas === 0, "");
+  meta_("sorteio-habilidade", "Desvio médio da cota por habilidade, por prova",
+    round(sim.desvioMedio, 1), "≤ 2 itens", sim.desvioMedio <= 2, " itens",
+    "de 45 objetivas; cede quando o banco não tem estoque na célula");
+
   /* ---- 5. formato do enunciado --------------------------------------------- */
   var tams = B.map(function (q) { return q[2].length; });
   var med = mediana(tams);
@@ -485,6 +512,52 @@ function auditar() {
     metas: metas,
     achados: achados
   };
+}
+
+/* -------------------------------------------------------- simulação de sorteios */
+
+/* Gerador com semente (xorshift32). Serve só para tornar a medição reprodutível:
+   sem semente, cada execução do auditor daria um número diferente e a meta não
+   poderia reprovar nada. */
+function comSemente(s) {
+  var x = s || 123456789;
+  return function () {
+    x ^= x << 13; x >>>= 0;
+    x ^= x >> 17;
+    x ^= x << 5; x >>>= 0;
+    return x / 4294967296;
+  };
+}
+
+function simularSorteios(b, n) {
+  var SORTEIO = b._sandbox && b._sandbox.window && b._sandbox.window.SORTEIO;
+  if (!SORTEIO || !SORTEIO.prova) return { n: 0, areaExata: 0, repetidas: 0, desvioMedio: 0 };
+
+  SORTEIO._semente(comSemente(20261129));   // a data da prova, por gosto
+  var areaExata = 0, repetidas = 0, somaDesvio = 0;
+
+  for (var k = 0; k < n; k++) {
+    SORTEIO.zerarCobertura();               // cada simulação parte do estoque cheio
+    var p = SORTEIO.prova();
+    var objs = p.filter(function (x) { return x.tipo === "obj"; });
+
+    var porArea = {};
+    objs.forEach(function (x) { porArea[x.area] = (porArea[x.area] || 0) + 1; });
+    var okArea = porArea.FG === 15 && Object.keys(COTA_AREA).every(function (a) {
+      return porArea[a] === COTA_AREA[a];
+    });
+    if (okArea) areaExata++;
+
+    var ids = objs.map(function (x) { return x.qid; });
+    repetidas += ids.length - new Set(ids).size;
+
+    var d = SORTEIO.ultimoDiag || { desvio: [] };
+    somaDesvio += d.desvio.reduce(function (s, x) { return s + Math.abs(x.saiu - x.alvo); }, 0) / 2;
+  }
+  SORTEIO._semente(null);
+  SORTEIO.zerarCobertura();
+
+  return { n: n, areaExata: areaExata, repetidas: repetidas, desvioMedio: somaDesvio / n };
 }
 
 /* ------------------------------------------------------------------- utilidades */

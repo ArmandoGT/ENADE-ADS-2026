@@ -47,13 +47,17 @@ function carregarBanco() {
     var src = fs.readFileSync(path.join(BANCO, a + ".js"), "utf8");
     new Function("window", src)(janela);
   });
-  var objSrc = fs.readFileSync(path.join(ASSETS, "objetos.js"), "utf8");
-  new Function("window", objSrc)(janela);
+  ["objetos.js", "acervo.js"].forEach(function (f) {
+    new Function("window", fs.readFileSync(path.join(ASSETS, f), "utf8"))(janela);
+  });
+  new Function("window", fs.readFileSync(path.join(BANCO, "legado-ids.js"), "utf8"))(janela);
   return {
     obj: janela.BANCO_IA || [],
     disc: janela.BANCO_IA_DISC || [],
     discOficiais: janela.DISC_OFICIAIS || [],
     OBJETOS: janela.OBJETOS,
+    ACERVO: janela.ACERVO,
+    legado: janela.BANCO_LEGADO_IDS || [],
     _sandbox: sandbox
   };
 }
@@ -86,41 +90,33 @@ function lerCSV(arquivo) {
 
 /* ------------------------------------------------------- vocabulário do acervo */
 
-/* Os seis valores da coluna `habilidade` de questoes_mapeadas.csv. É o vocabulário
-   do acervo oficial, não um inventado aqui — por isso as chaves ficam sem acento,
-   exatamente como estão no CSV. */
-var HABILIDADES = [
-  "Interpretacao de artefato",
-  "Julgamento de itens",
-  "Conceito puro",
-  "Calculo ou traco",
-  "Assercao-razao",
-  "Estudo de caso ou producao de artefato"
-];
+/* Banco e acervo falam a mesma língua: os códigos de uma letra de ACERVO.HAB. Esta
+   tabela existe só para traduzir a coluna `habilidade` do CSV, que traz o nome por
+   extenso e sem acento. É também o que permite conferir se acervo.js não divergiu do
+   CSV — os dois guardam as mesmas 200 linhas, e dado duplicado sem conferência é dado
+   que uma hora discorda de si mesmo. */
+var COD_HAB = {
+  "Julgamento de itens": "J",
+  "Interpretacao de artefato": "I",
+  "Conceito puro": "C",
+  "Assercao-razao": "A",
+  "Calculo ou traco": "X",
+  "Estudo de caso ou producao de artefato": "E"
+};
+var COD_FMT = {
+  "Texto": "T", "Codigo": "K", "Pseudocodigo": "P", "Diagrama UML": "U", "Modelo ER": "R",
+  "SQL": "Q", "Tabela": "B", "Grafico ou figura": "G", "Cenario": "S"
+};
 
-/* Classificação heurística, usada enquanto o banco não traz o campo `habilidade`
-   declarado por questão. É um rascunho para medir a lacuna, não um gabarito: a
-   classificação definitiva é escrita no registro e revisada à mão. Quando o campo
-   existir, ele prevalece — ver habilidadeDe(). */
-function habilidadeHeuristica(q) {
-  var enun = q[2];
-  if (/\bPORQUE\b/.test(enun)) return "Assercao-razao";
-  if (/(^|\n)\s*I{1,3}V?\.\s/.test(enun) || /\bI\.\s/.test(enun)) return "Julgamento de itens";
-  if (q[6]) return "Interpretacao de artefato";
-  if (/quanto|calcul|resultado|valor de|complexidade O|quantas|total de/i.test(enun) && /\d/.test(enun))
-    return "Calculo ou traco";
-  if (enun.length > 400) return "Estudo de caso ou producao de artefato";
-  return "Conceito puro";
-}
+/* Cota por área do componente específico, espelhando sorteio.js. Fica repetida aqui
+   de propósito: o auditor não deve depender do módulo que audita. Se as duas
+   divergirem, a meta cota-espelhada acusa. */
+var COTA_AREA = { ES: 8, OO: 5, AL: 4, BD: 3, IN: 2, GP: 2, ML: 2, SG: 2, IH: 1, OT: 1 };
 
-/* O registro do banco tem 7 campos posicionais e um oitavo opcional com os metadados
-   nomeados: { id, hab, art }. Enquanto ele não existe, caímos na heurística. */
+/* O registro do banco tem 7 campos posicionais e um oitavo com os metadados nomeados:
+   { id, hab, art }. Posicional ficaria ilegível a partir do oitavo campo. */
 function meta(q) { return (q.length > 7 && q[7]) || null; }
-function habilidadeDe(q) {
-  var m = meta(q);
-  return (m && m.hab) || habilidadeHeuristica(q);
-}
-function temHabilidadeDeclarada(q) { var m = meta(q); return !!(m && m.hab); }
+function habilidadeDe(q) { var m = meta(q); return (m && m.hab) || null; }
 
 /* ------------------------------------------------------------------ estatística */
 
@@ -250,27 +246,85 @@ function auditar() {
     return { area: a, pos: porArea[a], chi: round(quiQuadrado(porArea[a]), 1) };
   });
 
-  /* ---- 4. mix de habilidade contra o acervo oficial ------------------------- */
-  var declaradas = B.filter(temHabilidadeDeclarada).length;
+  /* ---- 4a. acervo.js contra questoes_mapeadas.csv --------------------------- */
+  /* As 200 linhas do acervo existem em dois lugares: o CSV, que é o artefato de
+     origem, e acervo.js, que é a cópia que o navegador lê. Se divergirem, a régua
+     de todo o material passa a depender de qual das duas se leu. */
+  var divergencias = [];
+  var linhasJS = b.ACERVO.linhas;
+  if (linhasJS.length !== oficial.length) {
+    divergencias.push("contagem: CSV " + oficial.length + " · acervo.js " + linhasJS.length);
+  } else {
+    oficial.forEach(function (r, i) {
+      var j = linhasJS[i];
+      var esperado = [Number(r.ano), r.numero, r.bloco, r.tipo, r.area_codigo,
+        COD_HAB[r.habilidade], COD_FMT[r.formato]];
+      var obtido = [j[0], j[1], j[2], j[3], j[4], j[6], j[7]];
+      esperado.forEach(function (v, c) {
+        if (String(v) !== String(obtido[c])) {
+          divergencias.push("linha " + (i + 2) + " campo " + c + ": CSV " + v + " · JS " + obtido[c]);
+        }
+      });
+    });
+  }
+  meta_("acervo-coerente", "acervo.js confere com questoes_mapeadas.csv",
+    divergencias.length, "0", divergencias.length === 0, "",
+    "a régua do material não pode depender de qual cópia se leu");
+  achados.divergenciasAcervo = divergencias.slice(0, 20);
+
+  /* ---- 4b. mix de habilidade contra o acervo oficial ------------------------- */
+  var declaradas = B.filter(function (q) { return !!habilidadeDe(q); }).length;
   var mix = {};
   ["FG", "CE"].forEach(function (bloco) {
-    var of = oficialObj.filter(function (r) { return r.bloco === bloco; });
+    var pOf = b.ACERVO.mix(bloco);
     var au = B.filter(function (q) { return (q[0] === "FG" ? "FG" : "CE") === bloco; });
-    var pOf = proporcao(contar(of, function (r) { return r.habilidade; }), of.length);
     var pAu = proporcao(contar(au, habilidadeDe), au.length);
-    var linhas = HABILIDADES.map(function (h) {
-      return { habilidade: h, oficial: round(pOf[h] || 0, 1), autoral: round(pAu[h] || 0, 1),
+    var linhas = Object.keys(COD_HAB).map(function (nome) {
+      var h = COD_HAB[nome];
+      return { habilidade: nome, oficial: round(pOf[h] || 0, 1), autoral: round(pAu[h] || 0, 1),
                lacuna: round((pAu[h] || 0) - (pOf[h] || 0), 1) };
     }).filter(function (l) { return l.oficial || l.autoral; });
-    mix[bloco] = { nOficial: of.length, nAutoral: au.length, linhas: linhas,
+    mix[bloco] = { nOficial: b.ACERVO.objetivas(bloco).length, nAutoral: au.length, linhas: linhas,
                    desvioMax: Math.max.apply(null, linhas.map(function (l) { return Math.abs(l.lacuna); })) };
   });
   achados.mix = mix;
   var desvio = Math.max(mix.FG.desvioMax, mix.CE.desvioMax);
-  meta_("mix-habilidade", "Desvio máximo do mix de habilidade contra o acervo oficial",
-    round(desvio, 1), "≤ 10 pp", desvio <= 10, " pp",
-    declaradas === n ? "campo declarado em todas as questões"
-      : "classificação heurística — " + declaradas + "/" + n + " declaradas");
+  meta_("mix-habilidade", "Desvio do mix do BANCO contra o acervo (informativo)",
+    round(desvio, 1), "informativo", true, " pp",
+    "o que precisa bater com o acervo é a prova sorteada, não o banco — ver estoque-celulas");
+
+  /* ---- 4c. estoque por célula (área × habilidade) --------------------------- */
+  /* Esta é a meta que importa, e o motivo pelo qual a anterior é só informativa.
+     Com cota de habilidade no sorteio, quem tem de bater com o mix oficial é a PROVA
+     sorteada, não o banco. Do banco se exige outra coisa: ter, em cada célula
+     (área × habilidade), estoque para o sorteio tirar. Igualar o mix do banco ao mix
+     oficial seria reescrever três vezes mais questões sem melhorar a prova em nada. */
+  var PROVAS_SEM_REPETIR = 3;
+  var cotaCE = b.ACERVO.cota("CE", 30);
+  var cotaFG = b.ACERVO.cota("FG", 15);
+  var estoque = contar(B, function (q) { return q[0] + "|" + habilidadeDe(q); });
+
+  var celulas = [], deficit = 0, excedente = 0;
+  function avaliar(area, vagasArea, cota, totalVagas) {
+    Object.keys(cota).forEach(function (h) {
+      var demanda = Math.ceil(vagasArea * cota[h] / totalVagas);
+      if (!demanda) return;
+      var piso = demanda * PROVAS_SEM_REPETIR;
+      var tem = estoque[area + "|" + h] || 0;
+      var falta = Math.max(0, piso - tem);
+      deficit += falta;
+      if (tem > piso) excedente += tem - piso;
+      celulas.push({ area: area, hab: h, piso: piso, tem: tem, falta: falta });
+    });
+  }
+  Object.keys(COTA_AREA).forEach(function (a) { avaliar(a, COTA_AREA[a], cotaCE, 30); });
+  avaliar("FG", 15, cotaFG, 15);
+
+  achados.celulas = celulas.filter(function (c) { return c.falta > 0; })
+    .sort(function (x, y) { return y.falta - x.falta; });
+  meta_("estoque-celulas", "Questões faltando para o sorteio cobrir " + PROVAS_SEM_REPETIR + " provas",
+    deficit, "0", deficit === 0, "",
+    excedente + " questões de excedente disponíveis para conversão");
 
   /* ---- 5. formato do enunciado --------------------------------------------- */
   var tams = B.map(function (q) { return q[2].length; });
@@ -334,6 +388,22 @@ function auditar() {
     n + "/" + n, comId.length === n && idsDup.length === 0, "",
     idsDup.length ? "ids duplicados: " + idsDup.join(", ") : "");
 
+  /* A tabela congelada é a única ponte entre o histórico de quem usou o material
+     antes do id estável e o banco de agora. Ela descreve o passado: pode ficar menor
+     que o banco quando questões novas entrarem, nunca maior nem diferente. */
+  var legado = b.legado;
+  var vivos = new Set(comId.map(function (q) { return meta(q).id; }));
+  var legadoOrfao = legado.filter(function (id) { return !vivos.has(id); });
+  var legadoDesalinhado = legado.filter(function (id, i) {
+    return B[i] && meta(B[i]) && meta(B[i]).id !== id;
+  }).length;
+  meta_("legado-ids", "Tabela congelada de migração íntegra",
+    legadoDesalinhado ? legadoDesalinhado + " desalinhadas" : "ok",
+    "ok", legadoDesalinhado === 0 && legado.length > 0, "",
+    legado.length + " entradas" + (legadoOrfao.length
+      ? " · " + legadoOrfao.length + " apontam para questões que não existem mais (esperado após remoções)"
+      : ""));
+
   /* ---- 8. cobertura dos objetos oficiais ------------------------------------ */
   /* OBJETOS.auditar() existia sem nenhum ponto de chamada. Este é o ponto. */
   var aud = b.OBJETOS.auditar(B);
@@ -363,6 +433,32 @@ function auditar() {
     solitarios.length, "≤ 5", solitarios.length <= 5, "",
     "um subtema com uma questão só não sustenta revisão espaçada");
   achados.solitarios = solitarios;
+
+  /* ---- 8b. integridade das páginas ------------------------------------------ */
+  /* Um <script src> apontando para arquivo que não existe não dá erro visível: a
+     página abre, e a funcionalidade que dependia dele simplesmente não acontece.
+     Também se confere que toda página que lê o histórico carregue a tabela congelada
+     — sem ela a migração não roda, e é por isso que ela foi feita para não rodar em
+     vez de rodar pela metade. */
+  var ESTUDO = path.join(RAIZ, "estudo");
+  var paginas = fs.readdirSync(ESTUDO).filter(function (f) { return /\.html$/.test(f); });
+  var quebrados = [], semLegado = [];
+  paginas.forEach(function (p) {
+    var html = fs.readFileSync(path.join(ESTUDO, p), "utf8");
+    var srcs = (html.match(/<script src="([^"]+)"/g) || [])
+      .map(function (s) { return s.replace(/.*src="/, "").replace(/"$/, ""); });
+    srcs.forEach(function (s) {
+      if (!fs.existsSync(path.join(ESTUDO, s))) quebrados.push(p + " -> " + s);
+    });
+    if (srcs.indexOf("assets/historico.js") >= 0 &&
+        srcs.indexOf("assets/banco/legado-ids.js") < 0) semLegado.push(p);
+  });
+  meta_("paginas-scripts", "Páginas com <script src> apontando para arquivo ausente",
+    quebrados.length, "0", quebrados.length === 0, "",
+    quebrados.join(" · "));
+  meta_("paginas-legado", "Páginas que leem o histórico sem carregar a tabela congelada",
+    semLegado.length, "0", semLegado.length === 0, "",
+    semLegado.length ? semLegado.join(" · ") : paginas.length + " páginas conferidas");
 
   /* ---- 9. discursivas ------------------------------------------------------- */
   var todasDisc = b.discOficiais.concat(b.disc);

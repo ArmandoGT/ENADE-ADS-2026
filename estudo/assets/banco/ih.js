@@ -1,5 +1,6 @@
-/* Banco IA — IHC, usabilidade e acessibilidade (12 questões).
-   Registro: [area, subtema, enunciado, [5 alternativas], índice da correta, explicação, código|null] */
+/* Banco IA — IHC, usabilidade e acessibilidade (25 questões).
+   Registro: [area, subtema, enunciado, [5 alternativas], índice da correta, explicação, código|null,
+              {id, hab, art}] · `art` é a lista de artefatos: tabela, gráfico ou SVG. */
 (window.BANCO_IA = window.BANCO_IA || []).push(...[
 
 ["IH","Acessibilidade","O atributo alt em uma imagem HTML destina-se a",

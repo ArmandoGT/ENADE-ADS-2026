@@ -1,5 +1,6 @@
-/* Banco IA — Segurança, governança e legislação (24 questões).
-   Registro: [area, subtema, enunciado, [5 alternativas], índice da correta, explicação, código|null] */
+/* Banco IA — Segurança, governança e legislação (36 questões).
+   Registro: [area, subtema, enunciado, [5 alternativas], índice da correta, explicação, código|null,
+              {id, hab, art}] · `art` é a lista de artefatos: tabela, gráfico ou SVG. */
 (window.BANCO_IA = window.BANCO_IA || []).push(...[
 
 ["SG","LGPD","Segundo a LGPD (Lei 13.709/2018), dado pessoal sensível é aquele que se refere a",

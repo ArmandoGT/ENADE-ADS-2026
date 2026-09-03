@@ -1,5 +1,6 @@
-/* Banco IA — Arquitetura de computadores e inteligência artificial (15 questões).
-   Registro: [area, subtema, enunciado, [5 alternativas], índice da correta, explicação, código|null] */
+/* Banco IA — Arquitetura de computadores e inteligência artificial (28 questões).
+   Registro: [area, subtema, enunciado, [5 alternativas], índice da correta, explicação, código|null,
+              {id, hab, art}] · `art` é a lista de artefatos: tabela, gráfico ou SVG. */
 (window.BANCO_IA = window.BANCO_IA || []).push(...[
 
 ["OT","Arquitetura de computadores","Na arquitetura de von Neumann, a característica central é que",

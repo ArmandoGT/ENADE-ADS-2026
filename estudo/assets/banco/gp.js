@@ -1,5 +1,6 @@
-/* Banco IA — Gestão de projetos e empreendedorismo (27 questões).
-   Registro: [area, subtema, enunciado, [5 alternativas], índice da correta, explicação, código|null] */
+/* Banco IA — Gestão de projetos e empreendedorismo (41 questões).
+   Registro: [area, subtema, enunciado, [5 alternativas], índice da correta, explicação, código|null,
+              {id, hab, art}] · `art` é a lista de artefatos: tabela, gráfico ou SVG. */
 (window.BANCO_IA = window.BANCO_IA || []).push(...[
 
 ["GP","Caminho crítico","Considere a tabela de atividades abaixo. A duração mínima do projeto é",
@@ -201,6 +202,11 @@
 ["GP","Empreendedorismo","Uma startup desenvolveu, em nove meses, uma plataforma completa de gestão para pequenas clínicas, com agendamento, prontuário, faturamento e integração com convênios. Ao lançar, encontrou baixa adesão: as clínicas visitadas afirmam que já resolvem agendamento com aplicativos de mensagem e que o problema que realmente as incomoda é a glosa de convênios, funcionalidade que a plataforma trata de forma superficial. O caixa suporta mais quatro meses.\nA conduta mais adequada é",
 ["ampliar o investimento em marketing, uma vez que o produto está completo e o problema é de divulgação.","encerrar a operação, já que a hipótese inicial do negócio se mostrou incorreta.","manter o roteiro de produto e aguardar a maturação do mercado nos próximos meses.","acrescentar novas funcionalidades ao produto, ampliando o valor entregue às clínicas.","pivotar, concentrando o produto na gestão de glosas, que é o problema que os clientes declaram ter."],4,
 "A evidência de campo é específica: o problema que dói é a glosa, e o produto atual o trata de forma superficial. Pivotar é mudar de forma estruturada um elemento central do modelo, preservando o aprendizado e a base de clientes já mapeada — não é desistir nem mudar ao acaso. Investir em marketing com quatro meses de caixa é acelerar a queima para vender o que o cliente disse não querer. Acrescentar funcionalidades agravaria o mesmo erro que produziu nove meses de construção sem validação.",null,
- {"id":"gp-0040","hab":"E"}]
+ {"id":"gp-0040","hab":"E"}],
+
+["GP","Governança","A tabela apresenta quatro projetos candidatos ao portfólio de TI de uma organização, com a nota de alinhamento à estratégia atribuída pelo comitê de governança, o custo estimado e o retorno esperado. Considerando que a governança decide o portfólio pelo alinhamento à estratégia, e não apenas pelo resultado financeiro, o projeto cuja permanência é a mais difícil de justificar é",
+["Alfa.","Beta.","Gama.","Delta.","Nenhum, pois todos apresentam retorno esperado superior ao custo."],1,
+"Beta é o pior nas duas leituras que a governança faz: nota 1 de alinhamento, a menor da lista, e retorno de 750 sobre custo de 700, margem que desaparece diante de qualquer estouro. Alfa e Gama combinam alinhamento alto com retorno bem acima do custo, e não chegam a exigir discussão. Delta tem alinhamento intermediário e retorno de 600 sobre 250, ou seja, devolve mais de duas vezes o que consome — é o caso em que o resultado financeiro compensa o alinhamento apenas mediano, e por isso ele fica. Dizer que nenhum deveria sair porque todos têm retorno maior que o custo é justamente o critério que a governança recusa como suficiente: portfólio não é lista de projetos lucrativos, é o conjunto que realiza a estratégia, e recurso gasto em Beta é recurso que deixa de ir para os que a realizam.",null,
+ {"id":"gp-0041","hab":"I","art":[{"t":"tabela","cap":"Projetos candidatos ao portfólio de TI","cab":["Projeto","Alinhamento à estratégia (1 a 5)","Custo (R$ mil)","Retorno esperado (R$ mil)"],"al":["","num","num","num"],"linhas":[["Alfa","5","400","900"],["Beta","1","700","750"],["Gama","4","300","800"],["Delta","3","250","600"]]}]}]
 
 ]);

@@ -282,6 +282,36 @@ function numeros(s) {
   return fora;
 }
 
+/* A coluna de numeração das linhas de um trecho de código não é dado do problema:
+   é enfeite de listagem. Deixá-la entrar faz o enunciado "conter" 1, 2, 3... e, como
+   só conta número distintivo, isso anulava todos os distratores de uma questão cuja
+   resposta é um número pequeno — a de complexidade ciclomática, com alternativas 2 a
+   6 e listagem numerada de 01 a 10, ficava impossível de passar por melhor que fosse
+   a explicação. Só se retira a coluna quando ela existe de fato, em três linhas ou
+   mais, para não descartar um número que era conteúdo. */
+function semNumeroDeLinha(codigo) {
+  var linhas = String(codigo || "").split("\n");
+  var comColuna = linhas.filter(function (l) { return /^[ \t]*[0-9]{1,3}[ \t]+\S/.test(l); });
+  if (comColuna.length < 3) return codigo || "";
+  return linhas.map(function (l) { return l.replace(/^[ \t]*[0-9]{1,3}[ \t]+/, ""); }).join("\n");
+}
+
+/* A tabela e o gráfico do enunciado ficam em meta.art, fora do texto. Deixá-los de
+   fora fazia o dado do problema passar por vocabulário exclusivo do distrator: numa
+   questão de risco cujas colunas são probabilidade e impacto, a explicação toca o
+   distrator só por repetir a palavra da coluna. Aqui tudo o que o estudante enxerga
+   no enunciado é achatado em texto, rótulo e número junto. */
+function textoArtefato(m) {
+  var partes = [];
+  (function anda(x) {
+    if (x === null || x === undefined) return;
+    if (Array.isArray(x)) { x.forEach(anda); return; }
+    if (typeof x === "object") { Object.keys(x).forEach(function (k) { anda(x[k]); }); return; }
+    partes.push(String(x));
+  })((m && m.art) || []);
+  return partes.join(" ");
+}
+
 function nucleo(s) {
   return semAcento(s).replace(/[^a-z0-9]+/g, " ").trim();
 }
@@ -290,10 +320,11 @@ function nucleo(s) {
 function distratoresTocados(q) {
   var expl = termos(q[5]);
   var certa = termos(q[3][q[4]]);
-  var enun = termos(q[2] + " " + (q[6] || ""));
+  var enunciado = q[2] + " " + semNumeroDeLinha(q[6]) + " " + textoArtefato(meta(q));
+  var enun = termos(enunciado);
   var explNum = numeros(q[5]);
   var certaNum = numeros(q[3][q[4]]);
-  var enunNum = numeros(q[2] + " " + (q[6] || ""));
+  var enunNum = numeros(enunciado);
   var explTexto = nucleo(q[5]);
   var n = 0;
   q[3].forEach(function (alt, k) {
@@ -306,15 +337,18 @@ function distratoresTocados(q) {
       return;
     }
 
+    /* Duas provas servem, e nenhuma exclui a outra: citar um valor que só o distrator
+       tem, ou repetir o texto dele. Encadeá-las em cascata dava resultado instável —
+       um distrator que passava pelo texto deixava de passar quando o enunciado mudava
+       e liberava o valor. */
     var valores = [];
     numeros(alt).forEach(function (v) { if (!certaNum.has(v) && !enunNum.has(v)) valores.push(v); });
-    if (valores.length) {
-      if (valores.some(function (v) { return explNum.has(v); })) n++;
-      return;
-    }
+    var citaValor = valores.some(function (v) { return explNum.has(v); });
 
     var lit = nucleo(alt);
-    if (lit.length >= 4 && explTexto.indexOf(lit) >= 0) n++;
+    var citaTexto = lit.length >= 4 && explTexto.indexOf(lit) >= 0;
+
+    if (citaValor || citaTexto) n++;
   });
   return n;
 }

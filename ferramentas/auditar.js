@@ -272,9 +272,19 @@ function semAcento(s) {
 /* Valores citados num texto, em algarismo ou por extenso, na mesma forma canônica. */
 function numeros(s) {
   var t = semAcento(s), fora = new Set();
+  function semMilhar(p) { return p.replace(/[.](?=[0-9]{3}([^0-9]|$))/g, ""); }
   (t.match(/[0-9]+(?:[.,][0-9]+)*/g) || []).forEach(function (bruto) {
-    var v = parseFloat(bruto.replace(/[.](?=[0-9]{3}([^0-9]|$))/g, "").replace(",", "."));
+    var v = parseFloat(semMilhar(bruto).replace(",", "."));
     if (isFinite(v)) fora.add(String(v));
+    /* A vírgula é decimal em "0,56" e separador em "(5,1) troca". As duas leituras
+       contam: sem isso, a explicação que percorre o bubble sort par a par citava
+       cada distrator e a medida não via número nenhum, só decimais inventados. */
+    if (bruto.indexOf(",") >= 0) {
+      bruto.split(",").forEach(function (p) {
+        var u = parseFloat(semMilhar(p));
+        if (isFinite(u)) fora.add(String(u));
+      });
+    }
   });
   t.replace(/[^a-z]+/g, " ").split(" ").forEach(function (p) {
     if (NUMERO_ESCRITO[p]) fora.add(String(NUMERO_ESCRITO[p]));
@@ -408,6 +418,28 @@ function trataAsserçãoERazão(q) {
   var tocaI = soI.some(function (p) { return expl.has(p); });
   var tocaII = soII.some(function (p) { return expl.has(p); });
   return tocaI && tocaII;
+}
+
+/* Há questão que nenhuma explicação faz passar, e é honesto dizer quantas. Quando os
+   distratores são valores pequenos que o próprio enunciado usa — "quantos elementos
+   do vetor [4, 7, 10, 3, 8] são pares", com alternativas de 1 a 5 —, não sobra nada
+   distintivo para citar. São menos de 1% do banco, e a meta de 90% convive com elas;
+   o número aparece ao lado da medida para que ninguém o procure como defeito. */
+function foraDeAlcance(q) {
+  var h = habilidadeDe(q);
+  if (h === "J" || h === "A") return false;
+  var certa = termos(q[3][q[4]]);
+  var enunciado = q[2] + " " + semNumeroDeLinha(q[6]) + " " + textoArtefato(meta(q));
+  var enun = termos(enunciado), enunNum = numeros(enunciado), certaNum = numeros(q[3][q[4]]);
+  var alcancaveis = 0;
+  q[3].forEach(function (alt, k) {
+    if (k === q[4]) return;
+    var temTermo = false, temValor = false;
+    termos(alt).forEach(function (p) { if (!certa.has(p) && !enun.has(p)) temTermo = true; });
+    numeros(alt).forEach(function (v) { if (!certaNum.has(v) && !enunNum.has(v)) temValor = true; });
+    if (temTermo || temValor || nucleo(alt).length >= 4) alcancaveis++;
+  });
+  return alcancaveis < 2;
 }
 
 function refuta(q) {
@@ -670,9 +702,12 @@ function auditar() {
   achados.refutaPorHab = porHabRefuta;
   achados.naoRefutam = B.filter(function (q) { return !refuta(q); })
     .map(function (q) { return (meta(q) || {}).id + " " + q[0] + "/" + q[1]; });
+  var cegas = B.filter(foraDeAlcance).length;
+  achados.foraDeAlcance = cegas;
   meta_("explicacao-refuta", "Explicações que discutem os distratores",
     pct(refutam.length, n), "≥ 90%", 100 * refutam.length / n >= 90, "%",
-    "justificar o gabarito não diz por que o erro cometido é erro");
+    "justificar o gabarito não diz por que o erro cometido é erro · " + cegas +
+    " questões sem distrator distinguível, fora do alcance da medida");
 
   /* ---- 7. integridade estrutural -------------------------------------------- */
   var estrut = [];

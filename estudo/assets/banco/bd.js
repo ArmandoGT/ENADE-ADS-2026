@@ -20,13 +20,13 @@
 
 ["BD","SQL","A consulta abaixo retorna",
 ["todos os clientes, com seus pedidos quando houver.","apenas os clientes que nunca fizeram nenhum pedido.","apenas os clientes que já fizeram pedidos.","todos os pedidos sem cliente associado.","nenhuma linha, pois a condição é contraditória."],1,
-"O LEFT JOIN preserva todos os clientes e preenche com nulo as colunas de pedido de quem não tem nenhum. O filtro IS NULL sobre a chave da tabela à direita seleciona exatamente essas linhas. É o idioma padrão para achar registros sem correspondência — e o motivo de a condição não ser contraditória: o nulo vem do JOIN, não da tabela.",
+"O LEFT JOIN preserva todos os clientes e preenche com nulo as colunas de pedido de quem não tem nenhum; o filtro IS NULL sobre a chave da tabela à direita seleciona exatamente essas linhas. Devolver todos os clientes, com seus pedidos quando houver, seria o resultado sem o WHERE. Devolver apenas os clientes que já fizeram pedidos é o que se obtém com INNER JOIN, ou trocando IS NULL por IS NOT NULL. Devolver os pedidos sem cliente associado inverte os lados da junção. E a condição não é contraditória: o nulo não vem da tabela, vem do próprio JOIN, que fabrica a linha ausente. É o idioma padrão para achar registros sem correspondência.",
 "SELECT c.nome\n  FROM cliente c\n  LEFT JOIN pedido p ON c.id = p.cliente_id\n WHERE p.id IS NULL;",
  {id:"bd-0003",hab:"I"}],
 
 ["BD","SQL","Considere o comando abaixo. Ele retorna",
 ["todos os produtos cadastrados, ordenados de forma crescente pelo preço.","os produtos cujo preço não foi informado, isto é, cujo campo é nulo.","o preço médio dos produtos, em uma única linha de resultado agregado.","os cinco produtos de maior preço, conforme a ordenação decrescente.","os produtos cujo preço é superior à média geral de preços."],4,
-"A subconsulta calcula a média e a consulta externa compara cada linha com ela. Subconsulta escalar no WHERE é padrão recorrente nas provas.",
+"A subconsulta calcula a média e a consulta externa compara cada linha com ela, devolvendo os produtos acima dela. Trazer todos os produtos cadastrados, ordenados de forma crescente, exigiria ORDER BY e nenhum filtro. Trazer os produtos cujo preço é nulo exigiria IS NULL, e valor nulo nem sobrevive à comparação com >. Devolver o preço médio em uma única linha é o que a subconsulta faz sozinha, sem a consulta externa — o distrator que confunde a parte com o todo. E trazer os cinco de maior preço exigiria ordenação e limite, e nada no comando fixa quantidade.",
 "SELECT nome, preco\n  FROM produto\n WHERE preco > (SELECT AVG(preco) FROM produto);",
  {id:"bd-0004",hab:"I"}],
 
@@ -37,35 +37,35 @@
 
 ["BD","SQL","Em SQL, a comparação campo = NULL",
 ["retorna verdadeiro quando o campo é nulo.","retorna sempre falso, mesmo com IS NULL.","gera erro de sintaxe.","é equivalente a campo <> NULL.","nunca retorna verdadeiro; deve-se usar campo IS NULL."],4,
-"NULL representa ausência de valor e não é comparável por igualdade — qualquer comparação com ele resulta em desconhecido. Daí a existência dos operadores IS NULL e IS NOT NULL.",null,
+"NULL representa ausência de valor e não é comparável por igualdade: a comparação resulta em desconhecido, que o WHERE trata como não verdadeiro. Não retorna verdadeiro quando o campo é nulo — é exatamente a expectativa que a linguagem frustra. Não retorna sempre falso mesmo com IS NULL: esse operador existe justamente para dar verdadeiro nesse caso. Não gera erro de sintaxe, e é isso que torna o defeito silencioso, pois o comando roda e devolve zero linha. E ser equivalente a campo <> NULL só vale no sentido inútil de que nenhum dos dois jamais dá verdadeiro, o que não é equivalência de significado.",null,
  {id:"bd-0006",hab:"C"}],
 
 ["BD","SQL","O comando abaixo retorna quantas linhas, considerando que a tabela funcionario tem 10 registros e a tabela departamento tem 3?",
 ["3","10","13","0","30"],4,
-"Sem cláusula de junção, a vírgula no FROM produz o produto cartesiano: 10 × 3 = 30 linhas. É o erro clássico de esquecer a condição de junção.",
+"Sem cláusula de junção, a vírgula no FROM produz o produto cartesiano: cada funcionário emparelha com cada departamento, 10 × 3 = 30 linhas. O 13 é a soma das duas tabelas, de quem imagina concatenação em vez de combinação. O 0 suporia que a falta de condição de junção não devolve nada, quando o efeito é o oposto — devolve tudo. E responder 10 ou 3 é contar uma das tabelas ignorando a outra. É o erro clássico de esquecer a condição de junção.",
 "SELECT f.nome, d.nome\n  FROM funcionario f, departamento d;",
  {id:"bd-0007",hab:"I"}],
 
 ["BD","SQL","Considerando que a cidade São Paulo aparece em ambas as tabelas, as consultas A e B retornam, respectivamente,",
 ["o mesmo número de linhas, já que ambas percorrem as duas tabelas por inteiro.","A com uma linha a mais que B, por incluir o cabeçalho do conjunto resultante.","A com uma linha a menos que B, pois elimina a duplicata.","erro de sintaxe na consulta A, pois UNION exige a cláusula ORDER BY.","apenas a cidade São Paulo, que é a única presente nas duas tabelas."],2,
-"UNION elimina duplicatas, e para isso precisa ordenar ou aplicar hash sobre o resultado — daí ser mais caro. UNION ALL apenas concatena, sendo mais rápido quando as duplicatas não importam ou não existem. Como São Paulo consta nas duas tabelas, ela aparece uma vez em A e duas em B.",
+"UNION elimina duplicatas e, para isso, precisa ordenar ou aplicar hash sobre o resultado, daí ser mais caro; UNION ALL apenas concatena. Como São Paulo consta nas duas tabelas, ela aparece uma vez em A e duas em B, e A fica com uma linha a menos. Dizer que ambas retornam o mesmo número de linhas, já que percorrem as duas tabelas por inteiro, confunde o que se lê com o que se devolve. A ideia de que A teria uma linha a mais por incluir o cabeçalho não corresponde a nada: SQL não devolve cabeçalho como linha. Não há erro de sintaxe, e UNION não exige ORDER BY. E devolver apenas São Paulo seria resultado de INTERSECT.",
 "-- consulta A\nSELECT cidade FROM cliente\nUNION\nSELECT cidade FROM fornecedor;\n\n-- consulta B\nSELECT cidade FROM cliente\nUNION ALL\nSELECT cidade FROM fornecedor;",
  {id:"bd-0008",hab:"I"}],
 
 ["BD","SQL","Considere o comando abaixo. Ele expressa a operação relacional de",
 ["diferença entre conjuntos.","junção natural.","projeção seguida de seleção.","interseção.","produto cartesiano."],0,
-"EXCEPT (ou MINUS, em alguns bancos) devolve as linhas do primeiro conjunto que não estão no segundo — a diferença. Aqui, os clientes que nunca fizeram pedido.",
+"EXCEPT, ou MINUS em alguns bancos, devolve as linhas do primeiro conjunto que não estão no segundo: a diferença. Aqui, os clientes que nunca fizeram pedido. Junção natural combinaria as duas tabelas pelas colunas de mesmo nome, emparelhando linhas em vez de subtraí-las. Projeção seguida de seleção descreve o que um SELECT com WHERE faz sobre uma tabela só. Interseção devolveria os que aparecem nos dois conjuntos — exatamente o complemento do que o comando faz. E produto cartesiano combinaria cada linha com cada linha, aumentando o resultado em vez de reduzi-lo.",
 "SELECT id FROM cliente\nEXCEPT\nSELECT cliente_id FROM pedido;",
  {id:"bd-0009",hab:"I"}],
 
 ["BD","SQL","Um índice sobre a coluna cpf da tabela cliente melhora principalmente o desempenho de",
 ["consultas que filtram ou ordenam por cpf.","inserções em massa, que passam a localizar mais rápido a posição de gravação.","exclusões de grandes volumes, por dispensar a varredura completa da tabela.","criação de novas colunas, por reorganizar fisicamente o armazenamento.","rotinas de backup, que percorrem a tabela na ordem definida pelo índice."],0,
-"Índice acelera a leitura por aquela coluna e, em contrapartida, encarece escrita, pois precisa ser mantido a cada inserção, alteração ou remoção. Esse é o trade-off central.",null,
+"O índice acelera a leitura por aquela coluna: filtrar ou ordenar por cpf deixa de exigir varredura completa. Inserções em massa não melhoram, pioram — cada linha nova obriga a manter o índice, e esse é o outro lado do negócio. Exclusões de grandes volumes pagam a mesma manutenção, e em massa costumam ser resolvidas por varredura de qualquer modo. Criação de novas colunas não tem relação com índice nem reorganiza fisicamente o armazenamento por causa dele. E rotinas de backup leem a tabela inteira na ordem física, sem passar pelo índice.",null,
  {id:"bd-0010",hab:"C"}],
 
 ["BD","SQL","A cláusula ON DELETE CASCADE em uma chave estrangeira determina que",
 ["a exclusão de um registro filho remova também o registro pai correspondente.","a chave estrangeira dos filhos seja preenchida com nulo quando o pai é excluído.","a exclusão do pai seja bloqueada enquanto existirem filhos referenciando-o.","a exclusão do registro pai remova automaticamente os registros filhos associados.","toda exclusão seja registrada em tabela de log antes de ser efetivada."],3,
-"CASCADE propaga a exclusão do pai para os filhos. As alternativas descrevem outras opções reais: RESTRICT/NO ACTION bloqueia, e SET NULL anula a chave estrangeira.",null,
+"CASCADE propaga a exclusão do pai para os registros filhos associados. Excluir um filho e remover também o pai é o inverso, e nenhuma opção padrão faz isso. Preencher a chave estrangeira dos filhos com nulo quando o pai é excluído é o SET NULL. Bloquear a exclusão do pai enquanto existirem filhos referenciando-o é RESTRICT ou NO ACTION, que é o comportamento padrão quando nada se declara. E registrar toda exclusão em tabela de log antes de efetivá-la é trabalho de gatilho de auditoria, não de integridade referencial.",null,
  {id:"bd-0011",hab:"C"}],
 
 /* ---------- modelagem (9) ---------- */
@@ -76,44 +76,44 @@
 
 ["BD","Modelagem ER","Ao transformar um relacionamento N:M do modelo conceitual para o modelo relacional, obtém-se",
 ["uma nova tabela associativa contendo as chaves estrangeiras das duas entidades.","uma tabela única resultante da fusão das duas entidades, com chave primária composta.","uma chave estrangeira em cada uma das duas tabelas, apontando reciprocamente para a outra.","um atributo multivalorado em uma das tabelas, guardando as chaves da entidade relacionada.","duas tabelas independentes, já que o relacionamento é resolvido em tempo de consulta."],0,
-"Relacionamentos muitos-para-muitos sempre viram tabela própria. Se o relacionamento tiver atributos (data, quantidade), eles vão para essa mesma tabela.",null,
+"Relacionamento muitos-para-muitos vira sempre tabela própria, contendo as chaves estrangeiras das duas entidades — e, se tiver atributos como data ou quantidade, eles vão nessa mesma tabela. Fundir as duas entidades numa tabela única com chave primária composta destruiria a independência de cada uma e repetiria dados sem limite. Pôr uma chave estrangeira em cada tabela, apontando reciprocamente para a outra, só representa um par por linha, o que é 1:1. Guardar as chaves da entidade relacionada em atributo multivalorado viola a primeira forma normal. E deixar duas tabelas independentes, resolvendo o vínculo em tempo de consulta, é simplesmente não representar o relacionamento.",null,
  {id:"bd-0013",hab:"C"}],
 
 ["BD","Modelagem ER","Considere o modelo abaixo. O número total de chaves estrangeiras no esquema relacional resultante é",
 ["1","2","3","5","4"],4,
-"Os dois relacionamentos 1:N geram uma FK cada (em pedido e em item, apontando para cliente e para pedido). O relacionamento N:M gera uma tabela associativa com duas FKs. Total: 4.",
+"Os dois relacionamentos 1:N geram uma chave estrangeira cada — em PEDIDO apontando para CLIENTE, e em ITEM apontando para PEDIDO. O N:M gera tabela associativa com duas. Total: 4. Responder 2 é contar apenas os 1:N e esquecer a associativa. Responder 3 é dar à associativa uma única chave, quando ela precisa das duas para identificar o par. Responder 5 é acrescentar uma chave estrangeira do lado 1, que não existe: no 1:N ela fica sempre do lado N. E 1 conta um só relacionamento.",
 "CLIENTE (1) ---- (N) PEDIDO\nPEDIDO  (1) ---- (N) ITEM\nPRODUTO (N) ---- (M) FORNECEDOR",
  {id:"bd-0014",hab:"I"}],
 
 ["BD","Modelagem ER","A cardinalidade (1,1) em uma das extremidades de um relacionamento indica que a entidade",
 ["pode participar de nenhuma ou de várias ocorrências do relacionamento.","participa obrigatoriamente e de exatamente uma ocorrência do relacionamento.","é uma entidade fraca, identificada pela chave da entidade proprietária.","possui chave primária composta por atributos de ambas as entidades.","participa de forma opcional, podendo não estar associada a ocorrência alguma."],1,
-"O par (mínimo, máximo) informa participação e grau: (1,1) é obrigatória e única; (0,1) é opcional e única; (0,n) é opcional e múltipla; (1,n) é obrigatória e múltipla.",null,
+"O par (mínimo, máximo) informa participação e grau: (1,1) é obrigatória e única. Participar de nenhuma ou de várias ocorrências é (0,n). Participar de forma opcional, podendo não estar associada a ocorrência alguma, é o mínimo zero, e aqui o mínimo é um. Entidade fraca, identificada pela chave da entidade proprietária, é outro conceito — diz respeito à identificação, ainda que costume vir acompanhada de participação obrigatória. E possuir chave primária composta por atributos de ambas as entidades descreve a tabela associativa de um N:M.",null,
  {id:"bd-0015",hab:"C"}],
 
 ["BD","Normalização","Uma tabela está na Primeira Forma Normal (1FN) quando",
 ["não apresenta dependência funcional parcial em relação à chave primária.","possui chave primária composta por duas ou mais colunas do esquema.","não apresenta dependência transitiva entre os atributos não chave da tabela.","todos os seus atributos são atômicos, sem grupos repetitivos ou valores multivalorados.","não possui chaves estrangeiras apontando para outras tabelas do banco."],3,
-"1FN trata da atomicidade. Guardar “telefone1, telefone2, telefone3” em uma coluna, ou vários valores separados por vírgula, viola a 1FN.",null,
+"A 1FN trata de atomicidade: guardar “telefone1, telefone2, telefone3” numa coluna, ou vários valores separados por vírgula, a viola. Não apresentar dependência funcional parcial em relação à chave primária é a 2FN. Não apresentar dependência transitiva entre os atributos não chave é a 3FN. Possuir chave primária composta por duas ou mais colunas não é forma normal nenhuma — é característica do esquema, e é justamente onde a 2FN começa a fazer sentido. E não possuir chaves estrangeiras nada tem a ver com normalizar; ao contrário, normalizar costuma criar chaves estrangeiras.",null,
  {id:"bd-0016",hab:"C"}],
 
 ["BD","Normalização","A Segunda Forma Normal (2FN) exige que a tabela esteja na 1FN e que",
 ["todo atributo não chave dependa da totalidade da chave primária, e não apenas de parte dela.","não haja dependência transitiva entre os atributos que não compõem a chave.","não existam valores nulos em nenhuma das colunas que compõem a chave primária da tabela.","exista apenas uma chave candidata na tabela, evitando ambiguidade na identificação dos registros.","todas as colunas estejam indexadas, para garantir desempenho nas consultas."],0,
-"Dependência parcial só é possível quando a chave é composta — daí tabelas com chave simples já estarem em 2FN automaticamente. Dependência transitiva é problema da 3FN.",null,
+"Dependência parcial só é possível quando a chave é composta, e por isso tabela de chave simples já está em 2FN automaticamente: o que a forma exige é que todo atributo não chave dependa da chave inteira. Não haver dependência transitiva entre os atributos que não compõem a chave é a 3FN. Não existirem valores nulos nas colunas da chave primária é a integridade de entidade, válida em qualquer tabela, normalizada ou não. Existir apenas uma chave candidata não é exigência de forma normal nenhuma — tabelas com várias são normais e comuns. E indexar todas as colunas é decisão de desempenho, sem relação com normalização.",null,
  {id:"bd-0017",hab:"C"}],
 
 ["BD","Normalização","A tabela definida abaixo, cuja chave primária é num_pedido, viola a",
 ["1FN, por conter atributos multivalorados que armazenam mais de um valor em uma mesma coluna da tabela.","forma normal de Boyce-Codd, por existirem duas chaves candidatas sobrepostas que determinam o mesmo atributo.","2FN, por conter dependência parcial de uma chave primária composta por mais de uma coluna da tabela.","3FN, porque nome_cliente e cidade_cliente dependem de cod_cliente, e não diretamente da chave primária.","4FN, por conter dependência multivalorada entre atributos que não guardam relação funcional entre si."],3,
-"A dependência é transitiva: num_pedido determina cod_cliente, que por sua vez determina nome e cidade. A 2FN não é violada porque a chave é simples — dependência parcial só ocorre com chave composta. A correção é mover os dados do cliente para a tabela CLIENTE, deixando em PEDIDO apenas a chave estrangeira.",
+"A dependência é transitiva: num_pedido determina cod_cliente, que por sua vez determina nome e cidade — violação da 3FN. A 1FN não é violada, porque não há atributos multivalorados nem grupo repetitivo: cada coluna guarda um valor. A 2FN não é violada porque a chave é simples, e dependência parcial exige chave primária composta por mais de uma coluna. Boyce-Codd trata do caso de chaves candidatas sobrepostas, e aqui existe uma só. E a 4FN trata de dependência multivalorada, que não aparece neste esquema. A correção é mover os dados do cliente para a tabela CLIENTE, deixando em PEDIDO apenas a chave estrangeira.",
 "CREATE TABLE pedido (\n    num_pedido     INT PRIMARY KEY,\n    cod_cliente    INT,\n    nome_cliente   VARCHAR(100),\n    cidade_cliente VARCHAR(60),\n    data_pedido    DATE\n);",
  {id:"bd-0018",hab:"I"}],
 
 ["BD","Normalização","A desnormalização deliberada de um esquema pode ser justificada quando",
 ["se deseja garantir a integridade dos dados.","a tabela possui poucos registros.","o ganho de desempenho em leitura compensa a redundância introduzida e o risco de inconsistência.","não existem chaves estrangeiras no esquema, o que dispensa a verificação de integridade referencial.","o banco de dados é relacional, arquitetura em que a redundância não compromete a integridade."],2,
-"É decisão de engenharia, não descuido: em cenários de leitura intensa (relatórios, data warehouse) evita-se junções custosas ao preço de redundância controlada e atualização mais complexa.",null,
+"É decisão de engenharia, não descuido: em cenários de leitura intensa — relatórios, data warehouse — evitam-se junções custosas ao preço de redundância controlada e atualização mais complexa. Garantir a integridade dos dados é motivo para normalizar, não para o contrário. A tabela possuir poucos registros torna a desnormalização inútil, porque a junção já sai barata. Não existirem chaves estrangeiras não dispensa a verificação de integridade referencial: apenas transfere o trabalho para a aplicação, o que é pior. E ser um banco relacional não faz a redundância deixar de comprometer a integridade — é exatamente ali que o mesmo dado repetido em dois lugares passa a poder divergir.",null,
  {id:"bd-0019",hab:"C"}],
 
 ["BD","Modelagem ER","Um atributo multivalorado no modelo conceitual, ao ser convertido para o modelo relacional, deve",
 ["permanecer como uma única coluna com valores separados por vírgula.","originar uma nova tabela relacionada à entidade original por chave estrangeira.","ser descartado na conversão, por não ter equivalente no modelo relacional.","tornar-se parte da chave primária, garantindo unicidade dos registros.","ser convertido em atributo derivado, calculado a partir dos demais."],1,
-"Manter vários valores numa coluna viola a 1FN e inviabiliza consultas. A solução é a tabela satélite (por exemplo, TELEFONE_CLIENTE).",null,
+"Vários valores numa coluna violam a 1FN e inviabilizam consultas, então o atributo origina tabela satélite ligada por chave estrangeira, como TELEFONE_CLIENTE. Permanecer como uma única coluna com valores separados por vírgula é precisamente o que se quer evitar. Ser descartado na conversão perderia informação, e o modelo relacional tem como representá-lo. Tornar-se parte da chave primária multiplicaria a linha da entidade a cada valor e destruiria a identificação. E convertê-lo em atributo derivado supõe que possa ser calculado a partir dos demais, o que não vale para telefone nem para qualquer dado independente.",null,
  {id:"bd-0020",hab:"C"}],
 
 /* ---------- transações e integridade (5) ---------- */
@@ -124,7 +124,7 @@
 
 ["BD","Transações","A propriedade que garante que os efeitos de uma transação confirmada sobrevivem a uma falha do sistema é a",
 ["durabilidade.","consistência.","isolamento.","atomicidade.","serialização."],0,
-"Durabilidade é assegurada pelo log de transações: após o commit, o registro em log permite refazer as operações na recuperação, mesmo que os dados ainda não tenham ido para o disco.",null,
+"Durabilidade é assegurada pelo log de transações: depois do commit, o registro permite refazer as operações na recuperação, ainda que os dados não tenham chegado ao disco. Consistência é levar o banco de um estado válido a outro, respeitando as restrições declaradas. Isolamento é uma transação não enxergar o estado intermediário de outra. Atomicidade é o tudo ou nada, que protege contra falha no meio da transação e não contra falha depois de confirmada — é essa a diferença cobrada aqui. E serialização não é propriedade do ACID: é o critério de correção da execução concorrente, ligado ao isolamento.",null,
  {id:"bd-0022",hab:"C"}],
 
 ["BD","Transações","O fenômeno da leitura suja (dirty read) ocorre quando uma transação",
@@ -134,7 +134,7 @@
 
 ["BD","Integridade","O objeto de banco de dados definido abaixo tem por finalidade",
 ["impedir automaticamente que qualquer alteração deixe o saldo negativo, rejeitando a operação.","criar um índice sobre a coluna saldo, acelerando as consultas que filtram por esse valor específico.","normalizar a tabela conta até a terceira forma normal, eliminando dependências transitivas.","gerar uma cópia de segurança integral da tabela a cada alteração efetivada nos registros.","definir a chave primária da tabela e a restrição de unicidade associada."],0,
-"É uma trigger: dispara automaticamente antes de cada alteração e aborta a operação que violaria a regra. Triggers implementam integridade semântica que não cabe em restrição declarativa simples — e valem para qualquer caminho de acesso, inclusive alterações feitas fora da aplicação.",
+"É uma trigger: dispara automaticamente antes de cada alteração e aborta a operação que violaria a regra, valendo para qualquer caminho de acesso, inclusive alterações feitas fora da aplicação. Criar um índice sobre a coluna saldo seria CREATE INDEX, e nada no corpo acelera consulta. Normalizar a tabela até a terceira forma normal é mudança de esquema, feita com outros comandos e novas tabelas. Gerar cópia de segurança a cada alteração é rotina de backup, e o código não copia nada. E definir a chave primária e a restrição de unicidade é declaração de restrição, não código executado a cada linha. Triggers implementam a integridade semântica que não cabe em restrição declarativa simples.",
 "CREATE TRIGGER trg_saldo_negativo\nBEFORE UPDATE ON conta\nFOR EACH ROW\nBEGIN\n    IF NEW.saldo < 0 THEN\n        SIGNAL SQLSTATE '45000'\n        SET MESSAGE_TEXT = 'Saldo nao pode ficar negativo';\n    END IF;\nEND;",
  {id:"bd-0024",hab:"I"}],
 
@@ -165,22 +165,22 @@
 
 ["BD","SQL","Avalie a asserção a seguir e a razão proposta para ela.\nI. Criar um índice sobre uma coluna muito consultada tende a acelerar as consultas que a filtram.\nPORQUE\nII. Índices são estruturas auxiliares que ocupam espaço em disco adicional ao da tabela.\nA respeito dessas asserções, assinale a opção correta.",
 ["As asserções I e II são proposições verdadeiras, e a II é uma justificativa correta da I.","As asserções I e II são proposições verdadeiras, mas a II não é uma justificativa correta da I.","A asserção I é uma proposição verdadeira, e a II é uma proposição falsa.","A asserção I é uma proposição falsa, e a II é uma proposição verdadeira.","As asserções I e II são proposições falsas."],1,
-"As duas são verdadeiras, mas a segunda não explica a primeira — descreve um custo, não o ganho. O que justifica a aceleração é o índice permitir localizar as linhas sem varrer a tabela inteira, tipicamente por uma árvore B. O consumo de espaço, junto com o custo de manter o índice a cada escrita, é justamente o preço a pesar do outro lado.",null,
+"As duas são verdadeiras, mas a segunda não explica a primeira: descreve um custo, não o ganho. O que faz o índice acelerar as consultas que filtram por aquela coluna é permitir localizar as linhas sem varrer a tabela inteira, tipicamente por uma árvore B. Ocupar espaço em disco adicional ao da tabela, somado ao custo de manter a estrutura auxiliar a cada escrita, é o preço que se pesa do outro lado da decisão — verdadeiro, e ainda assim incapaz de justificar a aceleração.",null,
  {"id":"bd-0030","hab":"A"}],
 
 ["BD","Modelagem ER","Avalie a asserção a seguir e a razão proposta para ela.\nI. Um relacionamento muitos-para-muitos entre duas entidades pode ser implementado diretamente, sem tabela intermediária.\nPORQUE\nII. No modelo relacional, uma coluna de uma linha armazena um único valor atômico.\nA respeito dessas asserções, assinale a opção correta.",
 ["As asserções I e II são proposições verdadeiras, e a II é uma justificativa correta da I.","As asserções I e II são proposições verdadeiras, mas a II não é uma justificativa correta da I.","A asserção I é uma proposição verdadeira, e a II é uma proposição falsa.","A asserção I é uma proposição falsa, e a II é uma proposição verdadeira.","As asserções I e II são proposições falsas."],3,
-"A segunda é verdadeira e é exatamente o que impede a primeira. Como cada célula guarda um valor, não há onde colocar as várias chaves estrangeiras que o lado “muitos” exigiria — daí a tabela associativa, com a chave composta pelas duas estrangeiras. A razão dada, sozinha, é a demonstração de que a asserção é falsa.",null,
+"A II é verdadeira e é exatamente o que impede a I: no modelo relacional, uma coluna de uma linha armazena um único valor atômico, e não há onde caberem as várias chaves estrangeiras que o lado “muitos” exigiria. Por isso o relacionamento muitos-para-muitos não pode ser implementado diretamente, sem tabela intermediária: ele exige a associativa, com chave composta pelas duas estrangeiras. A razão dada, sozinha, é a demonstração de que a asserção é falsa.",null,
  {"id":"bd-0031","hab":"A"}],
 
 ["BD","SQL","A consulta SELECT vendedor FROM venda GROUP BY vendedor HAVING SUM(valor) > 800 devolve",
 ["apenas bruno.","apenas carla.","ana, bruno e carla.","apenas ana e carla.","ana e bruno."],0,
-"As somas por vendedor são: ana 500+300 = 800, bruno 900+150 = 1.050 e carla 700. O HAVING exige soma ESTRITAMENTE maior que 800, e só bruno satisfaz. Ana é o distrator que decide a questão: 800 não é maior que 800, e quem lê o operador como “maior ou igual” a inclui. Vale notar também que HAVING filtra GRUPOS depois da agregação — trocá-lo por WHERE aqui daria erro de sintaxe, porque WHERE não enxerga função de agregação.","SELECT vendedor\nFROM venda\nGROUP BY vendedor\nHAVING SUM(valor) > 800;",
+"As somas por vendedor são: ana 500 + 300 = 800, bruno 900 + 150 = 1.050 e carla 700. O HAVING exige soma ESTRITAMENTE maior que 800, e só bruno satisfaz. Responder ana e bruno é ler o operador como “maior ou igual”, e é o distrator que decide a questão: 800 não é maior que 800. Responder apenas carla inverteria o sentido do filtro. Responder apenas ana e carla exclui justamente quem passa. E ana, bruno e carla é o resultado sem o HAVING. Lembre ainda que o HAVING filtra GRUPOS depois da agregação: trocá-lo por WHERE daria erro, porque WHERE não enxerga função de agregação.","SELECT vendedor\nFROM venda\nGROUP BY vendedor\nHAVING SUM(valor) > 800;",
  {"id":"bd-0032","hab":"X","art":[{"t":"tabela","cap":"Tabela VENDA","cab":["id","vendedor","valor"],"al":["num","","num"],"linhas":[["1","ana","500"],["2","ana","300"],["3","bruno","900"],["4","bruno","150"],["5","carla","700"]]}]}],
 
 ["BD","Normalização","Sendo (pedido_id, produto_id) a chave primária, o número de atributos que violam a 2FN por dependência parcial é",
 ["1.","2.","3.","0.","4."],1,
-"nome_produto depende só de produto_id, e cliente_nome depende só de pedido_id: os dois dependem de PARTE da chave composta, e são as duas violações de 2FN. qtd depende da chave inteira e está correto. A alternativa de 3 costuma vir de incluir qtd; a de 0, de esquecer que a chave é composta — e é a chave composta que torna a dependência parcial possível.",null,
+"nome_produto depende só de produto_id e cliente_nome depende só de pedido_id: os dois dependem de PARTE da chave composta, e são as duas violações de 2FN. qtd depende da chave inteira e está correto. Responder 3 é incluir qtd na conta. Responder 1 é enxergar apenas uma das duas dependências parciais. Responder 0 é esquecer que a chave é composta — e é a chave composta que torna a dependência parcial possível. E 4 contaria todos os atributos não chave, inclusive os que estão certos.",null,
  {"id":"bd-0033","hab":"X","art":[{"t":"tabela","cap":"Tabela PEDIDO_ITEM antes da normalização","cab":["pedido_id","produto_id","qtd","nome_produto","cliente_nome"],"al":["num","num","num","",""],"linhas":[["1","10","2","Teclado","Ana"],["1","11","1","Monitor","Ana"],["2","10","3","Teclado","Bruno"]]}]}],
 
 ["BD","Transações","Ao final do escalonamento, sem qualquer controle de concorrência, o valor gravado em X é",
@@ -190,7 +190,7 @@
 
 ["BD","Modelagem ER","Um sistema hospitalar precisa registrar quais medicamentos foram prescritos a quais pacientes, em que data, por qual médico, e em que dosagem. Um paciente pode receber vários medicamentos, um medicamento é prescrito a vários pacientes, e o mesmo par paciente-medicamento pode se repetir em datas diferentes, com dosagens distintas. A equipe discute como representar isso no modelo relacional.\nA modelagem correta é",
 ["acrescentar uma coluna medicamento_id na tabela paciente, com os identificadores separados por vírgula.","criar uma tabela PRESCRICAO com chave estrangeira para paciente, medicamento e médico, e atributos próprios de data e dosagem.","criar uma tabela associativa com chave primária composta por paciente_id e medicamento_id apenas.","duplicar a linha do paciente na tabela PACIENTE para cada medicamento prescrito.","criar uma coluna de texto livre em PACIENTE para registrar o histórico de prescrições."],1,
-"O par paciente-medicamento se repete em datas diferentes, e isso elimina a chave composta apenas por esses dois — ela impediria a segunda prescrição do mesmo remédio. Data e dosagem são atributos DA prescrição, não do paciente nem do medicamento, o que caracteriza uma entidade própria com identidade e chaves estrangeiras para os três participantes. As demais alternativas violam a primeira forma normal ou destroem a identidade do paciente.",null,
+"O par paciente-medicamento se repete em datas diferentes, o que elimina a chave primária composta apenas por paciente_id e medicamento_id: ela impediria a segunda prescrição do mesmo remédio. Data e dosagem são atributos DA prescrição, não do paciente nem do medicamento, o que caracteriza entidade própria, com identidade e chaves estrangeiras para os três participantes. Acrescentar uma coluna medicamento_id em PACIENTE, com os identificadores separados por vírgula, viola a primeira forma normal e inviabiliza consultar por medicamento. Duplicar a linha do paciente para cada medicamento prescrito destrói a identidade do paciente e repete todos os seus dados. E uma coluna de texto livre para o histórico transforma dado em prosa: não se consulta, não se soma, não se audita.",null,
  {"id":"bd-0035","hab":"E"}],
 
 ["BD","Integridade","Um sistema de vendas mantém as tabelas CLIENTE e PEDIDO, com chave estrangeira de PEDIDO para CLIENTE. A área comercial pediu que clientes inativos há mais de cinco anos sejam removidos do cadastro, alegando que a base cresceu demais e que as listas de seleção ficaram inutilizáveis. O setor fiscal informou que os pedidos precisam ser mantidos por dez anos, por exigência legal, e que os relatórios fiscais exibem o nome do cliente de cada pedido, inclusive de pedidos antigos. A equipe de desenvolvimento precisa atender aos dois setores.\nA solução adequada é",

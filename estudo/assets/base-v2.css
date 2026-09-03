@@ -1,0 +1,392 @@
+/* ENADE 2026 TADS — camada de base, versão 2
+   Direção: dois registros. Leitura é editorial e sem cor; instrumento é denso,
+   monoespaçado e só ele carrega cor. Nada aqui depende de internet.
+
+   Regra única da cor, obedecida por todo o arquivo:
+     acento  = existe algo acionável ali (link, botão, alternativa marcada). Nada mais.
+     estado  = algo aconteceu (acerto, erro, atenção, pendente). Nunca decorativo.
+     neutro  = todo o resto, inclusive cartão, filete e número que não é resultado.
+   Se um elemento não é acionável e não relata estado, ele é cinza. Sem exceção.
+
+   Carregado por: simulado-01..04, simulado-ia, revisao e amostra-design.
+   As demais páginas seguem em base.css, que não foi tocado. */
+
+/* ---------- fontes auto-hospedadas ---------- */
+@font-face {
+  font-family: 'Source Serif 4'; font-style: normal; font-weight: 400 700;
+  font-display: swap; src: url(fontes/source-serif-4-var-latin.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Sans VF'; font-style: normal; font-weight: 100 700;
+  font-display: swap; src: url(fontes/ibm-plex-sans-var-latin.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 400;
+  font-display: swap; src: url(fontes/ibm-plex-mono-400-latin.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 600;
+  font-display: swap; src: url(fontes/ibm-plex-mono-600-latin.woff2) format('woff2');
+}
+
+:root {
+  /* fallbacks escolhidos, não herdados: Sitka Text é do Matthew Carter, desenhada
+     para leitura em tela, e vem no Windows desde o 8. Constantia é a segunda opção. */
+  --f-ler:   'Source Serif 4', 'Sitka Text', Constantia, Cambria, Georgia, serif;
+  --f-ui:    'IBM Plex Sans VF', 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif;
+  --f-dado:  'IBM Plex Mono', 'Cascadia Mono', Consolas, ui-monospace, monospace;
+
+  /* escala modular, razão 1.2 a partir de 16 */
+  --t-11: 11px; --t-13: 13px; --t-16: 16px; --t-19: 19px;
+  --t-23: 23px; --t-28: 28px; --t-33: 33px; --t-40: 40px;
+  /* corpo de leitura é óptico, fora da escala de propósito: 18/30 no serif */
+  --t-ler: 18px; --lh-ler: 30px;
+
+  /* ritmo vertical de 4px */
+  --e1: 4px; --e2: 8px; --e3: 12px; --e4: 16px;
+  --e5: 24px; --e6: 32px; --e7: 48px; --e8: 64px;
+
+  --larg-pag: 1120px;  /* largura da .wrap; body.simulado estreita para 980 */
+  --larg-ler: 720px;   /* ~68ch no corpo de leitura */
+  --marg: 104px;       /* coluna de marginália */
+  --r: 2px;            /* raio quase nulo: papel e chapa não têm canto redondo */
+}
+
+/* ---------- neutros: papel morno na clara, grafite frio na escura ---------- */
+:root, :root[data-theme="light"] {
+  color-scheme: light;
+  --papel:   #EFEDE8;  /* fundo geral */
+  --leitura: #FBFAF7;  /* prancha de leitura, mais clara que o fundo */
+  --instr:   #E6E6E2;  /* faixa de instrumento, mais fria e mais escura */
+  --tinta:   #17181A; --tinta-2: #414449; --tenue: #74777D;
+  --filete:  #DAD8D1; --filete-2: #C1BFB7;
+  --pauta:   rgba(23,24,26,.030);   /* pautado do papel */
+  --malha:   rgba(23,24,26,.05);    /* quadriculado do instrumento */
+  --matte:   #BFBCB4;               /* fosco em volta da digitalização */
+
+  --acento: #14514D; --acento-2: #1D726C; --acento-in: #FFFFFF; --acento-lav: #DDE9E7;
+  --acerto: #2F6B3C; --acerto-lav: #E0EDE1;
+  --erro:   #A33C25; --erro-lav:   #F5E4DE;
+  --alerta: #7E6118; --alerta-lav: #F2EAD4;
+  /* rampa sequencial: magnitude, uma cor só do claro ao escuro */
+  --calor-1:#E2E0DA; --calor-2:#BACFCB; --calor-3:#84AFA9; --calor-4:#3F827B; --calor-5:#14514D;
+  /* séries de gráfico: identidade, não magnitude. Ver a nota no fim do arquivo. */
+  --serie-1:#008C80; --serie-2:#3A55CC; --serie-3:#BE6A0A; --serie-4:#414449;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --papel:   #121316;
+  --leitura: #191A1E;
+  --instr:   #0C0D0F;
+  --tinta:   #E8E6E1; --tinta-2: #B2B0AA; --tenue: #7C7F85;
+  --filete:  #292B30; --filete-2: #3A3D44;
+  --pauta:   rgba(232,230,225,.038);
+  --malha:   rgba(232,230,225,.045);
+  --matte:   #08090A;
+
+  --acento: #6FBFB6; --acento-2: #8FD3CB; --acento-in: #0C1414; --acento-lav: #17302E;
+  --acerto: #7FB683; --acerto-lav: #17251A;
+  --erro:   #E08A6E; --erro-lav:   #2E1D17;
+  --alerta: #D6B25E; --alerta-lav: #2B2415;
+  --calor-1:#22252A; --calor-2:#2E4B47; --calor-3:#3F6E67; --calor-4:#54968D; --calor-5:#8FD3CB;
+  --serie-1:#1E9C8E; --serie-2:#6E82DC; --serie-3:#C0821F; --serie-4:#B2B0AA;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --papel:#121316; --leitura:#191A1E; --instr:#0C0D0F;
+    --tinta:#E8E6E1; --tinta-2:#B2B0AA; --tenue:#7C7F85;
+    --filete:#292B30; --filete-2:#3A3D44;
+    --pauta:rgba(232,230,225,.038); --malha:rgba(232,230,225,.045); --matte:#08090A;
+    --acento:#6FBFB6; --acento-2:#8FD3CB; --acento-in:#0C1414; --acento-lav:#17302E;
+    --acerto:#7FB683; --acerto-lav:#17251A;
+    --erro:#E08A6E; --erro-lav:#2E1D17;
+    --alerta:#D6B25E; --alerta-lav:#2B2415;
+    --calor-1:#22252A; --calor-2:#2E4B47; --calor-3:#3F6E67; --calor-4:#54968D; --calor-5:#8FD3CB;
+    --serie-1:#1E9C8E; --serie-2:#6E82DC; --serie-3:#C0821F; --serie-4:#B2B0AA;
+  }
+}
+
+/* ---------- reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--papel); color: var(--tinta);
+  font-family: var(--f-ui); font-size: var(--t-16); line-height: 1.55;
+  font-optical-sizing: auto;
+}
+img { max-width: 100%; height: auto; display: block; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* A prova é mais estreita que a página inicial: linha curta cansa menos em 4 horas. */
+body.simulado { --larg-pag: 980px; }
+.wrap { width: 100%; max-width: var(--larg-pag); margin: 0 auto; padding: 0 var(--e5); }
+
+/* ---------- tipografia comum ---------- */
+h1, h2, h3, h4 { font-family: var(--f-ler); font-weight: 600; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(26px, 5vw, var(--t-40)); line-height: 1.1; letter-spacing: -.02em; }
+h2 { font-size: clamp(20px, 3.4vw, var(--t-28)); line-height: 1.18; letter-spacing: -.015em; }
+h3 { font-size: var(--t-19); line-height: 1.3; }
+p  { margin: 0; max-width: 68ch; }
+a  { color: var(--acento); }
+strong { font-weight: 600; color: var(--tinta); }
+code {
+  font-family: var(--f-dado); font-size: .88em;
+  background: var(--papel); border: 1px solid var(--filete);
+  padding: 0 4px; border-radius: var(--r);
+}
+
+.eyebrow {
+  font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .16em;
+  text-transform: uppercase; color: var(--tenue); display: block; margin-bottom: var(--e2);
+}
+.lede { font-size: 16.5px; color: var(--tinta-2); }
+.fine { font-size: var(--t-13); color: var(--tenue); }
+
+/* ======================================================================
+   REGISTRO DE INSTRUMENTO — mono, denso, frio. Só aqui existe cor.
+   ====================================================================== */
+
+/* A barra vem de nav.js:48-54 e é igual em todas as páginas: os nomes de
+   classe abaixo são os que ele emite, e não podem mudar. */
+nav.top {
+  position: sticky; top: 0; z-index: 60;
+  background: var(--instr); border-bottom: 1px solid var(--filete);
+  /* a barra não acompanha o estreitamento de body.simulado: são dez rotas em
+     caixa alta, e a 980 px a última fica cortada */
+  --larg-pag: 1180px;
+}
+@supports (backdrop-filter: blur(8px)) {
+  nav.top { background: color-mix(in srgb, var(--instr) 90%, transparent); backdrop-filter: blur(8px); }
+}
+nav.top .wrap { display: flex; align-items: center; gap: var(--e4); min-height: 46px; }
+nav.top .brand {
+  font-family: var(--f-dado); font-size: var(--t-11); font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--tinta);
+  white-space: nowrap; text-decoration: none;
+}
+nav.top .links { display: flex; gap: var(--e3); overflow-x: auto; scrollbar-width: none; }
+nav.top .links::-webkit-scrollbar { display: none; }
+nav.top .links a {
+  font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .06em;
+  text-transform: uppercase; color: var(--tenue); text-decoration: none;
+  padding: var(--e1) 0; border-bottom: 1px solid transparent; white-space: nowrap;
+}
+nav.top .links a:hover { color: var(--tinta); border-bottom-color: var(--filete-2); }
+nav.top .links a[aria-current="page"] { color: var(--acento); border-bottom-color: var(--acento); }
+nav.top .navsp { flex: 1; }
+
+.tema {
+  font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .08em;
+  background: transparent; border: 1px solid var(--filete-2); border-radius: var(--r);
+  color: var(--tenue); padding: 5px 9px; cursor: pointer; white-space: nowrap;
+}
+.tema:hover { color: var(--tinta); border-color: var(--tinta-2); }
+
+/* ---------- botões ---------- */
+.btn {
+  font-family: var(--f-dado); font-size: var(--t-11); font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase; cursor: pointer;
+  background: var(--acento); color: var(--acento-in); border: 1px solid var(--acento);
+  border-radius: var(--r); padding: 8px 14px; white-space: nowrap;
+}
+.btn:hover { background: var(--acento-2); border-color: var(--acento-2); }
+.btn.ghost { background: transparent; color: var(--tinta-2); border-color: var(--filete-2); }
+.btn.ghost:hover { color: var(--tinta); border-color: var(--tinta-2); background: transparent; }
+.btn.grande { font-size: var(--t-13); padding: 12px 22px; }
+.btn.mini { font-size: 10px; padding: 4px 8px; }
+
+/* medidores e trilhos, as primitivas do instrumento */
+.cron {
+  font-family: var(--f-dado); font-size: var(--t-19); font-weight: 600;
+  font-variant-numeric: tabular-nums; letter-spacing: -.01em; color: var(--tinta);
+}
+.trilho { height: 1px; background: var(--filete-2); }
+.trilho > i { display: block; height: 100%; background: var(--acento); }
+.calor { display: flex; height: 10px; }
+.calor i { display: block; }
+.calor i.c1 { background: var(--calor-1); } .calor i.c2 { background: var(--calor-2); }
+.calor i.c3 { background: var(--calor-3); } .calor i.c4 { background: var(--calor-4); }
+.calor i.c5 { background: var(--calor-5); }
+
+/* fundo quadriculado, para as regiões de operar */
+.quadriculado {
+  background:
+    repeating-linear-gradient(to right, var(--malha) 0 1px, transparent 1px 8px),
+    repeating-linear-gradient(to bottom, var(--malha) 0 1px, transparent 1px 8px),
+    var(--instr);
+}
+
+/* ---------- seções longas (index e plano) ---------- */
+section { padding: var(--e7) 0; border-top: 1px solid var(--filete); }
+section:first-of-type { border-top: none; }
+.head { display: flex; flex-direction: column; gap: var(--e2); margin-bottom: var(--e5); }
+.stack { display: flex; flex-direction: column; gap: var(--e5); }
+
+/* ---------- listas ---------- */
+ul.dash { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--e2); }
+ul.dash li {
+  position: relative; padding-left: 20px; max-width: 68ch;
+  font-family: var(--f-ler); font-size: 16px; line-height: 26px; color: var(--tinta);
+}
+ul.dash li::before {
+  content: ""; position: absolute; left: 0; top: 13px;
+  width: 9px; height: 1px; background: var(--filete-2);
+}
+
+ol.num { counter-reset: n; list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--e4); }
+ol.num li {
+  counter-increment: n; position: relative; padding-left: 38px; max-width: 68ch;
+  font-family: var(--f-ler); font-size: 16px; line-height: 26px; color: var(--tinta);
+}
+ol.num li::before {
+  content: counter(n, decimal-leading-zero); position: absolute; left: 0; top: 4px;
+  font-family: var(--f-dado); font-size: var(--t-11); font-weight: 600;
+  letter-spacing: .08em; color: var(--tenue);
+}
+
+/* ---------- etiquetas ---------- */
+.chip {
+  display: inline-block; font-family: var(--f-dado); font-size: var(--t-11); font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase; padding: 2px 6px; white-space: nowrap;
+  border: 1px solid var(--filete-2); color: var(--tenue); background: transparent;
+}
+.chip.ce { color: var(--tinta-2); border-color: var(--tinta-2); }
+.chip.disc { color: var(--tinta-2); border-style: dashed; }
+
+/* ---------- tabelas simples ---------- */
+.scroller { width: 100%; overflow-x: auto; }
+table.plain { border-collapse: collapse; width: 100%; min-width: 620px; }
+table.plain th, table.plain td {
+  text-align: left; padding: var(--e2) var(--e3); border-bottom: 1px solid var(--filete);
+  font-size: var(--t-13); vertical-align: top;
+}
+table.plain th {
+  font-family: var(--f-dado); font-size: var(--t-11); text-transform: uppercase;
+  letter-spacing: .1em; color: var(--tenue); font-weight: 600; border-bottom-color: var(--filete-2);
+}
+table.plain td.k {
+  font-family: var(--f-dado); font-weight: 600; color: var(--tinta);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- cartões: sem cor decorativa; só o estado colore ---------- */
+.cards { display: grid; gap: var(--e3); grid-template-columns: 1fr; }
+@media (min-width: 720px) {
+  .cards.c2 { grid-template-columns: 1fr 1fr; }
+  .cards.c3 { grid-template-columns: repeat(3, 1fr); }
+}
+.card {
+  background: var(--leitura); border: 1px solid var(--filete);
+  border-left: 2px solid var(--filete-2); border-radius: 0;
+  padding: var(--e4) var(--e5); display: flex; flex-direction: column; gap: var(--e2);
+}
+.card.key  { border-left-color: var(--filete-2); }
+.card.flag { border-left-color: var(--alerta); background: var(--alerta-lav); }
+.card h3 {
+  font-family: var(--f-dado); font-size: var(--t-11); font-weight: 600;
+  letter-spacing: .13em; text-transform: uppercase; color: var(--tenue);
+}
+.card p { font-family: var(--f-ler); font-size: 16px; line-height: 26px; color: var(--tinta); }
+
+/* ======================================================================
+   REGISTRO DE LEITURA — serifa, papel pautado, zero cromia.
+   ====================================================================== */
+
+.ler {
+  font-family: var(--f-ler); font-size: var(--t-ler); line-height: var(--lh-ler);
+  color: var(--tinta); max-width: var(--larg-ler);
+  hyphens: auto; -webkit-hyphens: auto; text-wrap: pretty;
+}
+.ler > * + * { margin-top: var(--lh-ler); }
+.ler p { margin: 0; max-width: none; }
+.ler.pautado {
+  background-image: repeating-linear-gradient(
+    to bottom, transparent 0 calc(var(--lh-ler) - 1px), var(--pauta) calc(var(--lh-ler) - 1px) var(--lh-ler));
+  background-position: 0 8px;   /* desce o filete para a linha de base */
+}
+
+/* marginália: mono minúsculo, cinza, alinhado à direita da própria coluna */
+.margem {
+  font-family: var(--f-dado); font-size: var(--t-11); line-height: 1.9;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--tenue);
+}
+
+/* citação/fonte, no rodapé de um bloco de leitura */
+.fonte {
+  font-family: var(--f-ui); font-size: var(--t-13); color: var(--tenue);
+  border-top: 1px solid var(--filete); padding-top: var(--e3); margin-top: var(--e5);
+}
+
+/* código: dentro da leitura, volta ao registro de instrumento, de propósito */
+pre.codigo {
+  margin: 0; background: var(--papel);
+  border: 1px solid var(--filete); border-left: 2px solid var(--filete-2);
+  padding: var(--e4) var(--e5); overflow-x: auto;
+}
+pre.codigo code {
+  font-family: var(--f-dado); font-size: var(--t-13); line-height: 22px;
+  color: var(--tinta-2); background: none; border: 0; padding: 0; white-space: pre;
+}
+
+/* ---------- jogo de marcas: traço 1.25, o mesmo peso do filete ---------- */
+.sinal {
+  width: 13px; height: 13px; flex: none; stroke: currentColor; fill: none;
+  stroke-width: 1.25; stroke-linecap: square; stroke-linejoin: miter;
+  vertical-align: -1px;
+}
+
+/* ---------- rodapé ---------- */
+footer {
+  padding: var(--e6) 0 var(--e8); border-top: 1px solid var(--filete);
+  color: var(--tenue); font-size: var(--t-13);
+}
+footer .wrap { display: flex; flex-direction: column; gap: var(--e2); }
+footer p { max-width: 76ch; }
+
+/* ======================================================================
+   POR QUE AS SÉRIES DE GRÁFICO NÃO SAEM DA RAMPA DE CALOR
+
+   --calor-1..5 é uma rampa sequencial: uma cor só, do claro ao escuro. Serve
+   para magnitude — o mapa de incidência do plano, o calor de uma tabela. Usá-la
+   para identificar séries de um gráfico é o erro clássico: dois passos vizinhos
+   da mesma cor não se distinguem, e sob deuteranopia nem os distantes.
+
+   --serie-1..3 é uma paleta categórica: três matizes distintos, escolhidos com
+   o validador de paleta e aprovados nos cinco testes (banda de luminosidade,
+   piso de croma, separação sob daltonismo, piso de visão normal e contraste
+   contra a chapa do gráfico), em todos os pares e nos dois temas.
+
+     claro  #008C80 · #3A55CC · #BE6A0A   sobre --leitura #FBFAF7
+     escuro #1E9C8E · #6E82DC · #C0821F   sobre --leitura #191A1E
+
+   Três é o teto: o quarto matiz derruba a separação sob daltonismo, e o banco
+   não tem gráfico com mais de três séries. --serie-4 é cinza de propósito — se
+   um dia aparecer uma quarta série, ela se lê como "outros", não como um
+   quarto assunto.
+   ====================================================================== */
+
+/* ======================================================================
+   PONTE PARA O LEGADO
+   simulado.js:656, painel.js:59/92/116-119 e discursivas.js:175 escrevem
+   `background: var(--good)` e afins direto no atributo style; o <style>
+   interno de simulado-ia.html cita mais uma dúzia. Token indefinido em
+   valor inline não cai num padrão: cai em `unset`, e a barra some sem erro
+   no console. Estes aliases são o que impede essa falha silenciosa.
+   ====================================================================== */
+:root {
+  --paper: var(--papel); --surface: var(--leitura); --sunk: var(--papel);
+  --ink: var(--tinta); --ink-2: var(--tinta-2); --muted: var(--tenue);
+  --rule: var(--filete); --rule-2: var(--filete-2);
+  --accent: var(--acento); --accent-2: var(--acento-2);
+  --accent-in: var(--acento-in); --accent-wash: var(--acento-lav);
+  --good: var(--acerto); --good-wash: var(--acerto-lav);
+  --flag: var(--erro); --flag-wash: var(--erro-lav);
+  --warn: var(--alerta); --warn-wash: var(--alerta-lav);
+  --heat-1: var(--calor-1); --heat-2: var(--calor-2); --heat-3: var(--calor-3);
+  --heat-4: var(--calor-4); --heat-5: var(--calor-5);
+  --font-display: var(--f-ler); --font-body: var(--f-ui); --font-data: var(--f-dado);
+  --wrap: var(--larg-pag);
+}

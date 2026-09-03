@@ -1,0 +1,16 @@
+Fontes auto-hospedadas, todas sob SIL Open Font License 1.1 (OFL).
+Uso, redistribuição e incorporação livres; não podem ser vendidas isoladamente.
+
+  source-serif-4-var-latin.woff2   Source Serif 4 (Frank Grießhammer, Adobe)
+                                   variável opsz 8..60, wght 400..700 · subset latin
+                                   https://github.com/adobe-fonts/source-serif
+
+  ibm-plex-sans-var-latin.woff2    IBM Plex Sans (Mike Abbink, Bold Monday / IBM)
+                                   variável wght 100..700 · subset latin
+  ibm-plex-mono-400-latin.woff2    IBM Plex Mono 400 · subset latin
+  ibm-plex-mono-600-latin.woff2    IBM Plex Mono 600 · subset latin
+                                   https://github.com/IBM/plex
+
+Subset latin (U+0000-00FF e afins) cobre todo o português: ã õ ç á é í ó ú â ê ô à.
+Arquivos obtidos do CDN do Google Fonts e gravados aqui para o material continuar
+funcionando sem internet, como o resto do sistema.

@@ -315,3 +315,77 @@ details.bloco-acertos[open] summary::before { content: "\2212"; }
   font-variant-numeric: tabular-nums; padding-top: 4px;
 }
 .notadisc b { font-size: 24px; color: var(--accent); font-weight: 700; }
+
+
+/* ---------------------------------------------------------------- artefatos ---
+   Tabela, gráfico e diagrama dentro do enunciado. Nenhuma cor é declarada em
+   número: tudo sai das variáveis de base.css, e por isso o tema escuro funciona
+   sem regra própria. A rampa --heat-* dá as séries do gráfico, as mesmas do mapa
+   de incidência do plano e das barras do painel — o material inteiro fala uma
+   linguagem visual só. */
+
+figure.artefato { margin: 0; }
+figure.artefato + figure.artefato { margin-top: 14px; }
+figure.artefato figcaption {
+  margin-top: 7px; font-size: 12.5px; color: var(--muted); line-height: 1.45;
+}
+
+/* Tabela ------------------------------------------------------------------ */
+.art-rolagem { overflow-x: auto; }
+.art-tabela table {
+  border-collapse: collapse; width: 100%; font-size: 14px;
+  background: var(--surface); border: 1px solid var(--rule);
+  border-radius: var(--r);
+}
+.art-tabela caption {
+  caption-side: top; text-align: left; padding: 0 0 7px;
+  font-size: 12.5px; color: var(--muted);
+}
+.art-tabela th, .art-tabela td {
+  padding: 7px 12px; border-bottom: 1px solid var(--rule); text-align: left;
+}
+.art-tabela thead th {
+  background: var(--sunk); font-weight: 600; color: var(--ink);
+  border-bottom: 1px solid var(--rule-2); white-space: nowrap;
+}
+.art-tabela tbody tr:last-child td { border-bottom: none; }
+.art-tabela th.num, .art-tabela td.num {
+  text-align: right; font-family: var(--font-data); font-size: 13px;
+}
+
+/* Gráfico e diagrama ------------------------------------------------------ */
+.art-svg-caixa {
+  background: var(--surface); border: 1px solid var(--rule);
+  border-radius: var(--r); padding: 10px 12px;
+}
+.art-svg-caixa svg { display: block; width: 100%; height: auto; }
+
+.a-grade { stroke: var(--rule); stroke-width: 1; }
+.a-eixo-linha { stroke: var(--rule-2); stroke-width: 1; }
+.a-eixo {
+  fill: var(--muted); font-family: var(--font-body); font-size: 11.5px;
+}
+.a-titulo-eixo { fill: var(--ink-2); font-size: 12px; }
+
+.a-barra, .a-chave { fill: var(--heat-4); }
+.a-barra.s2, .a-chave.s2 { fill: var(--heat-2); }
+.a-barra.s3, .a-chave.s3 { fill: var(--heat-5); }
+.a-barra.s4, .a-chave.s4 { fill: var(--heat-3); }
+
+.a-linha-serie {
+  fill: none; stroke: var(--heat-4); stroke-width: 2.2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.a-linha-serie.s2 { stroke: var(--heat-2); }
+.a-linha-serie.s3 { stroke: var(--heat-5); }
+.a-linha-serie.s4 { stroke: var(--heat-3); }
+.a-ponto { fill: var(--heat-4); }
+.a-ponto.s2 { fill: var(--heat-2); }
+.a-ponto.s3 { fill: var(--heat-5); }
+.a-ponto.s4 { fill: var(--heat-3); }
+
+/* Diagrama livre: as classes que um bloco svg pode usar. */
+.a-caixa { fill: var(--sunk); stroke: var(--rule-2); stroke-width: 1.2; }
+.a-linha { stroke: var(--ink-2); stroke-width: 1.4; fill: none; }
+.a-rot { fill: var(--ink); font-family: var(--font-body); font-size: 13px; }
+.a-fraco { fill: var(--muted); font-family: var(--font-body); font-size: 11.5px; }

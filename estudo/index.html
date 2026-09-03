@@ -1,53 +1,92 @@
 <!doctype html>
+<!--
+  DESIGN — o contrato desta tela.
+
+  O sistema está em assets/base-v2.css e o raciocínio inteiro está comentado lá.
+  Em uma linha: dois registros — leitura é serifa sem cromia, instrumento é
+  monoespaçado denso e só ele carrega cor — e a lei da cor, que reserva o acento
+  ao que se clica, a cor de estado ao que aconteceu, e deixa todo o resto cinza.
+  O tema tem três estados (auto | claro | escuro) e nav.js os escreve em
+  data-theme antes de o <body> existir. As fontes estão em assets/fontes/:
+  nada sai para a internet, aqui nem em lugar nenhum do material.
+
+  O ?v= nos links de CSS existe para o navegador não servir a folha antiga do
+  cache. Mudou o CSS, suba o número — em todas as telas, senão elas divergem.
+
+  Específico do início:
+
+  • Nenhuma classe daqui vem de JavaScript. O HTML desta página é estático, e
+    esta é a única tela do material em que renomear uma classe é seguro.
+  • A contagem regressiva é fato, não ação: fica em --tinta, nunca em --acento.
+    Número grande já chama atenção sozinho; pintá-lo de acento faria o acento
+    significar "olhe" em vez de "clique", e aí ele não significa mais nada.
+  • As portas de entrada (a.painel) são chapas separadas por filete de 1 px, não
+    cartões com sombra e salto no hover. O que muda ao passar o mouse é o fundo.
+    A seta "Abrir →" é a única coisa em acento na grade toda — é o que se clica.
+  • Esta tela não carrega simulado-v2.css. Só existe o que está em base-v2.css
+    e no <style> logo abaixo.
+-->
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ENADE 2026 TADS — material de estudo</title>
-<link rel="stylesheet" href="assets/base.css" />
+<link rel="stylesheet" href="assets/base-v2.css?v=2" />
 <script>window.PAGINA = "index";</script>
 <script src="assets/nav.js"></script>
 <style>
-  .hero { padding: 46px 0 20px; }
-  .contagem {
-    display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
-    margin: 26px 0 6px;
-  }
-  .contagem b {
-    font-family: var(--font-data); font-size: clamp(40px, 9vw, 58px); font-weight: 700;
-    color: var(--accent); font-variant-numeric: tabular-nums; letter-spacing: -.03em; line-height: 1;
-  }
-  .contagem span { font-size: 15px; color: var(--muted); }
+  .hero { padding: var(--e7) 0 var(--e5); }
 
-  .grelha { display: grid; gap: 14px; grid-template-columns: 1fr; margin-top: 8px; }
+  /* A contagem regressiva é o dado da capa. Fica em tinta, não em acento: não é
+     um botão, é um fato — e a lei da cor reserva o acento ao que se clica. */
+  .contagem { display: flex; align-items: baseline; gap: var(--e3); flex-wrap: wrap; margin: var(--e6) 0 var(--e1); }
+  .contagem b {
+    font-family: var(--f-dado); font-size: clamp(40px, 9vw, 58px); font-weight: 600;
+    color: var(--tinta); font-variant-numeric: tabular-nums; letter-spacing: -.03em; line-height: 1;
+  }
+  .contagem span {
+    font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .12em;
+    text-transform: uppercase; color: var(--tenue);
+  }
+
+  .grelha { display: grid; gap: 1px; grid-template-columns: 1fr; margin-top: var(--e3);
+            background: var(--filete); border: 1px solid var(--filete); }
   @media (min-width: 780px) { .grelha { grid-template-columns: 1fr 1fr; } }
 
+  /* Cada porta de entrada é uma chapa. Sem borda colorida, sem elevação, sem
+     salto no hover: o que muda é o fundo, e a seta é a única coisa em acento —
+     porque é a única que diz "isto se clica". */
   a.painel {
-    display: flex; flex-direction: column; gap: 9px; text-decoration: none; color: inherit;
-    background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--accent);
-    border-radius: var(--r); padding: 20px 22px;
-    transition: border-color .15s ease, transform .15s ease;
+    display: flex; flex-direction: column; gap: var(--e2); text-decoration: none; color: inherit;
+    background: var(--leitura); padding: var(--e5) var(--e5) var(--e4);
+    transition: background .15s ease;
   }
-  a.painel:hover { border-color: var(--accent); transform: translateY(-1px); }
+  a.painel:hover { background: var(--papel); }
   a.painel .k {
-    font-family: var(--font-data); font-size: 10.5px; letter-spacing: .12em;
-    text-transform: uppercase; color: var(--muted);
+    font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .13em;
+    text-transform: uppercase; color: var(--tenue);
   }
-  a.painel h3 { font-family: var(--font-display); font-size: 21px; font-weight: 400; }
-  a.painel p { font-size: 14.5px; color: var(--ink-2); }
-  a.painel .seta { font-family: var(--font-data); font-size: 13px; color: var(--accent); font-weight: 700; margin-top: 3px; }
+  a.painel h3 { font-family: var(--f-ler); font-size: var(--t-23); font-weight: 600; letter-spacing: -.01em; }
+  a.painel p { font-family: var(--f-ler); font-size: 16px; line-height: 26px; color: var(--tinta-2); }
+  a.painel .seta {
+    font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .12em;
+    text-transform: uppercase; color: var(--acento); font-weight: 600; margin-top: var(--e2);
+  }
 
-  .fichas { display: grid; gap: 10px; grid-template-columns: 1fr; margin-top: 6px; }
+  .fichas {
+    display: grid; gap: 1px; grid-template-columns: 1fr; margin-top: var(--e2);
+    background: var(--filete); border: 1px solid var(--filete);
+  }
   @media (min-width: 700px) { .fichas { grid-template-columns: repeat(3, 1fr); } }
-  .ficha {
-    background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r);
-    padding: 15px 17px; display: flex; flex-direction: column; gap: 3px;
+  .ficha { background: var(--instr); padding: var(--e3) var(--e4); display: flex; flex-direction: column; gap: var(--e1); }
+  .ficha b {
+    font-family: var(--f-dado); font-size: var(--t-23); font-weight: 600; color: var(--tinta);
+    font-variant-numeric: tabular-nums; letter-spacing: -.02em; line-height: 1.1;
   }
-  .ficha b { font-family: var(--font-data); font-size: 23px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
-  .ficha span { font-size: 13px; color: var(--muted); }
+  .ficha span { font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .08em; color: var(--tenue); }
 
-  .arq { font-family: var(--font-data); font-size: 13px; line-height: 1.9; color: var(--ink-2); }
-  .arq i { color: var(--muted); font-style: normal; }
+  .arq { font-family: var(--f-dado); font-size: var(--t-13); line-height: 2; color: var(--tinta-2); }
+  .arq i { color: var(--tenue); font-style: normal; }
 </style>
 </head>
 <body>

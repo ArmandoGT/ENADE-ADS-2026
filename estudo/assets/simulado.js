@@ -389,6 +389,15 @@
     function visorAutoral(it) {
       var box = el("div", "visor");
       box.appendChild(el("div", "enunciado", txt(it.enunciado)));
+      /* Artefatos vêm entre o enunciado e o código: a situação primeiro, o trecho
+         a analisar depois. O campo `codigo` do registro continua valendo — é a
+         forma abreviada do artefato mais comum, e sessenta questões já a usam. */
+      if (it.artefatos && global.ARTEFATO) {
+        it.artefatos.forEach(function (a) {
+          var n = global.ARTEFATO.montar(a);
+          if (n) box.appendChild(n);
+        });
+      }
       if (it.codigo) {
         var pre = el("pre", "codigo");
         pre.appendChild(el("code", null, esc(it.codigo)));
@@ -558,6 +567,18 @@
     /* Alimenta o histórico entre sessões. Só na primeira correção de cada prova —
        reabrir a tela de resultado não pode inflar a estatística. Questões deixadas em
        branco entram como erro, que é como o ENADE as trata. */
+    /* Traduz a letra marcada de volta para o slot original da alternativa, na ordem
+       do banco. Sem isso a estatística por distrator seria ruído: as alternativas são
+       embaralhadas a cada sorteio, então a mesma letra designa alternativas diferentes
+       em sessões diferentes. Devolve null nos simulados de caderno, que não têm
+       alternativa em texto, e em questão deixada em branco. */
+    function slotMarcado(it) {
+      var L = S.resp[it.rotulo];
+      if (!L || !it.ordem) return null;
+      var vista = ["A", "B", "C", "D", "E"].indexOf(L);
+      return vista < 0 ? null : it.ordem[vista];
+    }
+
     function registrarHistorico() {
       if (!global.HISTORICO) return;
       var fonte = cfg.fonte || (cfg.numero === "IA" ? "ia" : "s" + pad2(cfg.numero));
@@ -566,8 +587,10 @@
           area: it.area,
           subtema: it.subtema || it.tema || null,
           objeto: it.objeto || null,
+          hab: it.hab || null,
           ok: S.resp[it.rotulo] === it.gab,
-          id: it.idBanco != null ? it.idBanco : null
+          q: it.qid != null ? it.qid : null,
+          escolha: slotMarcado(it)
         };
       }));
       DISCS.forEach(function (it) {

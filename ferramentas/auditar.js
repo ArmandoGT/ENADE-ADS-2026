@@ -1,0 +1,1007 @@
+#!/usr/bin/env node
+/* Auditoria do banco autoral — ENADE 2026 / TADS.
+
+   Recalcula, a partir dos arquivos do próprio repositório, toda afirmação numérica
+   que o README faz sobre a qualidade do banco. O ponto é que nenhum número deste
+   material seja acreditado por afirmação: quem clona o repositório roda
+
+       node ferramentas/auditar.js
+
+   e obtém os mesmos valores, ou descobre que eles mudaram.
+
+   A régua não é arbitrária. As metas de composição vêm do acervo oficial do Inep —
+   as 200 questões de 2008 a 2021 classificadas em questoes_mapeadas.csv — e não de
+   uma opinião sobre como deveria ser uma boa prova. Corrigir uma linha do CSV
+   reacomoda o alvo automaticamente.
+
+   Uso:
+     node ferramentas/auditar.js              relatório em texto
+     node ferramentas/auditar.js --json       o mesmo em JSON
+     node ferramentas/auditar.js --escrever   grava estudo/assets/auditoria-dados.js
+
+   Sai com código 1 se alguma meta falhar, para servir de porteiro em CI ou hook.
+*/
+"use strict";
+
+var fs = require("fs");
+var path = require("path");
+
+var RAIZ = path.resolve(__dirname, "..");
+var BANCO = path.join(RAIZ, "estudo", "assets", "banco");
+var ASSETS = path.join(RAIZ, "estudo", "assets");
+
+var AREAS = ["es", "oo", "al", "bd", "gp", "in", "ml", "ih", "sg", "ot", "fg"];
+
+/* ---------------------------------------------------------------- carregamento */
+
+/* Os arquivos do banco são scripts de navegador que se penduram em `window`.
+   Em vez de reimplementar o formato, damos a eles o `window` que esperam. */
+function carregarBanco() {
+  /* localStorage de mentirinha: sorteio.js grava nele o estoque de já-vistas, e sem
+     ele a simulação de sorteios não roda. Some ao fim do processo, que é o certo —
+     auditar não pode deixar rastro. */
+  var mem = {};
+  var ls = {
+    getItem: function (k) { return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null; },
+    setItem: function (k, v) { mem[k] = String(v); },
+    removeItem: function (k) { delete mem[k]; }
+  };
+  var janela = { BANCO_IA: [], localStorage: ls };
+  var sandbox = { window: janela };
+  AREAS.forEach(function (a) {
+    var src = fs.readFileSync(path.join(BANCO, a + ".js"), "utf8");
+    new Function("window", src)(janela);
+  });
+  ["disc", "disc-oficiais"].forEach(function (a) {
+    var src = fs.readFileSync(path.join(BANCO, a + ".js"), "utf8");
+    new Function("window", src)(janela);
+  });
+  ["objetos.js", "acervo.js"].forEach(function (f) {
+    new Function("window", fs.readFileSync(path.join(ASSETS, f), "utf8"))(janela);
+  });
+  new Function("window", fs.readFileSync(path.join(BANCO, "legado-ids.js"), "utf8"))(janela);
+  new Function("window", "localStorage",
+    fs.readFileSync(path.join(ASSETS, "sorteio.js"), "utf8"))(janela, ls);
+  return {
+    obj: janela.BANCO_IA || [],
+    disc: janela.BANCO_IA_DISC || [],
+    discOficiais: janela.DISC_OFICIAIS || [],
+    OBJETOS: janela.OBJETOS,
+    ACERVO: janela.ACERVO,
+    legado: janela.BANCO_LEGADO_IDS || [],
+    _sandbox: sandbox
+  };
+}
+
+/* CSV com aspas e vírgula dentro de campo. Pequeno o bastante para não merecer
+   biblioteca, grande o bastante para não merecer split(","). */
+function lerCSV(arquivo) {
+  var txt = fs.readFileSync(arquivo, "utf8").replace(/^﻿/, "");
+  var linhas = [], campo = "", linha = [], aspas = false;
+  for (var i = 0; i < txt.length; i++) {
+    var c = txt[i];
+    if (aspas) {
+      if (c === '"' && txt[i + 1] === '"') { campo += '"'; i++; }
+      else if (c === '"') aspas = false;
+      else campo += c;
+    } else if (c === '"') aspas = true;
+    else if (c === ",") { linha.push(campo); campo = ""; }
+    else if (c === "\n") { linha.push(campo); linhas.push(linha); linha = []; campo = ""; }
+    else if (c !== "\r") campo += c;
+  }
+  if (campo || linha.length) { linha.push(campo); linhas.push(linha); }
+  var cab = linhas.shift();
+  return linhas.filter(function (l) { return l.length === cab.length; })
+    .map(function (l) {
+      var o = {};
+      cab.forEach(function (k, j) { o[k] = l[j]; });
+      return o;
+    });
+}
+
+/* ------------------------------------------------------- vocabulário do acervo */
+
+/* Banco e acervo falam a mesma língua: os códigos de uma letra de ACERVO.HAB. Esta
+   tabela existe só para traduzir a coluna `habilidade` do CSV, que traz o nome por
+   extenso e sem acento. É também o que permite conferir se acervo.js não divergiu do
+   CSV — os dois guardam as mesmas 200 linhas, e dado duplicado sem conferência é dado
+   que uma hora discorda de si mesmo. */
+var COD_HAB = {
+  "Julgamento de itens": "J",
+  "Interpretacao de artefato": "I",
+  "Conceito puro": "C",
+  "Assercao-razao": "A",
+  "Calculo ou traco": "X",
+  "Estudo de caso ou producao de artefato": "E"
+};
+var COD_FMT = {
+  "Texto": "T", "Codigo": "K", "Pseudocodigo": "P", "Diagrama UML": "U", "Modelo ER": "R",
+  "SQL": "Q", "Tabela": "B", "Grafico ou figura": "G", "Cenario": "S"
+};
+
+/* Cota por área do componente específico, espelhando sorteio.js. Fica repetida aqui
+   de propósito: o auditor não deve depender do módulo que audita. Se as duas
+   divergirem, a meta cota-espelhada acusa. */
+var COTA_AREA = { ES: 8, OO: 5, AL: 4, BD: 3, IN: 2, GP: 2, ML: 2, SG: 2, IH: 1, OT: 1 };
+
+/* Tamanho do banco no dia em que os ids estáveis foram introduzidos, e portanto o
+   tamanho que banco/legado-ids.js tem de manter para sempre. Ver a meta legado-ids. */
+var CONGELADAS = 468;
+/* Quantas entradas da tabela podem apontar para questão que não existe mais. Cada
+   órfã é um pedaço de histórico antigo que deixa de ser reconhecido; zero é o ideal e
+   um punhado é o preço de reescrever questão. Passar disso pede decisão consciente. */
+var LIMITE_ORFAOS = 20;
+
+/* O registro do banco tem 7 campos posicionais e um oitavo com os metadados nomeados:
+   { id, hab, art }. Posicional ficaria ilegível a partir do oitavo campo. */
+function meta(q) { return (q.length > 7 && q[7]) || null; }
+function habilidadeDe(q) { var m = meta(q); return (m && m.hab) || null; }
+
+/* ------------------------------------------------------------------ estatística */
+
+function contar(lista, chave) {
+  var c = {};
+  lista.forEach(function (x) { var k = chave(x); c[k] = (c[k] || 0) + 1; });
+  return c;
+}
+
+function proporcao(contagem, total) {
+  var p = {};
+  Object.keys(contagem).forEach(function (k) { p[k] = 100 * contagem[k] / total; });
+  return p;
+}
+
+/* Qui-quadrado de aderência a uma distribuição uniforme sobre cinco casas.
+   Crítico a 5% com 4 graus de liberdade: 9,49. */
+function quiQuadrado(obs) {
+  var n = obs.reduce(function (a, b) { return a + b; }, 0);
+  if (!n) return 0;
+  var e = n / obs.length;
+  return obs.reduce(function (s, v) { return s + Math.pow(v - e, 2) / e; }, 0);
+}
+
+function mediana(v) {
+  if (!v.length) return 0;
+  var s = v.slice().sort(function (a, b) { return a - b; });
+  var m = Math.floor(s.length / 2);
+  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+}
+
+/* ------------------------------------------------------------------ heurísticas */
+
+/* Marcador de absurdo: promessa que nenhum artefato de software cumpre. É diferente
+   de quantificador de escopo — "todos os titulares", "qualquer tratamento" são
+   linguagem jurídica precisa, e um bom distrator descreve com exatidão a coisa
+   errada. Por isso a lista é estreita de propósito: erra para menos. */
+var ABSURDO = new RegExp([
+  "garante?\\s+(a\\s+)?(ausência|inexistência|total|completa)",
+  "garante?\\s+que\\s+não\\s+(haverá|existirá|ocorra)",
+  "nunca\\s+(falha|erra|apresenta|contém|precisa)",
+  "jamais\\s+(falha|erra|apresenta)",
+  "elimina\\s+(totalmente|completamente|por\\s+definitivo|qualquer\\s+possibilidade)",
+  "dispensa\\s+(totalmente|completamente|qualquer\\s+necessidade)",
+  "100%\\s+(seguro|livre|confiável|garantid)",
+  "torna\\s+(o\\s+sistema\\s+)?(imune|infalível|inviolável)",
+  "é\\s+impossível\\s+(de\\s+)?(falhar|errar|violar)",
+  "resolve\\s+(todos\\s+os\\s+problemas|qualquer\\s+problema)",
+  "sem\\s+necessidade\\s+de\\s+qualquer\\s+(teste|verificação|revisão)"
+].join("|"), "i");
+
+/* Explicação que se apoia na posição da alternativa. Quebra silenciosamente, porque
+   sorteio.js embaralha as cinco alternativas a cada sorteio. */
+var CITA_POSICAO = new RegExp([
+  "\\b(a|na|à|da)\\s+(primeira|segunda|terceira|quarta|última)\\s+(alternativa|opção)",
+  "\\balternativa\\s+[«\"“]?[A-E]\\b",
+  "\\bletra\\s+[«\"“]?[A-E]\\b",
+  "\\bopção\\s+[«\"“]?[A-E]\\b"
+].join("|"), "i");
+
+/* ------------------------------------- a explicação discute os distratores? ---
+
+   A primeira versão desta medida procurava palavras-chave — "as demais", "confunde",
+   "erro comum". Era proxy fraco e fraudável: bastaria colar "não é o caso das demais"
+   em toda explicação para o número fechar sem que uma linha melhorasse. Pior, dava
+   falso negativo bobo, reprovando "I e III DESCREVEM ações do sistema" porque o
+   padrão exigia "descreve" e não "descrevem".
+
+   A medida atual pergunta outra coisa: a explicação fala do que os distratores dizem?
+   Cada distrator tem vocabulário próprio — termos que aparecem nele e não aparecem na
+   alternativa correta nem no enunciado. Quem escreve sobre aquele distrator acaba
+   usando algum desses termos; quem só justifica o gabarito, não. Fraudar exige fazer
+   o trabalho.
+
+   Só que isso não vale para todo formato. Em julgamento de itens e asserção-razão as
+   cinco alternativas são rótulos fixos — "I e III.", "As asserções I e II são
+   verdadeiras..." — sem vocabulário próprio nenhum. Ali o conteúdo a refutar está nas
+   afirmativas do enunciado, e refutar é dizer qual delas é falsa e por quê. Medir
+   esses dois formatos pelo vocabulário das alternativas dava 0% para explicações
+   corretas, o que condenaria a medida a ser ignorada. */
+
+var VAZIAS = new Set(("a as o os um uma uns umas de do da dos das em no na nos nas por para com sem sobre entre " +
+  "que qual quais quando onde como porque pois mas e ou nem se ao aos à às pelo pela pelos pelas " +
+  "ser sao seja sendo esta estao este esta esse essa aquele aquela isso isto aquilo " +
+  "mais menos muito pouco todo toda todos todas cada outro outra outros outras mesmo mesma " +
+  "seu sua seus suas dele dela deles delas lhe lhes nao sim tambem apenas somente ainda ja " +
+  "entao assim logo portanto porem contudo sistema dados dado usuario forma modo caso parte " +
+  "tipo valor numero").split(/\s+/));
+
+/* Radical grosseiro: faz "descreve" casar com "descrevem" e "funcional" com
+   "funcionais" sem exigir um lematizador. Erra para menos, que é o lado seguro. */
+function radicalizar(p) {
+  return p.replace(/(mente|acoes|coes|ncia|mento|ndo|ram|rem|eis|ais|es|as|os|s|m|r|e|a|o)$/, "");
+}
+function termos(s) {
+  var brutas = (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9 ]/g, " ").split(/\s+/)
+    .filter(function (p) { return p.length >= 5 && !VAZIAS.has(p); });
+  return new Set(brutas.map(radicalizar).filter(function (p) { return p.length >= 4; }));
+}
+
+/* --- quando o distrator não tem vocabulário nenhum ------------------------------
+
+   Metade do banco tem alternativa que é só um valor: "13 dias.", "56%.", "2.",
+   "quantidade = 100". Aí não existe vocabulário próprio para casar, e a medida por
+   termos reprovava explicação exemplar — a de PERT que escreve "a alternativa de 12
+   dias toma o valor mais provável como se fosse a esperada" discute o distrator
+   melhor do que a maioria das de conceito, e tirava zero.
+
+   O que identifica um distrator numérico é o próprio número. Citá-lo já é discuti-lo:
+   ninguém escreve "14" numa explicação cujo gabarito é 13 sem dizer de onde sai o 14.
+   Duas precauções, porque número é fácil de aparecer por acaso: o valor tem de ser
+   distintivo — fora da alternativa correta e fora do enunciado, senão a conta do
+   gabarito tocaria os distratores sozinha —, e por extenso conta igual, já que
+   "cobre a decisão com dois casos" e "com 2 casos" dizem o mesmo. Fica de fora o
+   número um: "um" e "uma" são artigo antes de serem quantidade.
+
+   Sobra o distrator que não tem nem termo nem número distintivo — "12 dias" quando o
+   enunciado já trazia o 12. Para esse, procura-se o texto literal da alternativa na
+   explicação, exigindo quatro caracteres para que "2" não case com meio banco. */
+
+var NUMERO_ESCRITO = {
+  dois: 2, duas: 2, tres: 3, quatro: 4, cinco: 5, seis: 6, sete: 7, oito: 8, nove: 9,
+  dez: 10, onze: 11, doze: 12, treze: 13, quatorze: 14, catorze: 14, quinze: 15,
+  dezesseis: 16, dezessete: 17, dezoito: 18, dezenove: 19, vinte: 20, trinta: 30,
+  quarenta: 40, cinquenta: 50, sessenta: 60, setenta: 70, oitenta: 80, noventa: 90,
+  cem: 100, cento: 100
+};
+
+function semAcento(s) {
+  return (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+}
+
+/* Valores citados num texto, em algarismo ou por extenso, na mesma forma canônica. */
+function numeros(s) {
+  var t = semAcento(s), fora = new Set();
+  function semMilhar(p) { return p.replace(/[.](?=[0-9]{3}([^0-9]|$))/g, ""); }
+  (t.match(/[0-9]+(?:[.,][0-9]+)*/g) || []).forEach(function (bruto) {
+    var v = parseFloat(semMilhar(bruto).replace(",", "."));
+    if (isFinite(v)) fora.add(String(v));
+    /* A vírgula é decimal em "0,56" e separador em "(5,1) troca". As duas leituras
+       contam: sem isso, a explicação que percorre o bubble sort par a par citava
+       cada distrator e a medida não via número nenhum, só decimais inventados. */
+    if (bruto.indexOf(",") >= 0) {
+      bruto.split(",").forEach(function (p) {
+        var u = parseFloat(semMilhar(p));
+        if (isFinite(u)) fora.add(String(u));
+      });
+    }
+  });
+  t.replace(/[^a-z]+/g, " ").split(" ").forEach(function (p) {
+    if (NUMERO_ESCRITO[p]) fora.add(String(NUMERO_ESCRITO[p]));
+  });
+  return fora;
+}
+
+/* A coluna de numeração das linhas de um trecho de código não é dado do problema:
+   é enfeite de listagem. Deixá-la entrar faz o enunciado "conter" 1, 2, 3... e, como
+   só conta número distintivo, isso anulava todos os distratores de uma questão cuja
+   resposta é um número pequeno — a de complexidade ciclomática, com alternativas 2 a
+   6 e listagem numerada de 01 a 10, ficava impossível de passar por melhor que fosse
+   a explicação. Só se retira a coluna quando ela existe de fato, em três linhas ou
+   mais, para não descartar um número que era conteúdo. */
+function semNumeroDeLinha(codigo) {
+  var linhas = String(codigo || "").split("\n");
+  var comColuna = linhas.filter(function (l) { return /^[ \t]*[0-9]{1,3}[ \t]+\S/.test(l); });
+  if (comColuna.length < 3) return codigo || "";
+  return linhas.map(function (l) { return l.replace(/^[ \t]*[0-9]{1,3}[ \t]+/, ""); }).join("\n");
+}
+
+/* A tabela e o gráfico do enunciado ficam em meta.art, fora do texto. Deixá-los de
+   fora fazia o dado do problema passar por vocabulário exclusivo do distrator: numa
+   questão de risco cujas colunas são probabilidade e impacto, a explicação toca o
+   distrator só por repetir a palavra da coluna. Aqui tudo o que o estudante enxerga
+   no enunciado é achatado em texto, rótulo e número junto. */
+function textoArtefato(m) {
+  var partes = [];
+  (function anda(x) {
+    if (x === null || x === undefined) return;
+    if (Array.isArray(x)) { x.forEach(anda); return; }
+    if (typeof x === "object") { Object.keys(x).forEach(function (k) { anda(x[k]); }); return; }
+    partes.push(String(x));
+  })((m && m.art) || []);
+  return partes.join(" ");
+}
+
+function nucleo(s) {
+  return semAcento(s).replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+/* Quantos dos quatro distratores a explicação toca. */
+function distratoresTocados(q) {
+  var expl = termos(q[5]);
+  var certa = termos(q[3][q[4]]);
+  var enunciado = q[2] + " " + semNumeroDeLinha(q[6]) + " " + textoArtefato(meta(q));
+  var enun = termos(enunciado);
+  var explNum = numeros(q[5]);
+  var certaNum = numeros(q[3][q[4]]);
+  var enunNum = numeros(enunciado);
+  var explTexto = nucleo(q[5]);
+  var n = 0;
+  q[3].forEach(function (alt, k) {
+    if (k === q[4]) return;
+
+    var proprios = [];
+    termos(alt).forEach(function (p) { if (!certa.has(p) && !enun.has(p)) proprios.push(p); });
+    if (proprios.length) {
+      if (proprios.some(function (p) { return expl.has(p); })) n++;
+      return;
+    }
+
+    /* Duas provas servem, e nenhuma exclui a outra: citar um valor que só o distrator
+       tem, ou repetir o texto dele. Encadeá-las em cascata dava resultado instável —
+       um distrator que passava pelo texto deixava de passar quando o enunciado mudava
+       e liberava o valor. */
+    var valores = [];
+    numeros(alt).forEach(function (v) { if (!certaNum.has(v) && !enunNum.has(v)) valores.push(v); });
+    var citaValor = valores.some(function (v) { return explNum.has(v); });
+
+    var lit = nucleo(alt);
+    var citaTexto = lit.length >= 4 && explTexto.indexOf(lit) >= 0;
+
+    if (citaValor || citaTexto) n++;
+  });
+  return n;
+}
+
+/* Em julgamento de itens, refutar é dizer QUAL afirmativa é falsa e por quê. E dá
+   para saber quais são as falsas sem julgar conteúdo nenhum: a alternativa correta
+   lista exatamente as verdadeiras, então as demais, entre as que o enunciado
+   apresenta, são as falsas. A explicação precisa nomear cada uma delas.
+
+   Quando todas são verdadeiras — resposta "I, II e III" — não há o que refutar por
+   esse critério, e a exigência passa a ser discutir ao menos duas das afirmativas,
+   já que o trabalho ali é sustentar cada uma. */
+function nomeiaAfirmativas(q) {
+  var presentes = [];
+  ["I", "II", "III", "IV"].forEach(function (r) {
+    if (new RegExp("(^|\\n)\\s*" + r + "\\.\\s").test(q[2])) presentes.push(r);
+  });
+  if (!presentes.length) return false;
+
+  var certa = q[3][q[4]] || "";
+  var verdadeiras = presentes.filter(function (r) {
+    return new RegExp("\\b" + r + "\\b").test(certa.replace(/I{1,3}V?/g, function (m) {
+      /* Evita que "III" case como "I": compara token a token. */
+      return m === r ? m : "·";
+    }));
+  });
+  var falsas = presentes.filter(function (r) { return verdadeiras.indexOf(r) < 0; });
+
+  var citadas = new Set((q[5].match(/\b(I{1,3}|IV)\b/g) || []));
+  if (!falsas.length) return citadas.size >= 2;
+  return falsas.every(function (r) { return citadas.has(r); });
+}
+
+/* Em asserção-razão, o conteúdo a discutir está nas duas proposições do enunciado, e
+   não nas alternativas — que são rótulos fixos. Aplica-se então o mesmo princípio dos
+   demais formatos, só que contra as proposições: a explicação tem de usar vocabulário
+   próprio da asserção E da razão. Quem escreve "as duas são verdadeiras, mas a segunda
+   não justifica a primeira" e para por aí não passa, porque não disse nada sobre o que
+   qualquer uma delas afirma — e é justamente esse veredito sem conteúdo que faz o
+   estudante decorar o formato em vez de entender a questão.
+
+   Uma primeira versão desta função procurava palavras como "justifica" e "decorre".
+   Era regex de palavra-chave — o mesmo vício que a medida geral existe para evitar —,
+   e reprovava "a segunda é exatamente o MOTIVO da primeira" por causa do sinônimo. */
+function trataAsserçãoERazão(q) {
+  var partes = q[2].split(/\bPORQUE\b/);
+  if (partes.length !== 2) return false;
+
+  var expl = termos(q[5]);
+  var comum = termos(partes[0] + " " + partes[1]);
+  /* Termos próprios de cada proposição: os que aparecem numa e não na outra. */
+  var tI = termos(partes[0]), tII = termos(partes[1]);
+  var soI = [], soII = [];
+  tI.forEach(function (p) { if (!tII.has(p)) soI.push(p); });
+  tII.forEach(function (p) { if (!tI.has(p)) soII.push(p); });
+
+  var tocaI = soI.some(function (p) { return expl.has(p); });
+  var tocaII = soII.some(function (p) { return expl.has(p); });
+  return tocaI && tocaII;
+}
+
+/* Há questão que nenhuma explicação faz passar, e é honesto dizer quantas. Quando os
+   distratores são valores pequenos que o próprio enunciado usa — "quantos elementos
+   do vetor [4, 7, 10, 3, 8] são pares", com alternativas de 1 a 5 —, não sobra nada
+   distintivo para citar. São menos de 1% do banco, e a meta de 90% convive com elas;
+   o número aparece ao lado da medida para que ninguém o procure como defeito. */
+function foraDeAlcance(q) {
+  var h = habilidadeDe(q);
+  if (h === "J" || h === "A") return false;
+  var certa = termos(q[3][q[4]]);
+  var enunciado = q[2] + " " + semNumeroDeLinha(q[6]) + " " + textoArtefato(meta(q));
+  var enun = termos(enunciado), enunNum = numeros(enunciado), certaNum = numeros(q[3][q[4]]);
+  var alcancaveis = 0;
+  q[3].forEach(function (alt, k) {
+    if (k === q[4]) return;
+    var temTermo = false, temValor = false;
+    termos(alt).forEach(function (p) { if (!certa.has(p) && !enun.has(p)) temTermo = true; });
+    numeros(alt).forEach(function (v) { if (!certaNum.has(v) && !enunNum.has(v)) temValor = true; });
+    if (temTermo || temValor || nucleo(alt).length >= 4) alcancaveis++;
+  });
+  return alcancaveis < 2;
+}
+
+function refuta(q) {
+  var h = habilidadeDe(q);
+  if (h === "J") return nomeiaAfirmativas(q);
+  if (h === "A") return trataAsserçãoERazão(q);
+  return distratoresTocados(q) >= 2;
+}
+
+/* --------------------------------------------------------------------- auditoria */
+
+function auditar() {
+  var b = carregarBanco();
+  var B = b.obj;
+  var n = B.length;
+  var oficial = lerCSV(path.join(RAIZ, "questoes_mapeadas.csv"));
+  var oficialObj = oficial.filter(function (r) { return r.tipo === "obj"; });
+
+  var metas = [];
+  var achados = {};
+
+  function meta_(id, titulo, valor, alvo, ok, unidade, nota) {
+    metas.push({ id: id, titulo: titulo, valor: valor, alvo: alvo, ok: ok, unidade: unidade || "", nota: nota || "" });
+  }
+
+  /* ---- 1. chutar pelo tamanho ---------------------------------------------- */
+  /* Só conta diferença perceptível: quinze caracteres sobre a segunda colocada.
+     Diferença de quatro caracteres não é pista para ninguém. */
+  var MARGEM = 15;
+  var maisLonga = 0, maisCurta = 0;
+  B.forEach(function (q) {
+    var l = q[3].map(function (a) { return a.length; });
+    var c = l[q[4]];
+    var outros = l.filter(function (_, i) { return i !== q[4]; });
+    if (c > Math.max.apply(null, outros) + MARGEM) maisLonga++;
+    if (c < Math.min.apply(null, outros) - MARGEM) maisCurta++;
+  });
+  meta_("comprimento-longa", "Acerto chutando a visivelmente mais longa",
+    pct(maisLonga, n), "≤ 8%", maisLonga / n <= 0.08, "%", "acaso = 20%");
+  meta_("comprimento-curta", "Acerto chutando a visivelmente mais curta",
+    pct(maisCurta, n), "≤ 8%", maisCurta / n <= 0.08, "%", "acaso = 20%");
+
+  /* ---- 2. resolver por eliminação ------------------------------------------ */
+  var porEliminacao = [];
+  B.forEach(function (q, i) {
+    var c = 0;
+    q[3].forEach(function (a, j) { if (j !== q[4] && ABSURDO.test(a)) c++; });
+    if (c >= 3) porEliminacao.push({ i: i, area: q[0], enunciado: corte(q[2]) });
+  });
+  meta_("eliminacao", "Questões com 3+ distratores descartáveis por absurdo",
+    porEliminacao.length, "0", porEliminacao.length === 0, "");
+  achados.porEliminacao = porEliminacao;
+
+  /* ---- 3. posição da correta na fonte -------------------------------------- */
+  /* sorteio.js embaralha as alternativas a cada sorteio, então o viés de posição
+     não chega ao estudante. Ele é medido aqui mesmo assim, por duas razões: o
+     arquivo do banco é público e legível, e slot fixo é sintoma de distrator
+     escrito para preencher espaço em volta de uma resposta já decidida. */
+  var pos = [0, 0, 0, 0, 0];
+  B.forEach(function (q) { pos[q[4]]++; });
+  var chi = quiQuadrado(pos);
+  meta_("posicao-fonte", "Distribuição da correta na fonte (qui-quadrado)",
+    round(chi, 1), "< 9,49", chi < 9.49, "",
+    "A " + pos[0] + " · B " + pos[1] + " · C " + pos[2] + " · D " + pos[3] + " · E " + pos[4]);
+
+  var porArea = {};
+  B.forEach(function (q) { (porArea[q[0]] = porArea[q[0]] || [0, 0, 0, 0, 0])[q[4]]++; });
+  achados.posicaoPorArea = Object.keys(porArea).sort().map(function (a) {
+    return { area: a, pos: porArea[a], chi: round(quiQuadrado(porArea[a]), 1) };
+  });
+
+  /* ---- 4a. acervo.js contra questoes_mapeadas.csv --------------------------- */
+  /* As 200 linhas do acervo existem em dois lugares: o CSV, que é o artefato de
+     origem, e acervo.js, que é a cópia que o navegador lê. Se divergirem, a régua
+     de todo o material passa a depender de qual das duas se leu. */
+  var divergencias = [];
+  var linhasJS = b.ACERVO.linhas;
+  if (linhasJS.length !== oficial.length) {
+    divergencias.push("contagem: CSV " + oficial.length + " · acervo.js " + linhasJS.length);
+  } else {
+    oficial.forEach(function (r, i) {
+      var j = linhasJS[i];
+      var esperado = [Number(r.ano), r.numero, r.bloco, r.tipo, r.area_codigo,
+        COD_HAB[r.habilidade], COD_FMT[r.formato]];
+      var obtido = [j[0], j[1], j[2], j[3], j[4], j[6], j[7]];
+      esperado.forEach(function (v, c) {
+        if (String(v) !== String(obtido[c])) {
+          divergencias.push("linha " + (i + 2) + " campo " + c + ": CSV " + v + " · JS " + obtido[c]);
+        }
+      });
+    });
+  }
+  meta_("acervo-coerente", "acervo.js confere com questoes_mapeadas.csv",
+    divergencias.length, "0", divergencias.length === 0, "",
+    "a régua do material não pode depender de qual cópia se leu");
+  achados.divergenciasAcervo = divergencias.slice(0, 20);
+
+  /* ---- 4b. mix de habilidade contra o acervo oficial ------------------------- */
+  var declaradas = B.filter(function (q) { return !!habilidadeDe(q); }).length;
+  var mix = {};
+  ["FG", "CE"].forEach(function (bloco) {
+    var pOf = b.ACERVO.mix(bloco);
+    var au = B.filter(function (q) { return (q[0] === "FG" ? "FG" : "CE") === bloco; });
+    var pAu = proporcao(contar(au, habilidadeDe), au.length);
+    var linhas = Object.keys(COD_HAB).map(function (nome) {
+      var h = COD_HAB[nome];
+      return { habilidade: nome, oficial: round(pOf[h] || 0, 1), autoral: round(pAu[h] || 0, 1),
+               lacuna: round((pAu[h] || 0) - (pOf[h] || 0), 1) };
+    }).filter(function (l) { return l.oficial || l.autoral; });
+    mix[bloco] = { nOficial: b.ACERVO.objetivas(bloco).length, nAutoral: au.length, linhas: linhas,
+                   desvioMax: Math.max.apply(null, linhas.map(function (l) { return Math.abs(l.lacuna); })) };
+  });
+  achados.mix = mix;
+  var desvio = Math.max(mix.FG.desvioMax, mix.CE.desvioMax);
+  meta_("mix-habilidade", "Desvio do mix do BANCO contra o acervo (informativo)",
+    round(desvio, 1), "informativo", true, " pp",
+    "o que precisa bater com o acervo é a prova sorteada, não o banco — ver estoque-celulas");
+
+  /* ---- 4c. estoque por célula (área × habilidade) --------------------------- */
+  /* Esta é a meta que importa, e o motivo pelo qual a anterior é só informativa.
+     Com cota de habilidade no sorteio, quem tem de bater com o mix oficial é a PROVA
+     sorteada, não o banco. Do banco se exige outra coisa: ter, em cada célula
+     (área × habilidade), estoque para o sorteio tirar. Igualar o mix do banco ao mix
+     oficial seria reescrever três vezes mais questões sem melhorar a prova em nada. */
+  var PROVAS_SEM_REPETIR = 3;
+  var cotaCE = b.ACERVO.cota("CE", 30);
+  var cotaFG = b.ACERVO.cota("FG", 15);
+  var estoque = contar(B, function (q) { return q[0] + "|" + habilidadeDe(q); });
+
+  var celulas = [], deficit = 0, excedente = 0;
+  function avaliar(area, vagasArea, cota, totalVagas) {
+    Object.keys(cota).forEach(function (h) {
+      var demanda = Math.ceil(vagasArea * cota[h] / totalVagas);
+      if (!demanda) return;
+      var piso = demanda * PROVAS_SEM_REPETIR;
+      var tem = estoque[area + "|" + h] || 0;
+      var falta = Math.max(0, piso - tem);
+      deficit += falta;
+      if (tem > piso) excedente += tem - piso;
+      celulas.push({ area: area, hab: h, piso: piso, tem: tem, falta: falta });
+    });
+  }
+  Object.keys(COTA_AREA).forEach(function (a) { avaliar(a, COTA_AREA[a], cotaCE, 30); });
+  avaliar("FG", 15, cotaFG, 15);
+
+  achados.celulas = celulas.filter(function (c) { return c.falta > 0; })
+    .sort(function (x, y) { return y.falta - x.falta; });
+  meta_("estoque-celulas", "Questões faltando para o sorteio cobrir " + PROVAS_SEM_REPETIR + " provas",
+    deficit, "0", deficit === 0, "",
+    excedente + " questões de excedente disponíveis para conversão");
+
+  /* ---- 4b-bis. a habilidade declarada bate com a estrutura? ------------------ */
+  /* Sem isto, a meta de estoque por célula se fecha sozinha: bastaria rotular como
+     "julgamento de itens" uma questão que continua sendo definição a completar, e o
+     número ficaria verde sem que uma única questão tivesse melhorado. O rótulo tem de
+     custar alguma coisa.
+
+     A verificação é de forma, não de mérito — só o que dá para checar sem ler:
+     asserção-razão precisa das duas proposições e do PORQUE; julgamento de itens
+     precisa da lista em algarismo romano; interpretação precisa de artefato; estudo
+     de caso precisa de enunciado longo o bastante para haver caso. */
+  var VERIFICA_HAB = {
+    A: { teste: function (q) { return /\bPORQUE\b/.test(q[2]); },
+         exige: "as duas proposições e o conectivo PORQUE no enunciado" },
+    J: { teste: function (q) { return /(^|\n)\s*I{1,3}V?\.\s/.test(q[2]); },
+         exige: "a lista de afirmativas em algarismo romano" },
+    I: { teste: function (q) { var m = meta(q); return !!(q[6] || (m && m.art)); },
+         exige: "um artefato para interpretar (código, tabela, gráfico, UML ou ER)" },
+    E: { teste: function (q) { return q[2].length >= 400; },
+         exige: "enunciado de 400 caracteres ou mais, para haver caso" }
+  };
+  var rotuloFrouxo = [];
+  B.forEach(function (q, i) {
+    var h = habilidadeDe(q);
+    var v = VERIFICA_HAB[h];
+    if (v && !v.teste(q)) {
+      rotuloFrouxo.push((meta(q) || {}).id + " diz \"" + h + "\" mas não tem " + v.exige);
+    }
+  });
+  meta_("habilidade-estrutura", "Habilidades declaradas sem a estrutura correspondente",
+    rotuloFrouxo.length, "0", rotuloFrouxo.length === 0, "",
+    "o rótulo tem de custar alguma coisa, senão a meta de estoque se fecha sozinha");
+  achados.rotuloFrouxo = rotuloFrouxo;
+
+  /* Nas questões de julgamento de itens, quantas afirmativas são falsas também é um
+     padrão explorável. Se houver sempre exatamente uma falsa, a resposta é sempre um
+     par de algarismos — e quem percebe isso descarta de saída as alternativas com um
+     item só e a de três, resolvendo por eliminação sem julgar nada.
+
+     A medida é a fração de questões de julgamento cuja resposta é um par. O acaso não
+     é uniforme aqui, porque com três afirmativas independentes o par é o caso mais
+     provável; a meta de 70% dá folga para isso e ainda barra a regularidade. */
+  var deJulgamento = B.filter(function (q) { return habilidadeDe(q) === "J"; });
+  var pares = deJulgamento.filter(function (q) {
+    var certa = q[3][q[4]] || "";
+    return /^(I|II|III)\s+e\s+(I{1,3})\.$/.test(certa.trim());
+  });
+  var fracaoPar = deJulgamento.length ? 100 * pares.length / deJulgamento.length : 0;
+  meta_("julgamento-pares", "Julgamento de itens cuja resposta é um par de afirmativas",
+    round(fracaoPar, 1), "≤ 70%", fracaoPar <= 70, "%",
+    deJulgamento.length + " questões de julgamento; resposta sempre em par vira eliminação");
+
+  /* ---- 4d. o sorteio, medido de verdade ------------------------------------- */
+  /* As metas acima medem o banco. Esta mede o que a pessoa recebe: sorteia provas de
+     verdade, com o mesmo código que roda no navegador, e compara a composição obtida
+     com o alvo. Semente fixa para o número ser reprodutível — com Math.random cada
+     execução daria um valor diferente e a meta não serviria de porteiro. */
+  var sim = simularSorteios(b, 200);
+  achados.sorteio = sim;
+  meta_("sorteio-area", "Provas com a cota por área exata",
+    sim.areaExata + "/" + sim.n, sim.n + "/" + sim.n, sim.areaExata === sim.n, "",
+    "a cota por área é dura: é a proporção que a Portaria 169 sustenta");
+  meta_("sorteio-repetidas", "Questões repetidas dentro de uma mesma prova",
+    sim.repetidas, "0", sim.repetidas === 0, "");
+  meta_("sorteio-habilidade", "Desvio médio da cota por habilidade, por prova",
+    round(sim.desvioMedio, 1), "≤ 2 itens", sim.desvioMedio <= 2, " itens",
+    "de 45 objetivas; cede quando o banco não tem estoque na célula");
+
+  /* ---- 5. formato do enunciado --------------------------------------------- */
+  var tams = B.map(function (q) { return q[2].length; });
+  var med = mediana(tams);
+  /* Informativa, e não porteira, por honestidade de método: os enunciados oficiais só
+     existem como imagem de PDF, então não tenho como medir a mediana deles. Um alvo de
+     400 caracteres seria opinião minha vestida de número — exatamente o que o resto
+     deste arquivo existe para não fazer. O que se pode afirmar com base em medida é a
+     composição por habilidade e por formato, e isso as metas acima já cobram. */
+  meta_("enunciado-mediana", "Mediana do enunciado (informativo)", Math.round(med), "informativo", true, " ch",
+    "o ENADE é feito de situações-problema; " + br(pct(B.filter(function (q) { return q[2].length < 150; }).length, n)) + "% abaixo de 150 ch");
+
+  /* Artefato se mede na PROVA SORTEADA, pela mesma razão que o mix de habilidade: o
+     banco não precisa ter a composição do exame, precisa ter estoque para o sorteio
+     montá-la. O alvo sai do acervo — a proporção de questões oficiais cujo formato não
+     é apenas texto. Uma tolerância de 10 pontos porque a cota trabalha em vagas
+     inteiras e nem toda questão de uma habilidade traz artefato. */
+  var comArtefato = B.filter(function (q) { var m = meta(q); return !!(q[6] || (m && m.art)); }).length;
+  var alvoArtefato = 100 * oficialObj.filter(function (r) { return r.formato !== "Texto"; }).length / oficialObj.length;
+  meta_("artefatos", "Itens com artefato na prova sorteada",
+    round(sim.artefatoMedio, 1), "≥ " + round(alvoArtefato - 10, 0) + "%",
+    sim.artefatoMedio >= alvoArtefato - 10, "%",
+    "alvo " + round(alvoArtefato, 0) + "% medido no acervo, com 10 pp de folga · banco: " +
+      br(pct(comArtefato, n)) + "%");
+
+  /* ---- 6. explicações ------------------------------------------------------- */
+  var citaPos = [];
+  B.forEach(function (q, i) {
+    if (CITA_POSICAO.test(q[5])) citaPos.push({ i: i, area: q[0], explicacao: corte(q[5], 120) });
+  });
+  meta_("explicacao-posicao", "Explicações que citam letra ou posição da alternativa",
+    citaPos.length, "0", citaPos.length === 0, "",
+    "as alternativas são embaralhadas a cada sorteio");
+  achados.citaPosicao = citaPos;
+
+  var refutam = B.filter(refuta);
+  var porHabRefuta = {};
+  B.forEach(function (q) {
+    var h = habilidadeDe(q) || "?";
+    var x = porHabRefuta[h] || (porHabRefuta[h] = { n: 0, ok: 0 });
+    x.n++; if (refuta(q)) x.ok++;
+  });
+  achados.refutaPorHab = porHabRefuta;
+  achados.naoRefutam = B.filter(function (q) { return !refuta(q); })
+    .map(function (q) { return (meta(q) || {}).id + " " + q[0] + "/" + q[1]; });
+  var cegas = B.filter(foraDeAlcance).length;
+  achados.foraDeAlcance = cegas;
+  meta_("explicacao-refuta", "Explicações que discutem os distratores",
+    pct(refutam.length, n), "≥ 90%", 100 * refutam.length / n >= 90, "%",
+    "justificar o gabarito não diz por que o erro cometido é erro · " + cegas +
+    " questões sem distrator distinguível, fora do alcance da medida");
+
+  /* ---- 7. integridade estrutural -------------------------------------------- */
+  var estrut = [];
+  B.forEach(function (q, i) {
+    if (q[3].length !== 5) estrut.push({ i: i, erro: "não tem 5 alternativas" });
+    if (new Set(q[3]).size !== q[3].length) estrut.push({ i: i, erro: "alternativas duplicadas" });
+    if (!(q[4] >= 0 && q[4] <= 4)) estrut.push({ i: i, erro: "índice da correta fora da faixa" });
+    if (!q[5] || q[5].length < 20) estrut.push({ i: i, erro: "sem explicação" });
+  });
+  meta_("estrutura", "Registros com defeito estrutural", estrut.length, "0", estrut.length === 0, "");
+  achados.estrutura = estrut;
+
+  /* Enunciados clonados: mesma pergunta escrita duas vezes gasta estoque de sorteio
+     e engana a medida de cobertura. */
+  var vistos = {}, clones = [];
+  B.forEach(function (q, i) {
+    var k = normalizar(q[2]);
+    if (vistos[k] !== undefined) clones.push({ i: i, gemea: vistos[k], enunciado: corte(q[2]) });
+    else vistos[k] = i;
+  });
+  meta_("clones", "Enunciados duplicados", clones.length, "0", clones.length === 0, "");
+  achados.clones = clones;
+
+  /* Ids estáveis: quando existirem, precisam ser únicos — é a identidade que o
+     histórico e a revisão espaçada guardam. */
+  var comId = B.filter(function (q) { var m = meta(q); return !!(m && m.id); });
+  var ids = {}, idsDup = [];
+  comId.forEach(function (q, i) {
+    var id = meta(q).id;
+    if (ids[id] !== undefined) idsDup.push(id); else ids[id] = i;
+  });
+  meta_("ids", "Questões com id estável", comId.length + "/" + n,
+    n + "/" + n, comId.length === n && idsDup.length === 0, "",
+    idsDup.length ? "ids duplicados: " + idsDup.join(", ") : "");
+
+  /* A tabela congelada é a única ponte entre o histórico de quem usou o material antes
+     do id estável e o banco de agora.
+
+     Ela descreve o PASSADO — quais ids ocupavam os índices de 0 a 467 no dia em que
+     foram congelados. Não descreve o presente, e é justamente por isso que existe: o
+     banco pode crescer, reordenar-se e perder questões sem que o progresso de ninguém
+     vire ruído. Comparar a tabela com as posições atuais, como esta meta fazia numa
+     primeira versão, seria exigir que o banco nunca mudasse.
+
+     O que se exige dela, então, é só isto: continuar do mesmo tamanho, sem id repetido,
+     e apontar para questões que ainda existem. Órfão não é erro — é o rastro de uma
+     questão removida ou reescrita a ponto de mudar de identidade —, mas é contado, para
+     que ninguém descubra tarde demais que metade do baralho de revisão evaporou. */
+  var legado = b.legado;
+  var vivos = new Set(comId.map(function (q) { return meta(q).id; }));
+  var legadoOrfao = legado.filter(function (id) { return !vivos.has(id); });
+  var legadoRepetido = legado.length - new Set(legado).size;
+  var okLegado = legado.length === CONGELADAS && legadoRepetido === 0 &&
+                 legadoOrfao.length <= LIMITE_ORFAOS;
+  meta_("legado-ids", "Tabela congelada de migração íntegra",
+    okLegado ? "ok" : (legado.length !== CONGELADAS ? legado.length + " entradas"
+      : legadoRepetido ? legadoRepetido + " repetidos" : legadoOrfao.length + " órfãos"),
+    "ok", okLegado, "",
+    legado.length + " entradas · " + legadoOrfao.length + " órfãs de " + LIMITE_ORFAOS +
+      " toleradas (questão removida ou reescrita perde o vínculo com o histórico antigo)");
+
+  /* ---- 8. cobertura dos objetos oficiais ------------------------------------ */
+  /* OBJETOS.auditar() existia sem nenhum ponto de chamada. Este é o ponto. */
+  var aud = b.OBJETOS.auditar(B);
+  var porObjeto = Object.keys(aud).filter(function (k) { return k[0] !== "_"; })
+    .map(function (k) { return { id: k, nome: aud[k].obj.curto, n: aud[k].n }; })
+    .sort(function (x, y) { return x.n - y.n; });
+  var minObjeto = porObjeto.length ? porObjeto[0].n : 0;
+  meta_("cobertura-objetos", "Menor cobertura entre os 32 objetos oficiais",
+    minObjeto, "≥ 8", minObjeto >= 8, " questões",
+    porObjeto.length ? "mais escasso: " + porObjeto[0].nome : "");
+  achados.porObjeto = porObjeto;
+
+  /* `_semObjeto` é um mapa "AREA|Subtema" -> contagem, não uma lista. Um subtema
+     digitado com erro cai aqui e some de todo relatório por objeto oficial, sem aviso
+     em lugar nenhum — é o silêncio que esta meta existe para quebrar. */
+  var semObjeto = Object.keys(aud._semObjeto || {}).map(function (k) {
+    return k + " (" + aud._semObjeto[k] + ")";
+  });
+  meta_("subtemas-orfaos", "Subtemas sem objeto oficial mapeado",
+    semObjeto.length, "≤ 2", semObjeto.length <= 2, "",
+    semObjeto.length ? semObjeto.join(" · ") : "");
+  achados.semObjeto = semObjeto;
+
+  var subtemas = contar(B, function (q) { return q[0] + " / " + q[1]; });
+  var solitarios = Object.keys(subtemas).filter(function (k) { return subtemas[k] === 1; });
+  meta_("subtemas-solitarios", "Subtemas com uma única questão",
+    solitarios.length, "≤ 5", solitarios.length <= 5, "",
+    "um subtema com uma questão só não sustenta revisão espaçada");
+  achados.solitarios = solitarios;
+
+  /* ---- 8b. integridade das páginas ------------------------------------------ */
+  /* Um <script src> apontando para arquivo que não existe não dá erro visível: a
+     página abre, e a funcionalidade que dependia dele simplesmente não acontece.
+     Também se confere que toda página que lê o histórico carregue a tabela congelada
+     — sem ela a migração não roda, e é por isso que ela foi feita para não rodar em
+     vez de rodar pela metade. */
+  var ESTUDO = path.join(RAIZ, "estudo");
+  var paginas = fs.readdirSync(ESTUDO).filter(function (f) { return /\.html$/.test(f); });
+  var quebrados = [], semLegado = [];
+  paginas.forEach(function (p) {
+    var html = fs.readFileSync(path.join(ESTUDO, p), "utf8");
+    var srcs = (html.match(/<script src="([^"]+)"/g) || [])
+      .map(function (s) { return s.replace(/.*src="/, "").replace(/"$/, ""); });
+    srcs.forEach(function (s) {
+      if (!fs.existsSync(path.join(ESTUDO, s))) quebrados.push(p + " -> " + s);
+    });
+    if (srcs.indexOf("assets/historico.js") >= 0 &&
+        srcs.indexOf("assets/banco/legado-ids.js") < 0) semLegado.push(p);
+  });
+  meta_("paginas-scripts", "Páginas com <script src> apontando para arquivo ausente",
+    quebrados.length, "0", quebrados.length === 0, "",
+    quebrados.join(" · "));
+  meta_("paginas-legado", "Páginas que leem o histórico sem carregar a tabela congelada",
+    semLegado.length, "0", semLegado.length === 0, "",
+    semLegado.length ? semLegado.join(" · ") : paginas.length + " páginas conferidas");
+
+  /* ---- 9. discursivas ------------------------------------------------------- */
+  var todasDisc = b.discOficiais.concat(b.disc);
+  var itensRubrica = todasDisc.reduce(function (s, d) { return s + d.rubrica.length; }, 0);
+  /* Item não falsificável: aquele que se pode marcar como cumprido independentemente
+     do que se escreveu. O verbo vago sozinho não condena — condena o verbo vago sem
+     dizer o que exatamente conferir. */
+  var vago = /^(demonstra|apresenta|evidencia|revela|mostra)\s+(compreensão|entendimento|domínio|conhecimento)/i;
+  var naoFalsificaveis = [];
+  todasDisc.forEach(function (d) {
+    d.rubrica.forEach(function (r) {
+      var t = r.item.replace(/^\([a-z]\)\s*/i, "");
+      if (vago.test(t) && !/:|—|,|\bao\b|\bque\b/.test(t)) naoFalsificaveis.push(d.id + ": " + corte(r.item, 80));
+    });
+  });
+  meta_("rubricas", "Itens de rubrica não falsificáveis",
+    naoFalsificaveis.length + "/" + itensRubrica, "0", naoFalsificaveis.length === 0, "");
+  achados.naoFalsificaveis = naoFalsificaveis;
+
+  return {
+    gerado: new Date().toISOString(),
+    banco: { objetivas: n, discursivasAutorais: b.disc.length, discursivasOficiais: b.discOficiais.length },
+    acervo: { objetivas: oficialObj.length, total: oficial.length },
+    metas: metas,
+    achados: achados
+  };
+}
+
+/* -------------------------------------------------------- simulação de sorteios */
+
+/* Gerador com semente (xorshift32). Serve só para tornar a medição reprodutível:
+   sem semente, cada execução do auditor daria um número diferente e a meta não
+   poderia reprovar nada. */
+function comSemente(s) {
+  var x = s || 123456789;
+  return function () {
+    x ^= x << 13; x >>>= 0;
+    x ^= x >> 17;
+    x ^= x << 5; x >>>= 0;
+    return x / 4294967296;
+  };
+}
+
+function simularSorteios(b, n) {
+  var SORTEIO = b._sandbox && b._sandbox.window && b._sandbox.window.SORTEIO;
+  if (!SORTEIO || !SORTEIO.prova) return { n: 0, areaExata: 0, repetidas: 0, desvioMedio: 0 };
+
+  SORTEIO._semente(comSemente(20261129));   // a data da prova, por gosto
+  var areaExata = 0, repetidas = 0, somaDesvio = 0, somaArtefato = 0;
+
+  for (var k = 0; k < n; k++) {
+    SORTEIO.zerarCobertura();               // cada simulação parte do estoque cheio
+    var p = SORTEIO.prova();
+    var objs = p.filter(function (x) { return x.tipo === "obj"; });
+
+    var porArea = {};
+    objs.forEach(function (x) { porArea[x.area] = (porArea[x.area] || 0) + 1; });
+    var okArea = porArea.FG === 15 && Object.keys(COTA_AREA).every(function (a) {
+      return porArea[a] === COTA_AREA[a];
+    });
+    if (okArea) areaExata++;
+
+    var ids = objs.map(function (x) { return x.qid; });
+    repetidas += ids.length - new Set(ids).size;
+
+    /* Cada item deslocado aparece duas vezes na soma — falta numa habilidade é sobra
+       em outra —, daí a divisão por dois. */
+    var d = SORTEIO.ultimoDiag || { desvio: [] };
+    somaDesvio += d.desvio.reduce(function (s, x) { return s + Math.abs(x.saiu - x.alvo); }, 0) / 2;
+
+    somaArtefato += objs.filter(function (x) { return !!(x.codigo || x.artefatos); }).length / objs.length;
+  }
+  SORTEIO._semente(null);
+  SORTEIO.zerarCobertura();
+
+  return { n: n, areaExata: areaExata, repetidas: repetidas,
+           desvioMedio: somaDesvio / n, artefatoMedio: 100 * somaArtefato / n };
+}
+
+/* ------------------------------------------------------------------- utilidades */
+
+function pct(x, n) { return round(100 * x / n, 1); }
+function round(v, c) { var f = Math.pow(10, c); return Math.round(v * f) / f; }
+function corte(s, n) { s = String(s).replace(/\s+/g, " "); n = n || 70; return s.length > n ? s.slice(0, n) + "…" : s; }
+function normalizar(s) {
+  return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+}
+function br(v) { return String(v).replace(".", ","); }
+
+/* ---------------------------------------------------------------- apresentação */
+
+function relatorio(r) {
+  var L = [];
+  var falhas = r.metas.filter(function (m) { return !m.ok; }).length;
+
+  L.push("");
+  L.push("  AUDITORIA DO BANCO — ENADE 2026 / TADS");
+  L.push("  " + r.banco.objetivas + " objetivas autorais · " +
+    (r.banco.discursivasAutorais + r.banco.discursivasOficiais) + " discursivas · " +
+    "régua: " + r.acervo.objetivas + " objetivas oficiais do Inep");
+  L.push("");
+
+  var largura = Math.max.apply(null, r.metas.map(function (m) { return m.titulo.length; }));
+  r.metas.forEach(function (m) {
+    var marca = m.ok ? "  ok  " : "  --  ";
+    var valor = br(m.valor) + m.unidade;
+    L.push(marca + pad(m.titulo, largura) + "  " + pad(valor, 12) + " alvo " + m.alvo);
+    if (m.nota) L.push("      " + pad("", largura) + "  " + m.nota);
+  });
+
+  L.push("");
+  L.push("  MIX DE HABILIDADE CONTRA O ACERVO OFICIAL");
+  ["FG", "CE"].forEach(function (bloco) {
+    var mx = r.achados.mix[bloco];
+    L.push("");
+    L.push("  " + (bloco === "FG" ? "Formação Geral" : "Componente específico") +
+      "  (oficial n=" + mx.nOficial + " · autoral n=" + mx.nAutoral + ")");
+    L.push("      " + pad("habilidade", 40) + pad("oficial", 10) + pad("autoral", 10) + "lacuna");
+    mx.linhas.sort(function (a, b) { return b.oficial - a.oficial; }).forEach(function (l) {
+      L.push("      " + pad(l.habilidade, 40) + pad(br(l.oficial) + "%", 10) +
+        pad(br(l.autoral) + "%", 10) + (l.lacuna > 0 ? "+" : "") + br(l.lacuna) + " pp");
+    });
+  });
+
+  if (r.achados.porObjeto.length) {
+    L.push("");
+    L.push("  OBJETOS OFICIAIS MAIS ESCASSOS");
+    r.achados.porObjeto.slice(0, 8).forEach(function (o) {
+      L.push("      " + pad(o.id, 8) + pad(o.nome, 40) + o.n);
+    });
+  }
+
+  var lista = [
+    ["EXPLICAÇÕES QUE CITAM POSIÇÃO", r.achados.citaPosicao.map(function (x) { return x.area + " · " + x.explicacao; })],
+    ["QUESTÕES RESOLVÍVEIS POR ELIMINAÇÃO", r.achados.porEliminacao.map(function (x) { return x.area + " · " + x.enunciado; })],
+    ["ENUNCIADOS DUPLICADOS", r.achados.clones.map(function (x) { return x.enunciado; })],
+    ["DEFEITO ESTRUTURAL", r.achados.estrutura.map(function (x) { return "#" + x.i + " " + x.erro; })],
+    ["SUBTEMAS SEM OBJETO OFICIAL", r.achados.semObjeto],
+    ["ITENS DE RUBRICA NÃO FALSIFICÁVEIS", r.achados.naoFalsificaveis]
+  ];
+  lista.forEach(function (par) {
+    if (!par[1].length) return;
+    L.push("");
+    L.push("  " + par[0]);
+    par[1].slice(0, 12).forEach(function (s) { L.push("      " + s); });
+    if (par[1].length > 12) L.push("      … e mais " + (par[1].length - 12));
+  });
+
+  L.push("");
+  L.push(falhas ? "  " + falhas + " de " + r.metas.length + " metas fora do alvo."
+                : "  Todas as " + r.metas.length + " metas dentro do alvo.");
+  L.push("");
+  return L.join("\n");
+}
+
+function pad(s, n) { s = String(s); return s.length >= n ? s + "  " : s + " ".repeat(n - s.length); }
+
+/* ---------------------------------------------------------------------- entrada */
+
+function principal() {
+  var args = process.argv.slice(2);
+  var r = auditar();
+
+  if (args.indexOf("--escrever") >= 0) {
+    var destino = path.join(ASSETS, "auditoria-dados.js");
+    fs.writeFileSync(destino,
+      "/* Gerado por ferramentas/auditar.js — não editar à mão. */\n" +
+      "window.AUDITORIA = " + JSON.stringify(r, null, 2) + ";\n", "utf8");
+    process.stderr.write("gravado: " + path.relative(RAIZ, destino) + "\n");
+  }
+
+  if (args.indexOf("--json") >= 0) process.stdout.write(JSON.stringify(r, null, 2) + "\n");
+  else process.stdout.write(relatorio(r) + "\n");
+
+  var falhas = r.metas.filter(function (m) { return !m.ok; }).length;
+  process.exit(falhas ? 1 : 0);
+}
+
+if (require.main === module) principal();
+module.exports = { auditar: auditar, carregarBanco: carregarBanco, lerCSV: lerCSV };

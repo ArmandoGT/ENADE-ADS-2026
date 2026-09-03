@@ -1,0 +1,393 @@
+<!doctype html>
+<!--
+  DESIGN — esta página NÃO é tela de estudo: é a referência do sistema.
+
+  Serve para ver os dois registros lado a lado, a lei da cor, a mesa de luz e o
+  jogo de sinais sem precisar abrir uma prova. Quem for mexer no visual do
+  material deveria abrir esta antes.
+
+  O sistema está em assets/base-v2.css e o raciocínio inteiro está comentado lá.
+  Em uma linha: leitura é serifa sem cromia, instrumento é monoespaçado denso e
+  só ele carrega cor; o acento marca o que se clica, a cor de estado marca o que
+  aconteceu, e todo o resto é cinza.
+
+  Específico da amostra:
+
+  • Carrega assets/amostra.css, e não simulado-v2.css, porque vários nomes usados
+    aqui colidem com classes que simulado.js emite com outro sentido: .alt aqui é
+    a linha inteira de alternativa, lá é o botão pequeno da cartela A–E; .grade
+    aqui é a régua de progresso, lá é o mapa da prova; .visor e .explicacao
+    também divergem. Separar os arquivos foi o que permitiu manter os dois.
+  • O conteúdo é real, tirado do banco (es-0002 e al-0001) e de uma página de
+    verdade do caderno de 2017. Amostra com texto falso mente sobre o resultado:
+    o comprimento da linha e a quebra do rótulo são metade do problema.
+  • Os controles funcionam — tema, limpeza, atenuar, navegação de páginas,
+    marcação de alternativa e o interruptor da pauta do papel. É para poder
+    julgar a decisão com ela ligada e desligada, não no papel.
+  • Se o sistema mudar e esta página não acompanhar, ela vira mentira. Ou se
+    atualiza junto, ou se apaga.
+-->
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Amostra de design — dois registros</title>
+<link rel="stylesheet" href="assets/base-v2.css?v=2" />
+<link rel="stylesheet" href="assets/amostra.css?v=2" />
+<style>
+  /* Só o que é da própria página de amostra. Todo o resto vem de base-v2.css. */
+  .bloco { max-width: var(--larg-instr); margin: 0 auto; padding: var(--e7) var(--e5); }
+  .nota { max-width: 640px; font-size: 14px; color: var(--tinta-2); line-height: 1.6; }
+  .nota + .nota { margin-top: var(--e3); }
+  .titulo-secao {
+    font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .16em;
+    text-transform: uppercase; color: var(--tenue);
+    border-bottom: 1px solid var(--filete); padding-bottom: var(--e2); margin-bottom: var(--e5);
+  }
+  h1.capa {
+    font-family: var(--f-ler); font-weight: 600; font-size: var(--t-40);
+    line-height: 1.1; letter-spacing: -.02em; margin: 0; max-width: 15ch;
+  }
+  .linhaq { display: flex; align-items: baseline; gap: var(--e3); flex-wrap: wrap; }
+  .linhaq .n { font-family: var(--f-ler); font-size: var(--t-23); font-weight: 600; }
+  .linhaq .meta { font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .1em;
+    text-transform: uppercase; color: var(--tenue); }
+  .sinais { display: flex; gap: var(--e5); flex-wrap: wrap; }
+  .sinais figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: var(--e2);
+    color: var(--tinta-2); }
+  .sinais figcaption { font-family: var(--f-dado); font-size: 10px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--tenue); }
+  .sinais .sinal { width: 22px; height: 22px; }
+  .paleta { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px,1fr)); gap: 1px;
+    background: var(--filete); border: 1px solid var(--filete); }
+  .amostra { background: var(--leitura); padding: var(--e3); display: flex; flex-direction: column; gap: var(--e2); }
+  .amostra .chapa { height: 34px; border: 1px solid rgba(128,128,128,.25); }
+  .amostra .nome { font-family: var(--f-dado); font-size: 10px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--tenue); }
+  .duas { display: grid; gap: var(--e6); grid-template-columns: 1fr; }
+  @media (min-width: 980px) { .duas { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- ============ instrumento: navegação ============ -->
+<nav class="instr">
+  <div class="faixa">
+    <a class="marca" href="index.html">ENADE 2026 <em>· TADS</em></a>
+    <div class="rotas">
+      <a href="#">Plano</a>
+      <a href="#" aria-current="page">Simulado</a>
+      <a href="#">Discursivas</a>
+      <a href="#">Revisão</a>
+      <a href="#">Painel</a>
+    </div>
+    <span class="vao"></span>
+    <button class="btn linha" id="btTema" type="button">Tema</button>
+  </div>
+</nav>
+
+<!-- ============ instrumento: estado da prova ============ -->
+<div class="medidores">
+  <div class="faixa">
+    <div style="display:flex;align-items:center;gap:var(--e5);flex-wrap:wrap;margin-bottom:var(--e3)">
+      <span class="cron">03:41:22</span>
+      <div class="grade" aria-label="progresso das 40 questões">
+        <i class="acerto"></i><i class="acerto"></i><i class="erro"></i><i class="acerto"></i>
+        <i class="acerto"></i><i class="acerto"></i><i class="erro"></i><i class="acerto"></i>
+        <i class="acerto"></i><i class="feita"></i><i class="acerto"></i><i class="acerto"></i>
+        <i class="erro"></i><i class="acerto"></i><i class="acerto"></i><i class="feita"></i>
+        <i class="acerto"></i><i class="acerto"></i><i class="acerto"></i><i class="erro"></i>
+        <i class="acerto"></i><i class="acerto"></i><i class="atual"></i><i></i>
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+    </div>
+    <div class="trilho" style="margin-bottom:var(--e4)"><i style="width:57.5%"></i></div>
+    <div class="cx">
+      <div class="medidor"><span class="rot">Acertos</span><span class="val acerto">17</span><span class="obs">77 % do feito</span></div>
+      <div class="medidor"><span class="rot">Erros</span><span class="val erro">04</span><span class="obs">3 em Eng. de SW</span></div>
+      <div class="medidor"><span class="rot">Em branco</span><span class="val vazio">02</span><span class="obs">Q10 · Q16</span></div>
+      <div class="medidor"><span class="rot">Ritmo</span><span class="val">5:12</span><span class="obs">por questão · alvo 6:00</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ leitura: a questão ============ -->
+<div class="prancha">
+  <div class="col">
+    <div class="margem">
+      <span><b>Q23</b> / 40</span>
+      <span>2017</span>
+      <span>Eng. de SW</span>
+      <span>Requisitos</span>
+      <span>Hab. <b>J</b></span>
+      <span>Recorrência <b>alta</b></span>
+    </div>
+
+    <div>
+      <div class="ler pautado">
+        <p>Considere os requisitos levantados para um sistema hospitalar:</p>
+        <ol class="romanos">
+          <li>O sistema deve permitir o agendamento de consultas.</li>
+          <li>O sistema deve estar disponível 99,5 % do tempo.</li>
+          <li>O sistema deve emitir receituário em duas vias.</li>
+          <li>O sistema deve ser operável por funcionários sem formação técnica após duas horas de treinamento.</li>
+        </ol>
+        <p>São requisitos <strong>não funcionais</strong> apenas</p>
+      </div>
+
+      <div class="alternativas">
+        <button class="alt" type="button" disabled><span class="letra">A</span><span>I e III.</span></button>
+        <button class="alt marcada-errada" type="button" disabled><span class="letra">B</span><span>II, III e IV.<span class="selo">sua marcação</span></span></button>
+        <button class="alt" type="button" disabled><span class="letra">C</span><span>I, II e III.</span></button>
+        <button class="alt" type="button" disabled><span class="letra">D</span><span>III e IV.</span></button>
+        <button class="alt gabarito" type="button" disabled><span class="letra">E</span><span>II e IV.<span class="selo">gabarito</span></span></button>
+      </div>
+
+      <div class="explicacao">
+        <span class="rot">Por que</span>
+        <div class="ler">
+          <p>II é disponibilidade e IV é usabilidade — ambos atributos de qualidade. I e III
+             descrevem ações do sistema, logo são funcionais. Note que IV é não funcional apesar
+             de mencionar uma tarefa: o que se restringe é a facilidade de operação, não a função.</p>
+        </div>
+        <p class="fonte">Banco IA · es-0002 · habilidade J do perfil do egresso</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ leitura + instrumento: questão com código ============ -->
+<div class="prancha">
+  <div class="col">
+    <div class="margem">
+      <span><b>Q24</b> / 40</span>
+      <span>Algoritmos</span>
+      <span>Traço de código</span>
+      <span>Hab. <b>I</b></span>
+    </div>
+    <div>
+      <div class="ler">
+        <p>Após a execução do trecho, o valor impresso é</p>
+      </div>
+      <pre class="codigo"><code>01  <b>soma</b> &lt;- 0
+02  <b>para</b> i <b>de</b> 1 <b>ate</b> 6 <b>faca</b>
+03      soma &lt;- soma + i
+04  <b>fim-para</b>
+05  <b>escreva</b>(soma)</code></pre>
+      <div class="alternativas">
+        <button class="alt" type="button"><span class="letra">A</span><span>10</span></button>
+        <button class="alt" type="button" aria-pressed="true"><span class="letra">B</span><span>21</span></button>
+        <button class="alt" type="button"><span class="letra">C</span><span>15</span></button>
+        <button class="alt" type="button"><span class="letra">D</span><span>28</span></button>
+        <button class="alt" type="button"><span class="letra">E</span><span>36</span></button>
+      </div>
+      <p class="nota" style="margin-top:var(--e4)">
+        Estado <em>marcado, ainda sem correção</em>: acento, porque ainda é uma ação sua e reversível.
+        Só depois de corrigir é que a cor vira estado — verde ou vermelho.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ visor da digitalização ============ -->
+<div class="bloco">
+  <p class="titulo-secao">Visor do caderno original — mesa de luz</p>
+  <div class="duas">
+    <div class="visor">
+      <div class="ctrl">
+        <button class="btn linha" type="button" id="btAnt">&larr; Anterior</button>
+        <span class="pos">2017 · pág. 24 / 40</span>
+        <button class="btn linha" type="button" id="btProx">Próxima &rarr;</button>
+        <span style="flex:1;min-width:100%"></span>
+        <button class="btn linha" type="button" id="btLimpo" aria-pressed="false">Limpeza</button>
+        <button class="btn linha" type="button" id="btAten" aria-pressed="false">Atenuar</button>
+      </div>
+      <div class="mesa" id="mesa">
+        <img src="paginas/2017-24.png" alt="Página 24 do caderno de 2017" loading="lazy" />
+      </div>
+    </div>
+    <div>
+      <p class="nota"><strong>O que mudou.</strong> O <code>filter: invert(1) hue-rotate(180deg)</code>
+        do tema escuro saiu. Inverter uma digitalização não produz um documento escuro: produz
+        cinza lamacento, com halo em volta de cada haste de letra e as fotos do caderno em negativo.
+        O objeto que você mais olha era o mais feio da tela.</p>
+      <p class="nota"><strong>No lugar.</strong> A página fica no branco verdadeiro dela, sobre um
+        fosco. No tema escuro o fosco vai a quase preto e o papel branco vira a fonte de luz —
+        que é como se lê um documento numa mesa de luz, e é o que o olho espera.</p>
+      <p class="nota"><strong>Limpeza</strong> aplica <code>grayscale + contrast</code>, para os
+        cadernos de 2008 e 2011, que estão amarelados e com fundo sujo.
+        <strong>Atenuar</strong> baixa o brilho sem inverter — resolve de noite o que a inversão
+        tentava resolver, sem destruir o traço do tipo.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ paleta e sinais ============ -->
+<div class="bloco">
+  <p class="titulo-secao">A lei da cor</p>
+  <div class="duas">
+    <div>
+      <div class="paleta">
+        <div class="amostra"><span class="chapa" style="background:var(--acento)"></span><span class="nome">acento · acionável</span></div>
+        <div class="amostra"><span class="chapa" style="background:var(--acerto)"></span><span class="nome">estado · acerto</span></div>
+        <div class="amostra"><span class="chapa" style="background:var(--erro)"></span><span class="nome">estado · erro</span></div>
+        <div class="amostra"><span class="chapa" style="background:var(--alerta)"></span><span class="nome">estado · atenção</span></div>
+        <div class="amostra"><span class="chapa" style="background:var(--tinta)"></span><span class="nome">tinta</span></div>
+        <div class="amostra"><span class="chapa" style="background:var(--tinta-2)"></span><span class="nome">tinta 2</span></div>
+        <div class="amostra"><span class="chapa" style="background:var(--tenue)"></span><span class="nome">tênue</span></div>
+        <div class="amostra"><span class="chapa" style="background:var(--filete-2)"></span><span class="nome">filete</span></div>
+      </div>
+      <p class="nota" style="margin-top:var(--e4)">
+        Rampa de calor, exclusiva de estatística — nunca de interface:
+      </p>
+      <div class="calor" style="margin-top:var(--e2)">
+        <i class="c1" style="flex:3"></i><i class="c2" style="flex:5"></i>
+        <i class="c3" style="flex:8"></i><i class="c4" style="flex:6"></i><i class="c5" style="flex:4"></i>
+      </div>
+    </div>
+    <div>
+      <p class="nota"><strong>Acento</strong> = existe algo acionável ali. Link, botão, alternativa
+        marcada, aba corrente. Nada mais. Caiu a <code>border-left: 3px solid var(--accent)</code>
+        que hoje enfeita todo cartão, todo aviso e todo painel do <code>index</code>: quando o verde
+        marca também o que não se clica, ele deixa de significar "clique aqui".</p>
+      <p class="nota"><strong>Estado</strong> = algo aconteceu. Acerto, erro, em branco, expirado.
+        Nunca decorativo, nunca em elemento neutro.</p>
+      <p class="nota"><strong>Neutro</strong> = todo o resto. Inclusive número que não é resultado,
+        borda, cartão e cabeçalho. A hierarquia passa a vir do peso e do filete, não da cor.</p>
+    </div>
+  </div>
+</div>
+
+<div class="bloco">
+  <p class="titulo-secao">Jogo de sinais — traço 1,25, o mesmo peso do filete</p>
+  <div class="sinais">
+    <figure>
+      <svg class="sinal" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+      <figcaption>avançar</figcaption>
+    </figure>
+    <figure>
+      <svg class="sinal" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 6"/></svg>
+      <figcaption>acerto</figcaption>
+    </figure>
+    <figure>
+      <svg class="sinal" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+      <figcaption>erro</figcaption>
+    </figure>
+    <figure>
+      <svg class="sinal" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4h11l-2.5 4L16 12H5"/></svg>
+      <figcaption>marcar</figcaption>
+    </figure>
+    <figure>
+      <svg class="sinal" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 7v5.5l3.5 2"/></svg>
+      <figcaption>tempo</figcaption>
+    </figure>
+    <figure>
+      <svg class="sinal" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10M7 21h10M8 3v4l4 5 4-5V3M8 21v-4l4-5 4 5v4"/></svg>
+      <figcaption>prazo</figcaption>
+    </figure>
+    <figure>
+      <svg class="sinal" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5h16v14zM4 10h16M9 10v9"/></svg>
+      <figcaption>caderno</figcaption>
+    </figure>
+    <figure>
+      <svg class="sinal" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V9M9.5 20V4M15 20v-8M20.5 20v-5"/></svg>
+      <figcaption>estatística</figcaption>
+    </figure>
+  </div>
+  <p class="nota" style="margin-top:var(--e5)">
+    Oito sinais, um único peso de traço, ponta reta e canto vivo — a mesma gramática do filete de
+    1&nbsp;px que separa as seções. Existindo o jogo, ninguém sente falta de emoji: a alternativa
+    ao ✅ não é "nada", é um sinal que pertence ao sistema.
+  </p>
+</div>
+
+<!-- ============ notas de direção ============ -->
+<div class="bloco" style="padding-bottom:var(--e8)">
+  <p class="titulo-secao">Notas de direção</p>
+  <div class="duas">
+    <div>
+      <p class="nota"><strong>Tipografia.</strong> Source Serif 4 para ler, IBM Plex Sans para a
+        interface, IBM Plex Mono para dado — as três em <code>.woff2</code> dentro de
+        <code>assets/fontes/</code>, 198&nbsp;KB no total, licença OFL. Nada sai para a internet,
+        como o resto do material. Georgia e <code>system-ui</code> ficam só como fallback, junto de
+        Sitka Text e Constantia, que já estão instaladas no Windows e são escolhas, não defaults.</p>
+      <p class="nota"><strong>Escala.</strong> Razão 1,2 a partir de 16&nbsp;px e ritmo vertical de
+        4&nbsp;px. O corpo de leitura é a única exceção deliberada: 18/30, medida óptica, porque
+        18&nbsp;px em Source Serif com entrelinha de 30 é onde a leitura longa cansa menos.
+        Saíram os 14,5 / 16,5 / 12,5 espalhados pelo CSS atual.</p>
+    </div>
+    <div>
+      <p class="nota"><strong>Pautado.</strong> O papel tem pauta de 30&nbsp;px em 4,5&nbsp;% de
+        opacidade, alinhada à linha de base do texto — não é imagem, é
+        <code>repeating-linear-gradient</code>. O instrumento tem quadriculado de 8&nbsp;px. Dois
+        substratos, custo zero de asset, e é o que dá "caderno" e "mostrador" sem cair em
+        skeuomorfismo.</p>
+      <p class="nota"><strong>Densidade.</strong> Leitura respira (48&nbsp;px de respiro, medida de
+        68&nbsp;ch); instrumento comprime (46&nbsp;px de faixa, filete de 1&nbsp;px em vez de
+        cartão). Enunciado e cinco alternativas cabem numa tela de 1080&nbsp;p — hoje não cabem.</p>
+      <div style="display:flex;gap:var(--e2);margin-top:var(--e5);flex-wrap:wrap">
+        <button class="btn linha" type="button" id="btPauta" aria-pressed="true">Pauta do papel</button>
+        <button class="btn" type="button" id="btTema2">Alternar tema</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var raiz = document.documentElement;
+  function alterna() {
+    var atual = raiz.getAttribute("data-theme");
+    if (!atual) atual = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    raiz.setAttribute("data-theme", atual === "dark" ? "light" : "dark");
+  }
+  document.getElementById("btTema").onclick = alterna;
+  document.getElementById("btTema2").onclick = alterna;
+
+  var mesa = document.getElementById("mesa");
+  function trava(bt, classe) {
+    bt.onclick = function () {
+      var ligado = bt.getAttribute("aria-pressed") === "true";
+      bt.setAttribute("aria-pressed", ligado ? "false" : "true");
+      mesa.classList.toggle(classe, !ligado);
+    };
+  }
+  trava(document.getElementById("btLimpo"), "limpo");
+  trava(document.getElementById("btAten"), "atenuado");
+
+  var pag = 24;
+  var img = mesa.querySelector("img");
+  var pos = document.querySelector(".visor .pos");
+  function vai(d) {
+    pag = Math.min(40, Math.max(1, pag + d));
+    var n = String(pag).padStart(2, "0");
+    img.src = "paginas/2017-" + n + ".png";
+    img.alt = "Página " + pag + " do caderno de 2017";
+    pos.textContent = "2017 · pág. " + pag + " / 40";
+  }
+  document.getElementById("btAnt").onclick = function () { vai(-1); };
+  document.getElementById("btProx").onclick = function () { vai(1); };
+
+  var btPauta = document.getElementById("btPauta");
+  btPauta.onclick = function () {
+    var ligado = btPauta.getAttribute("aria-pressed") === "true";
+    btPauta.setAttribute("aria-pressed", ligado ? "false" : "true");
+    document.querySelectorAll(".ler").forEach(function (el) {
+      if (el.dataset.pauta === undefined && el.classList.contains("pautado")) el.dataset.pauta = "1";
+      if (el.dataset.pauta === "1") el.classList.toggle("pautado", ligado ? false : true);
+    });
+  };
+
+  // as alternativas da questão de código respondem ao clique, para sentir o estado "marcado"
+  var codigo = document.querySelectorAll(".alt:not([disabled])");
+  codigo.forEach(function (b) {
+    b.onclick = function () {
+      codigo.forEach(function (o) { o.setAttribute("aria-pressed", "false"); });
+      b.setAttribute("aria-pressed", "true");
+    };
+  });
+})();
+</script>
+</body>
+</html>

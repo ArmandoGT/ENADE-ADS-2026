@@ -72,11 +72,11 @@
     var porQuestao = {};
     var oficiaisErradas = 0;
     h.itens.forEach(function (r) {
-      if (r.id === null || r.id === undefined) {
+      if (r.q === null || r.q === undefined) {
         if (!r.ok) oficiaisErradas++;
         return;
       }
-      (porQuestao[r.id] = porQuestao[r.id] || []).push(r);
+      (porQuestao[r.q] = porQuestao[r.q] || []).push(r);
     });
 
     var vencidas = [], agendadas = [], graduadas = 0;
@@ -88,7 +88,7 @@
 
       var ultimo = tentativas[tentativas.length - 1];
       var carta = {
-        id: Number(id), caixa: e.caixa, erros: e.erros, tentativas: e.tentativas,
+        id: id, caixa: e.caixa, erros: e.erros, tentativas: e.tentativas,
         ultimo: e.ultimo, prox: e.ultimo + CAIXAS[e.caixa - 1] * DIA,
         area: ultimo.a, subtema: ultimo.s, objeto: ultimo.o
       };
@@ -129,7 +129,7 @@
 
   function iniciar(cartas) {
     var ids = cartas.slice(0, LOTE).map(function (c) { return c.id; });
-    var itens = global.SORTEIO.porIds(ids);
+    var itens = global.SORTEIO.porQids(ids);
     if (!itens.length) return;
     limparSessao();
     gravarSessao({ itens: itens });

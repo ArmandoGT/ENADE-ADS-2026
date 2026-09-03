@@ -196,12 +196,192 @@ var CITA_POSICAO = new RegExp([
   "\\bopção\\s+[«\"“]?[A-E]\\b"
 ].join("|"), "i");
 
-/* Explicação que refuta distrator, em vez de só justificar o gabarito. */
-var REFUTA = new RegExp([
-  "as\\s+demais", "as\\s+outras", "distrator", "pegadinha", "erro\\s+(comum|mais\\s+comum|clássico)",
-  "confund", "não\\s+é\\s+", "não\\s+se\\s+", "ao\\s+contrário", "já\\s+.{0,20}\\s+descreve",
-  "corresponde\\s+a", "descreve\\s+", "seria\\s+", "quem\\s+(marca|escolhe)", "trocar\\s+"
-].join("|"), "i");
+/* ------------------------------------- a explicação discute os distratores? ---
+
+   A primeira versão desta medida procurava palavras-chave — "as demais", "confunde",
+   "erro comum". Era proxy fraco e fraudável: bastaria colar "não é o caso das demais"
+   em toda explicação para o número fechar sem que uma linha melhorasse. Pior, dava
+   falso negativo bobo, reprovando "I e III DESCREVEM ações do sistema" porque o
+   padrão exigia "descreve" e não "descrevem".
+
+   A medida atual pergunta outra coisa: a explicação fala do que os distratores dizem?
+   Cada distrator tem vocabulário próprio — termos que aparecem nele e não aparecem na
+   alternativa correta nem no enunciado. Quem escreve sobre aquele distrator acaba
+   usando algum desses termos; quem só justifica o gabarito, não. Fraudar exige fazer
+   o trabalho.
+
+   Só que isso não vale para todo formato. Em julgamento de itens e asserção-razão as
+   cinco alternativas são rótulos fixos — "I e III.", "As asserções I e II são
+   verdadeiras..." — sem vocabulário próprio nenhum. Ali o conteúdo a refutar está nas
+   afirmativas do enunciado, e refutar é dizer qual delas é falsa e por quê. Medir
+   esses dois formatos pelo vocabulário das alternativas dava 0% para explicações
+   corretas, o que condenaria a medida a ser ignorada. */
+
+var VAZIAS = new Set(("a as o os um uma uns umas de do da dos das em no na nos nas por para com sem sobre entre " +
+  "que qual quais quando onde como porque pois mas e ou nem se ao aos à às pelo pela pelos pelas " +
+  "ser sao seja sendo esta estao este esta esse essa aquele aquela isso isto aquilo " +
+  "mais menos muito pouco todo toda todos todas cada outro outra outros outras mesmo mesma " +
+  "seu sua seus suas dele dela deles delas lhe lhes nao sim tambem apenas somente ainda ja " +
+  "entao assim logo portanto porem contudo sistema dados dado usuario forma modo caso parte " +
+  "tipo valor numero").split(/\s+/));
+
+/* Radical grosseiro: faz "descreve" casar com "descrevem" e "funcional" com
+   "funcionais" sem exigir um lematizador. Erra para menos, que é o lado seguro. */
+function radicalizar(p) {
+  return p.replace(/(mente|acoes|coes|ncia|mento|ndo|ram|rem|eis|ais|es|as|os|s|m|r|e|a|o)$/, "");
+}
+function termos(s) {
+  var brutas = (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9 ]/g, " ").split(/\s+/)
+    .filter(function (p) { return p.length >= 5 && !VAZIAS.has(p); });
+  return new Set(brutas.map(radicalizar).filter(function (p) { return p.length >= 4; }));
+}
+
+/* --- quando o distrator não tem vocabulário nenhum ------------------------------
+
+   Metade do banco tem alternativa que é só um valor: "13 dias.", "56%.", "2.",
+   "quantidade = 100". Aí não existe vocabulário próprio para casar, e a medida por
+   termos reprovava explicação exemplar — a de PERT que escreve "a alternativa de 12
+   dias toma o valor mais provável como se fosse a esperada" discute o distrator
+   melhor do que a maioria das de conceito, e tirava zero.
+
+   O que identifica um distrator numérico é o próprio número. Citá-lo já é discuti-lo:
+   ninguém escreve "14" numa explicação cujo gabarito é 13 sem dizer de onde sai o 14.
+   Duas precauções, porque número é fácil de aparecer por acaso: o valor tem de ser
+   distintivo — fora da alternativa correta e fora do enunciado, senão a conta do
+   gabarito tocaria os distratores sozinha —, e por extenso conta igual, já que
+   "cobre a decisão com dois casos" e "com 2 casos" dizem o mesmo. Fica de fora o
+   número um: "um" e "uma" são artigo antes de serem quantidade.
+
+   Sobra o distrator que não tem nem termo nem número distintivo — "12 dias" quando o
+   enunciado já trazia o 12. Para esse, procura-se o texto literal da alternativa na
+   explicação, exigindo quatro caracteres para que "2" não case com meio banco. */
+
+var NUMERO_ESCRITO = {
+  dois: 2, duas: 2, tres: 3, quatro: 4, cinco: 5, seis: 6, sete: 7, oito: 8, nove: 9,
+  dez: 10, onze: 11, doze: 12, treze: 13, quatorze: 14, catorze: 14, quinze: 15,
+  dezesseis: 16, dezessete: 17, dezoito: 18, dezenove: 19, vinte: 20, trinta: 30,
+  quarenta: 40, cinquenta: 50, sessenta: 60, setenta: 70, oitenta: 80, noventa: 90,
+  cem: 100, cento: 100
+};
+
+function semAcento(s) {
+  return (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+}
+
+/* Valores citados num texto, em algarismo ou por extenso, na mesma forma canônica. */
+function numeros(s) {
+  var t = semAcento(s), fora = new Set();
+  (t.match(/[0-9]+(?:[.,][0-9]+)*/g) || []).forEach(function (bruto) {
+    var v = parseFloat(bruto.replace(/[.](?=[0-9]{3}([^0-9]|$))/g, "").replace(",", "."));
+    if (isFinite(v)) fora.add(String(v));
+  });
+  t.replace(/[^a-z]+/g, " ").split(" ").forEach(function (p) {
+    if (NUMERO_ESCRITO[p]) fora.add(String(NUMERO_ESCRITO[p]));
+  });
+  return fora;
+}
+
+function nucleo(s) {
+  return semAcento(s).replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+/* Quantos dos quatro distratores a explicação toca. */
+function distratoresTocados(q) {
+  var expl = termos(q[5]);
+  var certa = termos(q[3][q[4]]);
+  var enun = termos(q[2] + " " + (q[6] || ""));
+  var explNum = numeros(q[5]);
+  var certaNum = numeros(q[3][q[4]]);
+  var enunNum = numeros(q[2] + " " + (q[6] || ""));
+  var explTexto = nucleo(q[5]);
+  var n = 0;
+  q[3].forEach(function (alt, k) {
+    if (k === q[4]) return;
+
+    var proprios = [];
+    termos(alt).forEach(function (p) { if (!certa.has(p) && !enun.has(p)) proprios.push(p); });
+    if (proprios.length) {
+      if (proprios.some(function (p) { return expl.has(p); })) n++;
+      return;
+    }
+
+    var valores = [];
+    numeros(alt).forEach(function (v) { if (!certaNum.has(v) && !enunNum.has(v)) valores.push(v); });
+    if (valores.length) {
+      if (valores.some(function (v) { return explNum.has(v); })) n++;
+      return;
+    }
+
+    var lit = nucleo(alt);
+    if (lit.length >= 4 && explTexto.indexOf(lit) >= 0) n++;
+  });
+  return n;
+}
+
+/* Em julgamento de itens, refutar é dizer QUAL afirmativa é falsa e por quê. E dá
+   para saber quais são as falsas sem julgar conteúdo nenhum: a alternativa correta
+   lista exatamente as verdadeiras, então as demais, entre as que o enunciado
+   apresenta, são as falsas. A explicação precisa nomear cada uma delas.
+
+   Quando todas são verdadeiras — resposta "I, II e III" — não há o que refutar por
+   esse critério, e a exigência passa a ser discutir ao menos duas das afirmativas,
+   já que o trabalho ali é sustentar cada uma. */
+function nomeiaAfirmativas(q) {
+  var presentes = [];
+  ["I", "II", "III", "IV"].forEach(function (r) {
+    if (new RegExp("(^|\\n)\\s*" + r + "\\.\\s").test(q[2])) presentes.push(r);
+  });
+  if (!presentes.length) return false;
+
+  var certa = q[3][q[4]] || "";
+  var verdadeiras = presentes.filter(function (r) {
+    return new RegExp("\\b" + r + "\\b").test(certa.replace(/I{1,3}V?/g, function (m) {
+      /* Evita que "III" case como "I": compara token a token. */
+      return m === r ? m : "·";
+    }));
+  });
+  var falsas = presentes.filter(function (r) { return verdadeiras.indexOf(r) < 0; });
+
+  var citadas = new Set((q[5].match(/\b(I{1,3}|IV)\b/g) || []));
+  if (!falsas.length) return citadas.size >= 2;
+  return falsas.every(function (r) { return citadas.has(r); });
+}
+
+/* Em asserção-razão, o conteúdo a discutir está nas duas proposições do enunciado, e
+   não nas alternativas — que são rótulos fixos. Aplica-se então o mesmo princípio dos
+   demais formatos, só que contra as proposições: a explicação tem de usar vocabulário
+   próprio da asserção E da razão. Quem escreve "as duas são verdadeiras, mas a segunda
+   não justifica a primeira" e para por aí não passa, porque não disse nada sobre o que
+   qualquer uma delas afirma — e é justamente esse veredito sem conteúdo que faz o
+   estudante decorar o formato em vez de entender a questão.
+
+   Uma primeira versão desta função procurava palavras como "justifica" e "decorre".
+   Era regex de palavra-chave — o mesmo vício que a medida geral existe para evitar —,
+   e reprovava "a segunda é exatamente o MOTIVO da primeira" por causa do sinônimo. */
+function trataAsserçãoERazão(q) {
+  var partes = q[2].split(/\bPORQUE\b/);
+  if (partes.length !== 2) return false;
+
+  var expl = termos(q[5]);
+  var comum = termos(partes[0] + " " + partes[1]);
+  /* Termos próprios de cada proposição: os que aparecem numa e não na outra. */
+  var tI = termos(partes[0]), tII = termos(partes[1]);
+  var soI = [], soII = [];
+  tI.forEach(function (p) { if (!tII.has(p)) soI.push(p); });
+  tII.forEach(function (p) { if (!tI.has(p)) soII.push(p); });
+
+  var tocaI = soI.some(function (p) { return expl.has(p); });
+  var tocaII = soII.some(function (p) { return expl.has(p); });
+  return tocaI && tocaII;
+}
+
+function refuta(q) {
+  var h = habilidadeDe(q);
+  if (h === "J") return nomeiaAfirmativas(q);
+  if (h === "A") return trataAsserçãoERazão(q);
+  return distratoresTocados(q) >= 2;
+}
 
 /* --------------------------------------------------------------------- auditoria */
 
@@ -446,10 +626,19 @@ function auditar() {
     "as alternativas são embaralhadas a cada sorteio");
   achados.citaPosicao = citaPos;
 
-  var refuta = B.filter(function (q) { return REFUTA.test(q[5]); }).length;
-  meta_("explicacao-refuta", "Explicações que refutam algum distrator",
-    pct(refuta, n), "≥ 90%", 100 * refuta / n >= 90, "%",
-    "justificar o gabarito não diagnostica o erro cometido");
+  var refutam = B.filter(refuta);
+  var porHabRefuta = {};
+  B.forEach(function (q) {
+    var h = habilidadeDe(q) || "?";
+    var x = porHabRefuta[h] || (porHabRefuta[h] = { n: 0, ok: 0 });
+    x.n++; if (refuta(q)) x.ok++;
+  });
+  achados.refutaPorHab = porHabRefuta;
+  achados.naoRefutam = B.filter(function (q) { return !refuta(q); })
+    .map(function (q) { return (meta(q) || {}).id + " " + q[0] + "/" + q[1]; });
+  meta_("explicacao-refuta", "Explicações que discutem os distratores",
+    pct(refutam.length, n), "≥ 90%", 100 * refutam.length / n >= 90, "%",
+    "justificar o gabarito não diz por que o erro cometido é erro");
 
   /* ---- 7. integridade estrutural -------------------------------------------- */
   var estrut = [];

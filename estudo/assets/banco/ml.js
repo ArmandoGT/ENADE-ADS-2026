@@ -84,7 +84,7 @@
 
 ["ML","Matemática","O valor de (1010)₂ + (12)₈ + (A)₁₆ em base decimal é",
 ["20","26","34","30","40"],3,
-"(1010)₂ = 8 + 0 + 2 = 10; (12)₈ = 1×8 + 2 = 10; (A)₁₆ = 10. Somando, 30. O erro conceitual que a questão persegue é tratar o octal como decimal, o que colocaria 12 no lugar de 10. O 20 é o que sobra ao ignorar uma das três parcelas — em geral a hexadecimal, por parecer letra e não número. E 26, 34 e 40 não saem de nenhuma leitura consistente das três bases: são âncoras de ordem de grandeza, que só apanham quem estima em vez de converter.",null,
+"(1010)₂ = 8 + 0 + 2 = 10; (12)₈ = 1×8 + 2 = 10; (A)₁₆ = 10. Somando, 30. O erro conceitual que a questão persegue é tratar o octal como decimal, o que colocaria 12 no lugar de 10. O 20 é o que sobra ao ignorar uma das três parcelas — em geral a hexadecimal, por parecer símbolo e não número. E 26, 34 e 40 não saem de nenhuma leitura consistente das três bases: são âncoras de ordem de grandeza, que só apanham quem estima em vez de converter.",null,
  {id:"ml-0016",hab:"X"}],
 
 ["ML","Matemática","Um barramento de endereços com 16 linhas permite endereçar, no máximo,",

@@ -1,55 +1,98 @@
 <!doctype html>
+<!--
+  DESIGN — o contrato desta tela.
+
+  O sistema está em assets/base-v2.css e o raciocínio inteiro está comentado lá.
+  Em uma linha: dois registros — leitura é serifa sem cromia, instrumento é
+  monoespaçado denso e só ele carrega cor — e a lei da cor, que reserva o acento
+  ao que se clica, a cor de estado ao que aconteceu, e deixa todo o resto cinza.
+  O tema tem três estados (auto | claro | escuro) e nav.js os escreve em
+  data-theme antes de o <body> existir. As fontes estão em assets/fontes/:
+  nada sai para a internet.
+
+  O ?v= nos links de CSS existe para o navegador não servir a folha antiga do
+  cache. Mudou o CSS, suba o número — em todas as telas, senão elas divergem.
+
+  Vale aqui tudo o que vale nos simulados 1 a 4 — .qnav como guarda do teclado,
+  #avisoArmazenamento oculto por padrão, .afill sem background próprio, nenhuma
+  classe do JS renomeada. Fora isso:
+
+  • Esta é a ÚNICA prova com enunciado autoral, código e artefatos. É onde a
+    prancha de leitura aparece de verdade: serifa 18/30, marginália cinza à
+    esquerda com ano, área e habilidade, e nenhuma cor até você marcar.
+  • Também é a única no formato de 2026 — 15 de formação geral, 30 do específico
+    e 1 discursiva. Os simulados 1 a 4 ficaram no formato até 2021, de propósito.
+  • Não carrega paginas.js: aqui não há caderno digitalizado, logo não há visor.
+  • A tela de abertura só existe neste arquivo e vive no <style> abaixo. Nela:
+    .opt é escolha acionável, logo acento. .avisoIA é atenção — as questões não
+    são do Inep —, logo estado. .avisoFormato é informação, logo neutro. Essa
+    distinção é a lei da cor aplicada a três avisos que, no visual antigo, eram
+    todos da mesma cor.
+  • Gráficos dentro das questões usam --serie-1..3, a paleta categórica, e nunca
+    a rampa --calor-*. A justificativa está no fim de base-v2.css: três passos
+    de uma cor só não se distinguem, e sob daltonismo nem os distantes.
+-->
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Simulado IA — ENADE 2026 TADS</title>
-<link rel="stylesheet" href="assets/base.css" />
-<link rel="stylesheet" href="assets/simulado.css" />
+<link rel="stylesheet" href="assets/base-v2.css?v=2" />
+<link rel="stylesheet" href="assets/simulado-v2.css?v=2" />
 <script>window.PAGINA = "simIA";</script>
 <script src="assets/nav.js"></script>
 <style>
+  /* Tela de abertura do simulado IA — só existe aqui. Registro de instrumento:
+     é onde se escolhe e se dispara, não onde se lê. */
+
+  /* aviso de que as questões são autorais, não do Inep: é atenção, é estado */
   .avisoIA {
-    background: var(--flag-wash); border-left: 3px solid var(--flag);
-    border-radius: var(--r); padding: 15px 18px; font-size: 14.5px; color: var(--ink-2);
+    background: var(--alerta-lav); border-left: 2px solid var(--alerta);
+    padding: var(--e4) var(--e5); font-size: 15px; line-height: 25px;
+    font-family: var(--f-ler); color: var(--tinta);
   }
-  .avisoIA b { color: var(--flag); }
+  .avisoIA b { color: var(--tinta); font-weight: 600; }
 
+  /* nota sobre o formato de 2026: informação, portanto neutra */
   .avisoFormato {
-    background: var(--sunk); border-left: 3px solid var(--rule-2);
-    border-radius: var(--r); padding: 15px 18px; font-size: 14px; color: var(--muted);
-    line-height: 1.55;
+    background: var(--papel); border-left: 2px solid var(--filete-2);
+    padding: var(--e4) var(--e5); font-size: 15px; line-height: 25px;
+    font-family: var(--f-ler); color: var(--tinta-2);
   }
-  .avisoFormato b { color: var(--ink-2); }
+  .avisoFormato b { color: var(--tinta); font-weight: 600; }
 
-  .escolha { display: flex; flex-direction: column; gap: 10px; }
-  .escolha > .rotulo { margin-bottom: 2px; }
-  .grupo { display: flex; gap: 9px; flex-wrap: wrap; }
+  .escolha { display: flex; flex-direction: column; gap: var(--e3); }
+  .escolha > .rotulo { margin-bottom: 0; }
+  .grupo { display: flex; gap: 1px; flex-wrap: wrap; background: var(--filete); border: 1px solid var(--filete); }
   .opt {
-    display: flex; flex-direction: column; gap: 3px; align-items: flex-start;
-    background: transparent; border: 1.5px solid var(--rule-2); border-radius: var(--r);
-    padding: 12px 16px; cursor: pointer; color: inherit; text-align: left; min-width: 190px;
+    display: flex; flex-direction: column; gap: var(--e1); align-items: flex-start;
+    background: var(--instr); border: 0; padding: var(--e3) var(--e4);
+    cursor: pointer; color: inherit; text-align: left; min-width: 190px; flex: 1;
   }
-  .opt:hover { border-color: var(--accent); }
-  .opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-wash); }
-  .opt b { font-size: 14.5px; font-weight: 650; }
-  .opt span { font-size: 12.5px; color: var(--muted); line-height: 1.35; }
+  .opt:hover { background: var(--papel); }
+  .opt[aria-pressed="true"] { background: var(--acento-lav); box-shadow: inset 2px 0 0 var(--acento); }
+  .opt b {
+    font-family: var(--f-dado); font-size: var(--t-13); font-weight: 600;
+    letter-spacing: .06em; color: var(--tinta);
+  }
+  .opt[aria-pressed="true"] b { color: var(--acento); }
+  .opt span { font-size: var(--t-13); color: var(--tenue); line-height: 1.4; }
 
-  .linhaTreino { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
-  .campo { display: flex; flex-direction: column; gap: 4px; }
+  .linhaTreino { display: flex; gap: var(--e3); flex-wrap: wrap; align-items: flex-end; }
+  .campo { display: flex; flex-direction: column; gap: var(--e1); }
   .campo label {
-    font-family: var(--font-data); font-size: 10.5px; letter-spacing: .1em;
-    text-transform: uppercase; color: var(--muted);
+    font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .13em;
+    text-transform: uppercase; color: var(--tenue);
   }
   .campo select {
-    font-size: 14.5px; color: var(--ink); background: var(--surface);
-    border: 1px solid var(--rule-2); border-radius: var(--r); padding: 9px 11px; min-width: 230px;
+    font-size: var(--t-13); color: var(--tinta); background: var(--leitura);
+    border: 1px solid var(--filete-2); border-radius: var(--r);
+    padding: 9px 11px; min-width: 230px;
   }
   #blocoTreino[hidden] { display: none; }
 
-  .cobertura { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-  .cobertura .ptrack { flex: 1; min-width: 180px; height: 8px; }
-  .cobertura .pfill { background: var(--good); }
+  .cobertura { display: flex; align-items: center; gap: var(--e3); flex-wrap: wrap; }
+  .cobertura .ptrack { flex: 1; min-width: 180px; height: 3px; }
 </style>
 </head>
 <body class="simulado">

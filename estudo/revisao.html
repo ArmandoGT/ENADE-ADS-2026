@@ -1,11 +1,44 @@
 <!doctype html>
+<!--
+  DESIGN — o contrato desta tela.
+
+  O sistema está em assets/base-v2.css e o raciocínio inteiro está comentado lá.
+  Em uma linha: dois registros — leitura é serifa sem cromia, instrumento é
+  monoespaçado denso e só ele carrega cor — e a lei da cor, que reserva o acento
+  ao que se clica, a cor de estado ao que aconteceu, e deixa todo o resto cinza.
+  O tema tem três estados (auto | claro | escuro) e nav.js os escreve em
+  data-theme antes de o <body> existir. As fontes estão em assets/fontes/:
+  nada sai para a internet.
+
+  O ?v= nos links de CSS existe para o navegador não servir a folha antiga do
+  cache. Mudou o CSS, suba o número — em todas as telas, senão elas divergem.
+
+  Específico da revisão:
+
+  • Esta página carrega assets/simulado.js e revisao.js:142 chama montarSimulado.
+    A tela de questão daqui é LITERALMENTE a mesma dos simulados: mesmo
+    enunciado, mesmas alternativas, mesma correção, mesmas classes. Foi por isso
+    que a revisão migrou junto com os simulados, e não no passe seguinte — sem
+    isso a mesma tela teria duas aparências conforme a porta de entrada.
+  • revisao.js não emite nenhuma classe própria: usa o vocabulário de
+    simulado.js inteiro. Qualquer coisa que se mude em simulado-v2.css chega
+    aqui na mesma hora.
+  • É o único caminho do material que ativa .barravolta e o botão de sair
+    (simulado.js:243-251). Quem entra numa sessão que a página retoma sozinha ao
+    abrir ficaria preso sem ele: voltar pelo menu apenas reabre a mesma sessão.
+    Testar a saída faz parte de testar esta tela.
+  • .revisao .rnum carrega o número da CAIXA de Leitner, não o número da
+    questão. O <style> abaixo existe só para isso.
+  • O baralho não tem estado próprio: é derivado do histórico a cada abertura.
+    Nenhuma cor aqui inventa informação que o histórico não tenha.
+-->
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Revisão espaçada — ENADE 2026 TADS</title>
-<link rel="stylesheet" href="assets/base.css" />
-<link rel="stylesheet" href="assets/simulado.css" />
+<link rel="stylesheet" href="assets/base-v2.css?v=2" />
+<link rel="stylesheet" href="assets/simulado-v2.css?v=2" />
 <script>window.PAGINA = "revisao";</script>
 <script src="assets/nav.js"></script>
 <style>

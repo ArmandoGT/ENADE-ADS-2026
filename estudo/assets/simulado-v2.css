@@ -1,0 +1,424 @@
+/* Telas de prova — simulado-01..04, simulado-ia e revisao. Depende de base-v2.css.
+
+   Todo nome de classe aqui é o que simulado.js, revisao.js e artefato.js já
+   emitem: nada foi renomeado, porque renomear quebraria estado que o JS liga e
+   desliga (classList, aria-pressed, dataset). O que muda é só o desenho.
+
+   Dois registros:
+     • leitura     — .enunciado, .opcao, .explicacao, os artefatos. Serifa, sem cor.
+     • instrumento — .qtopo, .clock, .mapa, .placar, .visorctrl. Mono, denso, com cor.
+
+   Texto sobre preenchimento sólido de estado usa var(--papel) de propósito: no
+   tema claro é papel claro sobre verde escuro, no escuro é grafite sobre verde
+   claro. Uma declaração só, correta nos dois. */
+
+/* ---------- estrutura da tela ---------- */
+.tela { display: flex; flex-direction: column; gap: var(--e5); padding: var(--e6) 0 var(--e8); }
+.tela > h1 { margin: 0; }
+h2.secao {
+  font-family: var(--f-dado); font-size: var(--t-11); font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--tenue);
+  border-bottom: 1px solid var(--filete); padding-bottom: var(--e2);
+  margin: var(--e5) 0 calc(var(--e2) * -1);
+}
+
+/* A tela de questão ganha uma coluna de marginália à esquerda, onde .origem passa
+   a morar. O grid é esparso: .origem tem coluna definida 1, todo o resto coluna 2,
+   e a colocação automática deixa o visor na mesma linha da marginália. Sem :has()
+   — telas de abertura e resultado, que não têm .origem — segue em coluna única. */
+@supports selector(:has(*)) {
+  @media (min-width: 900px) {
+    .tela:has(> .origem) {
+      display: grid; grid-template-columns: var(--marg) minmax(0, 1fr);
+      row-gap: var(--e5); column-gap: var(--e6); align-items: start;
+    }
+    .tela:has(> .origem) > * { grid-column: 2; }
+    .tela:has(> .origem) > .origem { grid-column: 1; }
+  }
+}
+
+#avisoArmazenamento {
+  display: none;   /* simulado.js:127 revela com style.display; sem isto fica sempre à vista */
+  background: var(--alerta-lav); border-left: 2px solid var(--alerta);
+  padding: var(--e3) var(--e4); font-size: var(--t-13); color: var(--tinta-2);
+  margin-top: var(--e4);
+}
+
+/* ---------- tela de abertura: fichas como medidores ---------- */
+.fichas {
+  display: grid; gap: 1px; grid-template-columns: 1fr 1fr;
+  background: var(--filete); border: 1px solid var(--filete);
+}
+@media (min-width: 700px) { .fichas { grid-template-columns: repeat(4, 1fr); } }
+.ficha { background: var(--instr); padding: var(--e3) var(--e4); display: flex; flex-direction: column; gap: var(--e1); }
+.ficha b {
+  font-family: var(--f-dado); font-size: var(--t-23); font-weight: 600;
+  color: var(--tinta); font-variant-numeric: tabular-nums; letter-spacing: -.02em; line-height: 1.1;
+}
+.ficha span { font-family: var(--f-dado); font-size: var(--t-11); color: var(--tenue); line-height: 1.4; }
+
+.acoes { display: flex; gap: var(--e3); align-items: center; flex-wrap: wrap; }
+.acoes.centro { justify-content: center; }
+
+.barravolta {
+  display: flex; gap: var(--e2); flex-wrap: wrap; align-items: center;
+  padding-bottom: var(--e2); border-bottom: 1px solid var(--filete);
+}
+
+/* ---------- topo da questão ---------- */
+.qtopo { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--e4); flex-wrap: wrap; }
+.qpos { display: flex; align-items: baseline; gap: var(--e2); flex-wrap: wrap; }
+.qpos b {
+  font-family: var(--f-ler); font-size: clamp(21px, 4vw, var(--t-28));
+  font-weight: 600; letter-spacing: -.015em;
+}
+.qpos span { font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .1em; text-transform: uppercase; color: var(--tenue); }
+.qrelogio { display: flex; align-items: center; gap: var(--e2); }
+.clock {
+  font-family: var(--f-dado); font-size: var(--t-19); font-weight: 600;
+  font-variant-numeric: tabular-nums; color: var(--tinta); letter-spacing: -.01em;
+}
+.clock.low { color: var(--erro); }
+
+.ptrack { height: 2px; background: var(--filete-2); overflow: hidden; }
+.ptrack.grande { height: 2px; }
+.pfill { height: 100%; background: var(--acento); transition: width .3s ease; }
+
+/* ---------- marginália (era a faixa de origem) ---------- */
+.origem {
+  display: flex; align-items: center; gap: var(--e2); flex-wrap: wrap;
+  font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .08em;
+  text-transform: uppercase; color: var(--tenue); line-height: 1.7;
+}
+.origem b { color: var(--tinta-2); font-weight: 600; }
+.origem .sep { opacity: .45; }
+.tag {
+  font-family: var(--f-dado); font-size: var(--t-11); font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--tenue); white-space: nowrap;
+}
+.tag.rec { color: var(--tinta-2); }
+.tag.ia { color: var(--tinta-2); border-bottom: 1px solid var(--filete-2); }
+
+@media (min-width: 900px) {
+  .origem {
+    flex-direction: column; align-items: flex-end; gap: 0;
+    text-align: right; padding-top: 6px;
+  }
+  .origem .sep { display: none; }   /* o "·" só faz sentido na linha horizontal */
+}
+
+/* ---------- visor ---------- */
+.visor { display: flex; flex-direction: column; gap: var(--e4); }
+.visorctrl { display: flex; align-items: center; gap: var(--e2); flex-wrap: wrap; }
+.visorlbl {
+  font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .08em;
+  text-transform: uppercase; color: var(--tenue);
+  font-variant-numeric: tabular-nums; min-width: 66px; text-align: center;
+}
+.visorsp { flex: 1; }
+.linkabrir { text-decoration: none; white-space: nowrap; }
+.linkabrir:hover { text-decoration: underline; }
+
+/* Mesa de luz. A digitalização é preto sobre branco e continua assim nos dois
+   temas: inverter um caderno digitalizado não produz documento escuro, produz
+   cinza lamacento com halo em volta de cada haste. O que muda é o fosco em
+   volta — no tema escuro ele vai a quase preto e o papel vira a fonte de luz. */
+.moldura {
+  background: var(--matte); overflow: auto; max-height: 78vh;
+  padding: var(--e4); display: flex; justify-content: center;
+  border: 1px solid var(--filete);
+}
+.moldura img.pag {
+  display: block; width: 100%; height: auto;   /* o zoom sobrescreve inline */
+  background: #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.28);
+}
+/* página em vista diferente da questão: atenção, não erro */
+.moldura.fora { border-color: var(--alerta); box-shadow: inset 0 0 0 1px var(--alerta); }
+
+.semimg { padding: var(--e5); background: var(--papel); border: 1px solid var(--filete); }
+.dica { margin: 0; }
+
+/* ---------- enunciado autoral ---------- */
+.enunciado {
+  font-family: var(--f-ler); font-size: var(--t-ler); line-height: var(--lh-ler);
+  color: var(--tinta); max-width: var(--larg-ler);
+  hyphens: auto; -webkit-hyphens: auto; text-wrap: pretty;
+}
+
+/* ---------- alternativas com texto ---------- */
+.opcoes { display: flex; flex-direction: column; border-top: 1px solid var(--filete); }
+.opcao {
+  display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: var(--e3);
+  align-items: start; text-align: left; width: 100%; cursor: pointer; color: inherit;
+  background: transparent; border: 0; border-bottom: 1px solid var(--filete);
+  padding: var(--e4) var(--e2) var(--e4) 0;
+  font-family: var(--f-ler); font-size: 16.5px; line-height: 26px;
+}
+.oletra {
+  font-family: var(--f-dado); font-size: var(--t-13); font-weight: 600; color: var(--tenue);
+  border: 1px solid var(--filete-2); width: 26px; height: 26px; justify-self: end;
+  display: flex; align-items: center; justify-content: center;
+}
+.otexto { min-width: 0; }
+.opcao:hover { background: var(--papel); }
+.opcao:hover .oletra { border-color: var(--acento); color: var(--acento); }
+.opcao[aria-pressed="true"] { background: var(--acento-lav); }
+.opcao[aria-pressed="true"] .oletra { background: var(--acento); border-color: var(--acento); color: var(--acento-in); }
+.opcao:disabled { cursor: default; }
+.opcao:disabled:hover { background: transparent; }
+
+.opcoes .opcao.gabarito { background: var(--acerto-lav); }
+.opcoes .opcao.gabarito .oletra { background: var(--acerto); border-color: var(--acerto); color: var(--papel); }
+.opcoes .opcao.marcada-errada { background: var(--erro-lav); }
+.opcoes .opcao.marcada-errada .oletra { background: var(--erro); border-color: var(--erro); color: var(--papel); }
+
+/* ---------- bloco de resposta ---------- */
+.resposta {
+  display: flex; flex-direction: column; gap: var(--e3);
+  border-top: 1px solid var(--filete-2); padding-top: var(--e4);
+}
+.resposta.certa  { border-top-color: var(--acerto); }
+.resposta.errada { border-top-color: var(--erro); }
+.rotulo {
+  font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .13em;
+  text-transform: uppercase; color: var(--tenue);
+}
+
+/* cartela A–E das questões que são imagem de caderno */
+.alts { display: flex; gap: var(--e2); flex-wrap: wrap; }
+.alt {
+  width: 56px; height: 50px; border: 1px solid var(--filete-2); background: transparent;
+  color: var(--tinta-2); cursor: pointer; flex: none;
+  font-family: var(--f-dado); font-size: var(--t-19); font-weight: 600;
+  transition: background .12s ease, color .12s ease, border-color .12s ease;
+}
+.alt:hover { border-color: var(--acento); color: var(--acento); }
+.alt[aria-pressed="true"] { background: var(--acento); border-color: var(--acento); color: var(--acento-in); }
+.alt:disabled { cursor: default; opacity: 1; }
+.alts .alt.gabarito { background: var(--acerto); border-color: var(--acerto); color: var(--papel); }
+.alts .alt.marcada-errada { background: var(--erro); border-color: var(--erro); color: var(--papel); }
+@media (max-width: 560px) { .alt { width: 17vw; max-width: 56px; height: 46px; font-size: 17px; } }
+
+.veredito { font-family: var(--f-dado); font-size: var(--t-13); color: var(--tinta-2); }
+.veredito b { font-weight: 600; color: var(--tinta); }
+
+/* ---------- explicação: é para ler, então é serifa e sem cor ---------- */
+.explicacao {
+  font-family: var(--f-ler); font-size: 16.5px; line-height: 27px; color: var(--tinta);
+  max-width: var(--larg-ler); border-top: 1px solid var(--filete); padding-top: var(--e4);
+  background-image: repeating-linear-gradient(
+    to bottom, transparent 0 26px, var(--pauta) 26px 27px);
+  background-position: 0 calc(var(--e4) + 7px);
+}
+.explicacao b {
+  display: block; font-family: var(--f-dado); font-size: var(--t-11);
+  letter-spacing: .13em; text-transform: uppercase; color: var(--tenue);
+  margin-bottom: var(--e2); font-weight: 600;
+}
+
+/* ---------- navegação da questão ----------
+   .qnav não é só estilo: simulado.js:820 usa este seletor como guarda do
+   atalho de teclado (A–E responde, ←/→ navega). Não renomear. */
+.qnav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--e3); flex-wrap: wrap;
+  border-top: 1px solid var(--filete); padding-top: var(--e4);
+}
+.qnav .btn { min-width: 118px; }
+
+/* ---------- mapa da prova ---------- */
+.mapa { display: flex; flex-direction: column; gap: var(--e3); }
+.grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(34px, 1fr)); gap: 3px; }
+.cel {
+  font-family: var(--f-dado); font-size: var(--t-11); font-weight: 600;
+  aspect-ratio: 1 / 1; min-height: 30px; cursor: pointer;
+  background: transparent; border: 1px solid var(--filete-2); color: var(--tenue);
+  display: flex; align-items: center; justify-content: center;
+}
+.cel:hover { border-color: var(--acento); color: var(--acento); }
+.cel.respondida { background: var(--tinta-2); border-color: var(--tinta-2); color: var(--papel); }
+.cel.disc { border-style: dashed; }
+.cel.aqui { border-color: var(--acento); box-shadow: inset 0 0 0 1px var(--acento); color: var(--acento); }
+.cel.respondida.aqui { color: var(--papel); }
+
+.legenda {
+  display: flex; gap: var(--e4); flex-wrap: wrap;
+  font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .08em;
+  text-transform: uppercase; color: var(--tenue);
+}
+.legenda span { display: flex; align-items: center; gap: var(--e2); }
+.legenda i.am { width: 12px; height: 12px; display: block; border: 1px solid var(--filete-2); background: transparent; }
+.legenda i.am.respondida { background: var(--tinta-2); border-color: var(--tinta-2); }
+.legenda i.am.aqui { border-color: var(--acento); box-shadow: inset 0 0 0 1px var(--acento); }
+
+/* ---------- placar ---------- */
+.placar {
+  display: grid; gap: 1px; grid-template-columns: 1fr 1fr;
+  background: var(--filete); border: 1px solid var(--filete);
+}
+@media (min-width: 760px) { .placar { grid-template-columns: repeat(4, 1fr); } }
+.pcell { background: var(--instr); padding: var(--e3) var(--e4); display: flex; flex-direction: column; gap: var(--e1); }
+.pcell.destaque { background: var(--acento-lav); }
+.pcell b {
+  font-family: var(--f-dado); font-size: clamp(20px, 4vw, var(--t-28)); font-weight: 600;
+  color: var(--tinta); font-variant-numeric: tabular-nums; letter-spacing: -.02em; line-height: 1.05;
+}
+.pcell.destaque b { color: var(--acento); }
+.pcell span { font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .1em; text-transform: uppercase; color: var(--tenue); }
+
+/* ---------- desempenho por área ---------- */
+.areas { display: flex; flex-direction: column; gap: 2px; }
+.arow { display: grid; grid-template-columns: 190px 1fr 56px; gap: var(--e3); align-items: center; padding: 3px 0; }
+@media (max-width: 640px) { .arow { grid-template-columns: 118px 1fr 48px; gap: var(--e2); } }
+.alabel { font-size: var(--t-13); color: var(--tinta-2); text-align: right; line-height: 1.25; }
+.atrack { height: 14px; background: var(--papel); border: 1px solid var(--filete); overflow: hidden; }
+/* .afill não declara background de propósito: a cor vem inline de simulado.js:659 */
+.afill { height: 100%; }
+.aval {
+  font-family: var(--f-dado); font-size: var(--t-11); font-variant-numeric: tabular-nums;
+  color: var(--tinta-2); text-align: right; white-space: nowrap;
+}
+
+/* ---------- lista de revisão ---------- */
+.revisao { display: flex; flex-direction: column; }
+.ritem {
+  display: grid; grid-template-columns: 44px 1fr auto; gap: var(--e3); align-items: center;
+  text-align: left; width: 100%; cursor: pointer; color: inherit;
+  background: transparent; border: 0; border-bottom: 1px solid var(--filete);
+  border-left: 2px solid var(--filete-2); padding: var(--e3) var(--e4);
+}
+.ritem:hover { background: var(--papel); }
+.ritem.ok   { border-left-color: var(--acerto); }
+.ritem.bad  { border-left-color: var(--erro); }
+.ritem.meio { border-left-color: var(--alerta); }
+.rnum {
+  font-family: var(--f-dado); font-size: var(--t-13); font-weight: 600;
+  color: var(--tenue); font-variant-numeric: tabular-nums;
+}
+.rtema { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.rtema b { font-family: var(--f-ler); font-size: 16px; font-weight: 600; line-height: 1.35; }
+.rtema em {
+  font-style: normal; font-family: var(--f-dado); font-size: var(--t-11);
+  letter-spacing: .08em; text-transform: uppercase; color: var(--tenue);
+}
+.rgab { display: flex; flex-direction: column; gap: 2px; text-align: right; white-space: nowrap; }
+.rgab i { font-style: normal; font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .06em; }
+.rgab i.marcou { color: var(--tenue); }
+.rgab i.verd { color: var(--acerto); font-weight: 600; }
+.ritem.bad  .rgab i.verd { color: var(--erro); }
+.ritem.meio .rgab i.verd { color: var(--alerta); }
+@media (max-width: 620px) {
+  .ritem { grid-template-columns: 40px 1fr; }
+  .rgab { grid-column: 2; text-align: left; flex-direction: row; gap: var(--e3); }
+}
+
+/* ---------- bloco recolhível de acertos ---------- */
+details.bloco-acertos summary {
+  cursor: pointer; font-family: var(--f-dado); font-size: var(--t-11); font-weight: 600;
+  letter-spacing: .13em; text-transform: uppercase; color: var(--tenue);
+  padding: var(--e3) 0; list-style: none; display: flex; gap: var(--e2); align-items: center;
+}
+details.bloco-acertos summary:hover { color: var(--tinta); }
+details.bloco-acertos summary::-webkit-details-marker { display: none; }
+details.bloco-acertos summary::before { content: "+"; font-weight: 600; }
+details.bloco-acertos[open] summary::before { content: "\2212"; }
+
+/* ---------- rubrica das discursivas ---------- */
+.quesitos { display: flex; flex-direction: column; border-top: 1px solid var(--filete); }
+.quesito {
+  display: grid; grid-template-columns: 20px 1fr auto; gap: var(--e3); align-items: flex-start;
+  background: transparent; border: 0; border-bottom: 1px solid var(--filete);
+  border-left: 2px solid transparent; padding: var(--e3) var(--e4) var(--e3) var(--e3);
+  cursor: pointer; font-family: var(--f-ler); font-size: 16px; line-height: 26px;
+}
+.quesito:hover { background: var(--papel); }
+.quesito.feito { border-left-color: var(--acerto); background: var(--acerto-lav); }
+.quesito input { margin: 4px 0 0; accent-color: var(--acerto); width: 16px; height: 16px; cursor: pointer; }
+.qtexto { color: var(--tinta-2); }
+.quesito.feito .qtexto { color: var(--tinta); }
+.qpontos {
+  font-family: var(--f-dado); font-size: var(--t-11); font-weight: 600; color: var(--tenue);
+  font-variant-numeric: tabular-nums; white-space: nowrap; padding-top: 5px;
+}
+.quesito.feito .qpontos { color: var(--acerto); }
+.notadisc {
+  font-family: var(--f-dado); font-size: var(--t-13); color: var(--tinta-2);
+  font-variant-numeric: tabular-nums; padding-top: var(--e1);
+}
+.notadisc b { font-size: var(--t-23); color: var(--tinta); font-weight: 600; }
+
+/* ---------- impressão ---------- */
+@media print { nav.top, .qnav, .mapa, .visorctrl, .acoes { display: none !important; } }
+
+/* ==================================================================== artefatos
+   Tabela, gráfico e diagrama dentro do enunciado. Nenhuma cor é declarada em
+   número — artefato.js não emite cor nenhuma, e o teste em
+   ferramentas/testar-artefatos.js falha se emitir. Tudo sai dos tokens, e por
+   isso o tema escuro funciona sem regra própria. A rampa --calor-* dá as séries.
+   ============================================================================ */
+
+figure.artefato { margin: 0; max-width: var(--larg-ler); }
+figure.artefato + figure.artefato { margin-top: var(--e4); }
+figure.artefato figcaption {
+  margin-top: var(--e2); font-family: var(--f-ui); font-size: var(--t-13);
+  color: var(--tenue); line-height: 1.45;
+}
+
+.art-rolagem { overflow-x: auto; }
+.art-tabela table { border-collapse: collapse; width: 100%; font-family: var(--f-ui); }
+.art-tabela caption {
+  text-align: left; font-family: var(--f-dado); font-size: var(--t-11);
+  letter-spacing: .13em; text-transform: uppercase; color: var(--tenue); padding-bottom: var(--e2);
+}
+.art-tabela th, .art-tabela td {
+  text-align: left; padding: var(--e2) var(--e3); font-size: var(--t-13);
+  border-bottom: 1px solid var(--filete); vertical-align: top;
+}
+.art-tabela thead th {
+  font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .09em;
+  text-transform: uppercase; color: var(--tenue); font-weight: 600;
+  border-bottom-color: var(--filete-2);
+}
+.art-tabela tbody tr:last-child td { border-bottom: none; }
+.art-tabela th.num, .art-tabela td.num {
+  text-align: right; font-family: var(--f-dado); font-variant-numeric: tabular-nums;
+}
+
+.art-codigo { display: block; }
+.art-grafico { display: block; }
+.art-svg { display: block; }
+.art-svg-caixa { background: var(--leitura); border: 1px solid var(--filete); padding: var(--e3); }
+/* o SVG sai de artefato.js:238 só com viewBox; sem esta regra o gráfico colapsa */
+.art-svg-caixa svg { display: block; width: 100%; height: auto; }
+
+.a-grade { stroke: var(--filete); stroke-width: 1; }
+.a-eixo-linha { stroke: var(--filete-2); stroke-width: 1; }
+/* Corpo E família são acoplados à geometria: artefato.js:216 calcula a quebra do
+   rótulo em floor(passoCat / 6.2) caracteres e :231 avança a legenda em
+   nome.length * 6.4 — as duas constantes supõem 12px numa fonte proporcional.
+   Em monoespaçada o caractere mede ~7,2px e os rótulos se sobrepõem. */
+.a-eixo { fill: var(--tenue); font-family: var(--f-ui); font-size: 12px; }
+.a-titulo-eixo { fill: var(--tinta-2); font-size: 12px; }
+
+/* Séries: paleta categórica, não a rampa de calor. A justificativa está no fim
+   de base-v2.css. A ordem dos matizes é o mecanismo de segurança sob daltonismo
+   e não é cosmética — não reordenar sem revalidar. */
+.a-barra, .a-chave { fill: var(--serie-1); }
+.a-barra.s2, .a-chave.s2 { fill: var(--serie-2); }
+.a-barra.s3, .a-chave.s3 { fill: var(--serie-3); }
+.a-barra.s4, .a-chave.s4 { fill: var(--serie-4); }
+
+.a-linha-serie { stroke: var(--serie-1); stroke-width: 2; fill: none; }
+.a-linha-serie.s2 { stroke: var(--serie-2); }
+.a-linha-serie.s3 { stroke: var(--serie-3); }
+.a-linha-serie.s4 { stroke: var(--serie-4); }
+.a-ponto { fill: var(--serie-1); }
+.a-ponto.s2 { fill: var(--serie-2); }
+.a-ponto.s3 { fill: var(--serie-3); }
+.a-ponto.s4 { fill: var(--serie-4); }
+
+/* diagramas escritos à mão no banco (oo.js, bd.js) */
+.a-caixa { fill: var(--papel); stroke: var(--filete-2); stroke-width: 1.2; }
+.a-linha { stroke: var(--tinta-2); stroke-width: 1.4; fill: none; }
+.a-rot { fill: var(--tinta); font-family: var(--f-ui); font-size: 13px; }
+.a-fraco { fill: var(--tenue); font-family: var(--f-ui); font-size: 11.5px; }

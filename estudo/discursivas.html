@@ -1,44 +1,98 @@
 <!doctype html>
+<!--
+  DESIGN — o contrato desta tela.
+
+  O sistema está em assets/base-v2.css e o raciocínio inteiro está comentado lá.
+  Em uma linha: dois registros — leitura é serifa sem cromia, instrumento é
+  monoespaçado denso e só ele carrega cor — e a lei da cor, que reserva o acento
+  ao que se clica, a cor de estado ao que aconteceu, e deixa todo o resto cinza.
+  O tema tem três estados (auto | claro | escuro) e nav.js os escreve em
+  data-theme antes de o <body> existir. As fontes estão em assets/fontes/:
+  nada sai para a internet.
+
+  O ?v= nos links de CSS existe para o navegador não servir a folha antiga do
+  cache. Mudou o CSS, suba o número — em todas as telas, senão elas divergem.
+
+  Específico das discursivas:
+
+  • Carrega simulado-v2.css porque discursivas.js reusa quase todo o vocabulário
+    de classe de simulado.js — .tela, .resposta, .rotulo, .quesito, .ritem,
+    .visor, .moldura, .origem. Renomear qualquer uma delas quebra as duas telas
+    de uma vez, e ainda a revisão.
+  • O editor (textarea.editor) é registro de LEITURA de propósito, e é a única
+    peça de formulário do material que é. Ali se escreve — e escrever quinze
+    linhas em fonte de interface cansa. Serifa 17/28 sobre papel, como as
+    linhas do caderno de respostas.
+  • Filtros, contagem, seletores e o contador de caracteres são instrumento:
+    mono, minúsculo, cinza. É o que se opera, não o que se lê.
+  • .contador.estourou é ESTADO, não decoração: passou do limite de linhas.
+    Por isso vermelho ali é legítimo.
+  • .barravolta é redefinido no <style> abaixo, e a versão local vence a de
+    simulado-v2.css. A regra existe porque quem entra numa discursiva pelo
+    ensaio precisa de saída à vista, sempre.
+-->
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Discursivas — ENADE 2026 TADS</title>
-<link rel="stylesheet" href="assets/base.css" />
-<link rel="stylesheet" href="assets/simulado.css" />
+<link rel="stylesheet" href="assets/base-v2.css?v=2" />
+<link rel="stylesheet" href="assets/simulado-v2.css?v=2" />
 <script>window.PAGINA = "disc";</script>
 <script src="assets/nav.js"></script>
 <style>
-  .filtros { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
-  .filtros .campo { display: flex; flex-direction: column; gap: 4px; }
+  /* A marginália volta a ser faixa horizontal AQUI, e só aqui.
+     Nos simulados a origem tem três itens curtos — 2017, Eng. de SW, Requisitos —
+     e cabe bem na coluna de 104 px à esquerda do enunciado. Na discursiva ela
+     carrega prova, número, bloco, formato, pontuação e a ressalva de divisão de
+     pontos inferida: na mesma coluna isso vira uma dúzia de linhas quebradas no
+     meio das palavras. Texto diferente pede medida diferente. */
+  @media (min-width: 900px) {
+    .tela:has(> .origem) { display: flex; }
+    .origem {
+      flex-direction: row; align-items: center; flex-wrap: wrap;
+      gap: var(--e2); text-align: left; padding-top: 0;
+    }
+    .origem .sep { display: inline; }
+  }
+
+  /* Filtros e contadores são instrumento: mono, denso, cinza. */
+  .filtros { display: flex; gap: var(--e3); flex-wrap: wrap; align-items: flex-end; }
+  .filtros .campo { display: flex; flex-direction: column; gap: var(--e1); }
   .filtros label {
-    font-family: var(--font-data); font-size: 10.5px; letter-spacing: .1em;
-    text-transform: uppercase; color: var(--muted);
+    font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .13em;
+    text-transform: uppercase; color: var(--tenue);
   }
   .filtros select {
-    font-size: 14px; color: var(--ink); background: var(--surface);
-    border: 1px solid var(--rule-2); border-radius: var(--r); padding: 8px 10px; min-width: 165px;
+    font-size: var(--t-13); color: var(--tinta); background: var(--leitura);
+    border: 1px solid var(--filete-2); border-radius: var(--r);
+    padding: 9px 11px; min-width: 165px;
   }
   .contagem {
-    font-family: var(--font-data); font-size: 12.5px; color: var(--muted);
-    font-variant-numeric: tabular-nums;
+    font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .08em;
+    text-transform: uppercase; color: var(--tenue); font-variant-numeric: tabular-nums;
   }
+
+  /* O editor é o oposto: é onde você escreve, então é registro de leitura —
+     serifa, entrelinha larga, papel. Escrever quatro parágrafos em fonte de
+     interface cansa, e a discursiva de 2026 vale 11,25% da nota. */
   textarea.editor {
-    width: 100%; font-family: var(--font-body); font-size: 15px; line-height: 1.6;
-    color: var(--ink); background: var(--paper); border: 1px solid var(--rule-2);
-    border-radius: var(--r); padding: 13px 15px; resize: vertical; min-height: 200px;
+    width: 100%; font-family: var(--f-ler); font-size: 17px; line-height: 28px;
+    color: var(--tinta); background: var(--leitura);
+    border: 1px solid var(--filete-2); border-left: 2px solid var(--filete-2);
+    border-radius: 0; padding: var(--e4) var(--e5); resize: vertical; min-height: 220px;
   }
-  textarea.editor:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  textarea.editor:focus-visible { outline: 2px solid var(--acento); outline-offset: 1px; }
   .contador {
-    font-family: var(--font-data); font-size: 12px; color: var(--muted);
-    font-variant-numeric: tabular-nums; text-align: right;
+    font-family: var(--f-dado); font-size: var(--t-11); color: var(--tenue);
+    font-variant-numeric: tabular-nums; text-align: right; letter-spacing: .06em;
   }
-  .contador.estourou { color: var(--flag); font-weight: 700; }
+  .contador.estourou { color: var(--erro); font-weight: 600; }
 
   /* barra de saída: sempre no topo da questão, para nunca ficar preso na tela */
   .barravolta {
-    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
-    padding-bottom: 4px; border-bottom: 1px solid var(--rule); margin-bottom: 2px;
+    display: flex; gap: var(--e2); flex-wrap: wrap; align-items: center;
+    padding-bottom: var(--e2); border-bottom: 1px solid var(--filete); margin-bottom: 2px;
   }
 </style>
 </head>

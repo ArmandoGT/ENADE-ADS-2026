@@ -1,11 +1,50 @@
 <!doctype html>
+<!--
+  DESIGN — o contrato desta tela. Vale igual nos simulados 1 a 4.
+
+  O sistema está em assets/base-v2.css e o raciocínio inteiro está comentado lá.
+  Em uma linha: dois registros — leitura é serifa sem cromia, instrumento é
+  monoespaçado denso e só ele carrega cor — e a lei da cor, que reserva o acento
+  ao que se clica, a cor de estado ao que aconteceu, e deixa todo o resto cinza.
+  O tema tem três estados (auto | claro | escuro) e nav.js os escreve em
+  data-theme antes de o <body> existir. As fontes estão em assets/fontes/:
+  nada sai para a internet.
+
+  O ?v= nos links de CSS existe para o navegador não servir a folha antiga do
+  cache. Mudou o CSS, suba o número — em todas as telas, senão elas divergem.
+
+  Específico da prova:
+
+  • Tudo o que se vê é injetado por simulado.js em #app. O HTML abaixo é só a
+    casca e os dados da prova. Estilos em assets/simulado-v2.css.
+  • NENHUMA CLASSE QUE O JS TOCA PODE SER RENOMEADA. O CSS novo foi escrito
+    sobre os nomes que já existiam justamente para não mexer no JavaScript.
+  • .qnav não é só estilo: simulado.js:820 usa esse seletor como guarda do
+    atalho de teclado — A a E respondem, as setas navegam. Renomear .qnav mata
+    o teclado em silêncio, sem erro no console.
+  • #avisoArmazenamento precisa continuar com display:none no CSS.
+    simulado.js:127 o revela com style.display quando o armazenamento local
+    está bloqueado. Sem a regra, o aviso fica visível para todo mundo, sempre.
+  • .moldura é MESA DE LUZ: a digitalização do caderno nunca é invertida no tema
+    escuro. Inverter um scan não produz documento escuro, produz cinza lamacento
+    com halo em volta de cada haste de letra. O que muda com o tema é o fosco em
+    volta — no escuro ele vai a quase preto e o papel branco vira a fonte de luz.
+  • .moldura img.pag mantém width:100%, porque o zoom é style.width inline
+    (simulado.js:376) e depende dessa base.
+  • .afill não pode declarar background: a cor da barra por área vem inline do
+    JS, das variáveis de estado.
+  • Marcar uma alternativa é AÇÃO e vai em acento; gabarito e erro só aparecem
+    depois da correção e aí são ESTADO. Texto sobre preenchimento sólido usa
+    var(--papel), que vira junto com o tema — no claro é papel sobre verde
+    escuro, no escuro é grafite sobre verde claro. Uma declaração, dois temas.
+-->
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Simulado 2 — ENADE 2026 TADS</title>
-<link rel="stylesheet" href="assets/base.css" />
-<link rel="stylesheet" href="assets/simulado.css" />
+<link rel="stylesheet" href="assets/base-v2.css?v=2" />
+<link rel="stylesheet" href="assets/simulado-v2.css?v=2" />
 <script>window.PAGINA = "sim2";</script>
 <script src="assets/nav.js"></script>
 </head>

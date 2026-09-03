@@ -119,6 +119,132 @@
       '<span><i style="background:var(--rule-2)"></i>menos de ' + MIN_AMOSTRA + " questões: sem veredito</span>");
   }
 
+  /* ---------------- gráficos ----------------
+
+     Quem desenha é o ARTEFATO, o mesmo renderizador dos gráficos que aparecem
+     dentro das questões: uma linguagem visual só no material inteiro, e de
+     brinde a descrição textual que ele já gera para leitor de tela.
+
+     Uma diferença de propósito: dentro de uma questão o gráfico é o enunciado,
+     e revelar o valor exato ao passar o mouse estragaria a questão de
+     interpretação. Aqui é o contrário — o número é o que se quer. Por isso a
+     dica de valor é acrescentada aqui, sobre as marcas, e não no ARTEFATO. */
+
+  function comDicas(fig, textos) {
+    if (!fig) return null;
+    var marcas = fig.querySelectorAll(".a-barra, .a-ponto");
+    for (var i = 0; i < marcas.length && i < textos.length; i++) {
+      var t = document.createElementNS("http://www.w3.org/2000/svg", "title");
+      t.textContent = textos[i];
+      marcas[i].appendChild(t);
+    }
+    return fig;
+  }
+
+  /* Segunda-feira da semana de um instante. As semanas são a unidade do
+     cronograma do plano, então o ritmo é lido na mesma régua. */
+  function semanaDe(ts) {
+    var d = new Date(ts);
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+    return d.getTime();
+  }
+
+  var HAB_CURTA = {
+    J: "Julgamento", I: "Interpretação", C: "Conceito",
+    A: "Asserção-razão", X: "Cálculo", E: "Estudo de caso"
+  };
+
+  /* 1. Acerto por habilidade cobrada.
+     É o corte que nenhuma lista por área dá: separa saber a definição de saber
+     aplicá-la. O histórico já consolidava isso e nada na tela mostrava. */
+  function graficoHabilidade(r) {
+    if (!global.ARTEFATO) return null;
+    var chaves = Object.keys(r.porHabilidade).filter(function (k) {
+      return r.porHabilidade[k].n >= MIN_AMOSTRA;
+    });
+    if (chaves.length < 2) return null;
+
+    chaves.sort(function (a, b) {
+      return pct(r.porHabilidade[a].ok, r.porHabilidade[a].n) -
+             pct(r.porHabilidade[b].ok, r.porHabilidade[b].n);
+    });
+
+    var dicas = chaves.map(function (k) {
+      var d = r.porHabilidade[k];
+      return (global.ACERVO && global.ACERVO.HAB[k] ? global.ACERVO.HAB[k] : k) + ": " +
+        Math.round(pct(d.ok, d.n)) + "% — " + d.ok + " de " + d.n;
+    });
+
+    return comDicas(global.ARTEFATO.montar({
+      t: "grafico", sub: "barra", eixoY: "% de acerto",
+      cap: "Acerto por habilidade cobrada, da mais fraca para a mais forte. " +
+        "Só entram as habilidades com " + MIN_AMOSTRA + " questões ou mais.",
+      cat: chaves.map(function (k) { return HAB_CURTA[k] || k; }),
+      ser: [{ nome: "% de acerto", val: chaves.map(function (k) {
+        return Math.round(pct(r.porHabilidade[k].ok, r.porHabilidade[k].n));
+      }) }]
+    }), dicas);
+  }
+
+  /* 2. Ritmo: quantas questões você corrigiu em cada semana.
+     A evolução ao lado mede acerto; esta mede volume. São perguntas diferentes,
+     e semana de muito acerto com três questões não é semana de estudo. */
+  function graficoRitmo(itens) {
+    if (!global.ARTEFATO || !itens.length) return null;
+    var mapa = {};
+    itens.forEach(function (r) {
+      var s = semanaDe(r.t);
+      mapa[s] = (mapa[s] || 0) + 1;
+    });
+    var semanas = Object.keys(mapa).map(Number).sort(function (a, b) { return a - b; });
+    if (semanas.length < 2) return null;
+    if (semanas.length > 12) semanas = semanas.slice(semanas.length - 12);
+
+    var dicas = semanas.map(function (s) {
+      return "semana de " + data(s) + ": " + mapa[s] +
+        (mapa[s] === 1 ? " questão corrigida" : " questões corrigidas");
+    });
+
+    return comDicas(global.ARTEFATO.montar({
+      t: "grafico", sub: "barra", eixoY: "questões",
+      cap: "Questões corrigidas por semana" +
+        (semanas.length === 12 ? ", nas últimas doze" : "") + ".",
+      cat: semanas.map(data),
+      ser: [{ nome: "questões", val: semanas.map(function (s) { return mapa[s]; }) }]
+    }), dicas);
+  }
+
+  /* 3. Acerto por origem da questão.
+     Serve para calibrar o próprio material: se o seu acerto no banco autoral é
+     muito maior que nas provas reais do Inep, as questões que eu escrevi estão
+     fáceis demais, e o número do simulado IA está mentindo para você. */
+  function graficoFonte(itens) {
+    if (!global.ARTEFATO || !itens.length) return null;
+    var mapa = {};
+    itens.forEach(function (r) {
+      var f = mapa[r.f] || (mapa[r.f] = { n: 0, ok: 0 });
+      f.n++; if (r.ok) f.ok++;
+    });
+    var chaves = Object.keys(mapa).filter(function (k) { return mapa[k].n >= MIN_AMOSTRA; });
+    if (chaves.length < 2) return null;
+    chaves.sort(function (a, b) { return pct(mapa[a].ok, mapa[a].n) - pct(mapa[b].ok, mapa[b].n); });
+
+    var dicas = chaves.map(function (k) {
+      return (FONTES[k] || k) + ": " + Math.round(pct(mapa[k].ok, mapa[k].n)) +
+        "% — " + mapa[k].ok + " de " + mapa[k].n;
+    });
+
+    return comDicas(global.ARTEFATO.montar({
+      t: "grafico", sub: "barra", eixoY: "% de acerto",
+      cap: "Acerto por origem da questão.",
+      cat: chaves.map(function (k) { return FONTES[k] || k; }),
+      ser: [{ nome: "% de acerto", val: chaves.map(function (k) {
+        return Math.round(pct(mapa[k].ok, mapa[k].n));
+      }) }]
+    }), dicas);
+  }
+
   /* ---------------- tela ---------------- */
   function montar() {
     app.innerHTML = "";
@@ -258,6 +384,20 @@
       w.appendChild(cx);
     }
 
+    /* --- por habilidade --- */
+    var gHab = graficoHabilidade(r);
+    if (gHab) {
+      w.appendChild(secao("Por habilidade cobrada",
+        "O que a questão pediu que você fizesse, não sobre o que ela era. Conceito puro " +
+        "cobra definição; interpretação de artefato cobra ler um diagrama, uma tabela ou um " +
+        "trecho de código; asserção-razão cobra julgar duas proposições e o nexo entre elas. " +
+        "É o corte que separa saber a matéria de saber responder à banca — e só existe para " +
+        "as questões do Simulado IA, que declaram a habilidade."));
+      var cxHab = el("div", "graficos");
+      cxHab.appendChild(gHab);
+      w.appendChild(cxHab);
+    }
+
     /* --- evolução --- */
     if (ses.length > 1) {
       w.appendChild(secao("Evolução",
@@ -281,6 +421,22 @@
     } else if (ses.length === 1) {
       w.appendChild(el("p", "sembase",
         "A evolução aparece a partir da segunda correção — com uma só, não há o que comparar."));
+    }
+
+    /* --- ritmo e origem --- */
+    var gRitmo = graficoRitmo(h.itens);
+    var gFonte = graficoFonte(h.itens);
+    if (gRitmo || gFonte) {
+      w.appendChild(secao("Ritmo e origem",
+        "A evolução acima mede acerto; estes dois medem outra coisa. À esquerda, quanto você " +
+        "estudou por semana — semana de acerto alto com três questões não é semana de estudo. " +
+        "À direita, o acerto por origem: se o banco autoral está muito acima das provas reais " +
+        "do Inep, as questões que escrevi estão fáceis demais e o número do Simulado IA está " +
+        "otimista."));
+      var cxG = el("div", "graficos");
+      if (gRitmo) cxG.appendChild(gRitmo);
+      if (gFonte) cxG.appendChild(gFonte);
+      w.appendChild(cxG);
     }
 
     /* --- discursivas --- */

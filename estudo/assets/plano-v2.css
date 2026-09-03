@@ -1,0 +1,213 @@
+/* Plano de ação — página longa, de leitura. Depende de base-v2.css.
+
+   Os nomes de classe são os que o script embutido em plano.html já emite: nada
+   foi renomeado. Dois registros, como no resto do material — o texto do plano é
+   leitura; contagem, filtros, tabela e cronograma são instrumento.
+
+   Texto sobre preenchimento da rampa usa var(--papel) ou var(--tinta) conforme o
+   passo: os passos claros da rampa no tema claro são os escuros no tema escuro,
+   então a cor do texto tem de ser um token que vira junto. */
+
+/* ---------- sub-navegação das seções ---------- */
+.subnav {
+  position: sticky; top: 46px; z-index: 50;
+  background: var(--instr); border-bottom: 1px solid var(--filete);
+}
+@supports (backdrop-filter: blur(8px)) {
+  .subnav { background: color-mix(in srgb, var(--instr) 90%, transparent); backdrop-filter: blur(8px); }
+}
+.subnav .wrap {
+  display: flex; gap: var(--e4); min-height: 42px; align-items: center;
+  overflow-x: auto; scrollbar-width: none;
+}
+.subnav .wrap::-webkit-scrollbar { display: none; }
+.subnav a {
+  font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .08em;
+  text-transform: uppercase; color: var(--tenue); text-decoration: none;
+  white-space: nowrap; padding: var(--e1) 0; border-bottom: 1px solid transparent;
+}
+.subnav a:hover { color: var(--tinta); border-bottom-color: var(--acento); }
+
+/* ---------- abertura ---------- */
+header.hero { padding: var(--e7) 0 var(--e7); }
+.hero-grid { display: grid; gap: var(--e6); grid-template-columns: 1fr; }
+@media (min-width: 860px) { .hero-grid { grid-template-columns: 1.35fr 1fr; align-items: start; } }
+
+/* A contagem é fato, não ação: fica em tinta. O acento é do que se clica. */
+.countdown {
+  background: var(--instr); border: 1px solid var(--filete);
+  padding: var(--e5); display: flex; flex-direction: column; gap: var(--e4);
+}
+.cd-num {
+  font-family: var(--f-dado); font-size: clamp(46px, 11vw, 68px); line-height: .95;
+  font-weight: 600; color: var(--tinta); font-variant-numeric: tabular-nums; letter-spacing: -.03em;
+}
+.cd-row { display: flex; gap: var(--e6); flex-wrap: wrap; }
+.cd-cell { display: flex; flex-direction: column; gap: 2px; }
+.cd-cell b {
+  font-family: var(--f-dado); font-size: var(--t-19); font-weight: 600;
+  font-variant-numeric: tabular-nums; color: var(--tinta);
+}
+.cd-cell span {
+  font-family: var(--f-dado); font-size: var(--t-11); color: var(--tenue);
+  text-transform: uppercase; letter-spacing: .1em;
+}
+
+/* ---------- barra de pesos da nota ----------
+   Composição de um todo em quatro partes, cada uma rotulada por dentro. Por ser
+   uma grandeza repartida, e não quatro assuntos, usa a rampa sequencial — e o
+   rótulo dentro do segmento é o que dispensa a cor de carregar a identidade. */
+.weights { display: flex; flex-direction: column; gap: var(--e2); }
+.wbar { display: flex; height: 48px; gap: 2px; }
+.wseg {
+  display: flex; flex-direction: column; justify-content: center; padding: 0 var(--e3);
+  font-family: var(--f-dado); font-size: var(--t-11); font-weight: 600;
+  letter-spacing: .06em; overflow: hidden;
+}
+.wseg small {
+  display: block; font-family: var(--f-dado); font-weight: 400;
+  font-size: 10px; letter-spacing: .04em; opacity: .8;
+}
+.wseg.a { background: var(--calor-5); color: var(--papel); }
+.wseg.b { background: var(--calor-4); color: var(--papel); }
+.wseg.c { background: var(--calor-2); color: var(--tinta); }
+.wseg.d { background: var(--calor-1); color: var(--tinta); }
+
+/* ---------- mapa de incidência por área ---------- */
+.chart { display: flex; flex-direction: column; gap: 2px; }
+.crow { display: grid; grid-template-columns: 190px 1fr; align-items: center; gap: var(--e3); }
+@media (max-width: 640px) { .crow { grid-template-columns: 128px 1fr; gap: var(--e2); } }
+.clabel { font-size: var(--t-13); color: var(--tinta-2); text-align: right; line-height: 1.25; }
+.ctrack { position: relative; height: 24px; background: var(--papel); border: 1px solid var(--filete); }
+.cfill {
+  height: 100%; display: flex; align-items: center; justify-content: flex-end;
+  padding-right: var(--e2);
+  font-family: var(--f-dado); font-size: var(--t-11); font-weight: 600;
+  font-variant-numeric: tabular-nums; color: var(--papel);
+  transition: width .5s cubic-bezier(.22,.8,.3,1);
+}
+/* Barra nos passos claros da rampa: o rótulo por dentro vira tinta. Ver a nota
+   no script de plano.html — os dois tokens viram junto com o tema, um branco
+   fixo não viraria. */
+.cfill.claro { color: var(--tinta); }
+.cfill.outside { justify-content: flex-start; padding-right: 0; }
+.cfill.outside span { margin-left: calc(100% + 8px); color: var(--tinta-2); white-space: nowrap; }
+
+/* ---------- tabelas do tripé e das habilidades ---------- */
+.tripe { width: 100%; overflow-x: auto; }
+.tripe table { border-collapse: collapse; width: 100%; min-width: 660px; }
+.tripe th, .tripe td {
+  text-align: left; padding: var(--e2) var(--e3); border-bottom: 1px solid var(--filete);
+  font-size: var(--t-13); vertical-align: top;
+}
+.tripe th {
+  font-family: var(--f-dado); font-size: var(--t-11); text-transform: uppercase;
+  letter-spacing: .1em; color: var(--tenue); font-weight: 600; border-bottom-color: var(--filete-2);
+}
+.tripe td:first-child {
+  font-family: var(--f-dado); font-weight: 600; color: var(--tinta);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+
+/* ---------- filtros e tabela das 200 questões ---------- */
+.filters { display: flex; flex-wrap: wrap; gap: var(--e3); align-items: flex-end; margin-bottom: var(--e4); }
+.field { display: flex; flex-direction: column; gap: var(--e1); }
+.field label {
+  font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .13em;
+  text-transform: uppercase; color: var(--tenue);
+}
+select, input[type="search"] {
+  font-size: var(--t-13); color: var(--tinta); background: var(--leitura);
+  border: 1px solid var(--filete-2); border-radius: var(--r);
+  padding: 8px 10px; min-width: 130px;
+}
+input[type="search"] { min-width: 190px; }
+.count {
+  font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .08em;
+  text-transform: uppercase; color: var(--tenue);
+  font-variant-numeric: tabular-nums; margin-left: auto;
+}
+
+.tablewrap { width: 100%; overflow-x: auto; border: 1px solid var(--filete); background: var(--leitura); }
+table.q { border-collapse: collapse; width: 100%; min-width: 800px; }
+table.q th {
+  position: sticky; top: 0; background: var(--instr); z-index: 2;
+  font-family: var(--f-dado); font-size: var(--t-11); text-transform: uppercase;
+  letter-spacing: .1em; color: var(--tenue); font-weight: 600; text-align: left;
+  padding: var(--e3); border-bottom: 1px solid var(--filete-2); white-space: nowrap;
+}
+table.q td { padding: var(--e2) var(--e3); border-bottom: 1px solid var(--filete); font-size: var(--t-13); vertical-align: top; }
+table.q tr:last-child td { border-bottom: none; }
+table.q tr:hover td { background: var(--papel); }
+.cno { font-family: var(--f-dado); font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--tinta-2); font-size: var(--t-11); }
+.ctema { min-width: 280px; font-family: var(--f-ler); font-size: 15px; line-height: 23px; color: var(--tinta); }
+
+/* marcador do gabarito oficial: quadrado, como a letra da alternativa */
+.gab {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px;
+  font-family: var(--f-dado); font-size: var(--t-13); font-weight: 600;
+  background: var(--tinta-2); color: var(--papel);
+}
+.gab.null {
+  background: transparent; color: var(--alerta); border: 1px dashed var(--alerta);
+  width: auto; padding: 0 7px; font-size: 10px; letter-spacing: .08em;
+}
+.gab.dash { background: transparent; color: var(--tenue); border: 1px solid var(--filete-2); }
+
+/* ---------- cronograma de 17 semanas ---------- */
+.weeks { display: flex; flex-direction: column; }
+.week {
+  background: var(--leitura); border: 1px solid var(--filete); border-top: 0;
+  display: grid; grid-template-columns: 62px 1fr;
+}
+.weeks .week:first-child { border-top: 1px solid var(--filete); }
+.week .wk {
+  font-family: var(--f-dado); font-size: var(--t-13); font-weight: 600; color: var(--tinta);
+  background: var(--instr); display: flex; flex-direction: column;
+  align-items: center; justify-content: center; padding: var(--e3) var(--e1); text-align: center;
+  border-right: 1px solid var(--filete); font-variant-numeric: tabular-nums; line-height: 1.2;
+}
+.week .wk small { font-family: var(--f-dado); font-weight: 400; font-size: 10px; color: var(--tenue); }
+.week .body { padding: var(--e4) var(--e5); display: flex; flex-direction: column; gap: var(--e2); }
+.week .body > b { font-family: var(--f-ler); font-size: var(--t-19); font-weight: 600; letter-spacing: -.01em; }
+.week .why { font-size: var(--t-13); color: var(--tenue); }
+.tasks { display: flex; flex-direction: column; gap: var(--e1); margin-top: var(--e1); }
+.task {
+  display: flex; gap: var(--e2); align-items: flex-start; cursor: pointer;
+  font-family: var(--f-ler); font-size: 16px; line-height: 26px; color: var(--tinta);
+}
+.task input { margin: 5px 0 0; accent-color: var(--acento); width: 15px; height: 15px; flex: none; cursor: pointer; }
+.task.done span { text-decoration: line-through; color: var(--tenue); }
+
+.progress { display: flex; align-items: center; gap: var(--e3); margin-bottom: var(--e5); flex-wrap: wrap; }
+.progress .fine { white-space: nowrap; }
+.ptrack { flex: 1; min-width: 160px; height: 3px; background: var(--filete-2); overflow: hidden; }
+.pfill { height: 100%; background: var(--acerto); width: 0; transition: width .35s ease; }
+button.reset {
+  font-family: var(--f-dado); font-size: var(--t-11); letter-spacing: .1em; text-transform: uppercase;
+  color: var(--tenue); background: transparent;
+  border: 1px solid var(--filete-2); border-radius: var(--r); padding: 6px 10px; cursor: pointer;
+}
+button.reset:hover { color: var(--tinta); border-color: var(--tinta-2); }
+
+/* ---------- flashcards ---------- */
+details.fc { background: var(--leitura); border: 1px solid var(--filete); border-top: 0; overflow: hidden; }
+.stack > details.fc:first-of-type, details.fc:first-child { border-top: 1px solid var(--filete); }
+details.fc summary {
+  cursor: pointer; padding: var(--e3) var(--e4);
+  font-family: var(--f-ler); font-size: 16px; line-height: 26px; font-weight: 600;
+  list-style: none; display: flex; align-items: flex-start; gap: var(--e3);
+}
+details.fc summary:hover { background: var(--papel); }
+details.fc summary::-webkit-details-marker { display: none; }
+details.fc summary::before {
+  content: "+"; font-family: var(--f-dado); color: var(--tenue);
+  font-weight: 600; flex: none; width: 12px; line-height: 26px;
+}
+details.fc[open] summary::before { content: "\2212"; }
+details.fc .ans {
+  padding: var(--e3) var(--e4) var(--e4) calc(var(--e4) + 24px);
+  font-family: var(--f-ler); font-size: 16px; line-height: 26px; color: var(--tinta-2);
+  border-top: 1px solid var(--filete);
+}

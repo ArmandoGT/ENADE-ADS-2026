@@ -87,17 +87,17 @@ a diferença de formato e remetendo ao Simulado IA para ensaiar a composição a
 
 ### Banco autoral
 
-468 questões objetivas e 36 discursivas escritas como previsão para 2026, distribuídas por
+624 questões objetivas e 36 discursivas escritas como previsão para 2026, distribuídas por
 onze áreas:
 
 | Área | Questões | Área | Questões |
 |---|---|---|---|
-| Formação geral | 114 | Banco de dados | 25 |
-| Engenharia de software | 94 | SO, redes e distribuídos | 25 |
-| UML e projeto orientado a objetos | 61 | Segurança e legislação | 24 |
-| Algoritmos e estruturas de dados | 45 | Arquitetura de computadores | 15 |
-| Gestão de projetos | 27 | IHC e acessibilidade | 12 |
-| Lógica e matemática | 26 | | |
+| Formação geral | 152 | Banco de dados | 37 |
+| Engenharia de software | 105 | SO, redes e distribuídos | 38 |
+| UML e projeto orientado a objetos | 71 | Segurança e legislação | 36 |
+| Algoritmos e estruturas de dados | 57 | Arquitetura de computadores | 28 |
+| Gestão de projetos | 40 | IHC e acessibilidade | 25 |
+| Lógica e matemática | 35 | | |
 
 A cota de sorteio do componente específico — oito questões de engenharia de software, cinco de
 orientação a objetos, quatro de algoritmos, e assim por diante — reproduz a incidência
@@ -147,8 +147,8 @@ medidos e mantidos sob meta:
 **Chutar pelo tamanho.** Quando a alternativa correta é sistematicamente a mais longa, quem
 chuta a maior acerta muito acima do acaso. A medida considera apenas a diferença perceptível
 — margem de quinze caracteres sobre a segunda colocada —, porque diferença de quatro
-caracteres não é pista para ninguém. Resultado atual: 2,4% de acerto chutando a visivelmente
-mais longa e 3,6% chutando a mais curta, contra 20% de acaso. Em cerca de 90% das questões as
+caracteres não é pista para ninguém. Resultado atual: 7,4% de acerto chutando a visivelmente
+mais longa e 3,7% chutando a mais curta, contra 20% de acaso. Em cerca de 89% das questões as
 cinco alternativas têm tamanho semelhante.
 
 **Resolver por eliminação.** Quando três ou mais alternativas são absurdos descartáveis
@@ -156,6 +156,18 @@ cinco alternativas têm tamanho semelhante.
 atual: zero questões. A medida distingue marcador de absurdo de quantificador de escopo —
 "todos os titulares", "qualquer tratamento" são linguagem precisa, e um bom distrator
 frequentemente descreve com exatidão a coisa errada.
+
+**Explicação que justifica sem refutar.** A explicação que só demonstra por que o gabarito
+está certo não diz ao estudante por que a alternativa que ele marcou está errada — e é essa
+a informação que ele foi buscar. A medida pergunta se a explicação fala do que cada distrator
+afirma: cada um tem vocabulário próprio, termos que estão nele e não estão na correta nem no
+enunciado, e quem escreve sobre aquele distrator acaba usando algum deles. Onde a alternativa
+é um valor — "13 dias.", "56%." — o distrator é o número, e citá-lo conta como discuti-lo;
+em julgamento de itens e asserção-razão, cujas alternativas são rótulos fixos, o que se exige
+é nomear a afirmativa falsa. Exige-se discutir ao menos dois dos quatro distratores.
+Resultado atual: 99,2%. Cinco questões em 624 ficam fora do alcance da régua, porque seus
+distratores são valores pequenos que o próprio enunciado usa, e o número aparece declarado ao
+lado da medida.
 
 Nas discursivas, a hipótese equivalente seria a rubrica com itens não falsificáveis, do tipo
 "demonstra compreensão do conceito", que se pode marcar como cumprido independentemente do que

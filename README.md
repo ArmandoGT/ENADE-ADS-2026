@@ -87,17 +87,17 @@ a diferença de formato e remetendo ao Simulado IA para ensaiar a composição a
 
 ### Banco autoral
 
-624 questões objetivas e 36 discursivas escritas como previsão para 2026, distribuídas por
+644 questões objetivas e 36 discursivas escritas como previsão para 2026, distribuídas por
 onze áreas:
 
 | Área | Questões | Área | Questões |
 |---|---|---|---|
-| Formação geral | 152 | Banco de dados | 37 |
-| Engenharia de software | 105 | SO, redes e distribuídos | 38 |
-| UML e projeto orientado a objetos | 71 | Segurança e legislação | 36 |
-| Algoritmos e estruturas de dados | 57 | Arquitetura de computadores | 28 |
-| Gestão de projetos | 40 | IHC e acessibilidade | 25 |
-| Lógica e matemática | 35 | | |
+| Formação geral | 156 | Banco de dados | 40 |
+| Engenharia de software | 107 | SO, redes e distribuídos | 40 |
+| UML e projeto orientado a objetos | 74 | Segurança e legislação | 36 |
+| Algoritmos e estruturas de dados | 60 | Arquitetura de computadores | 28 |
+| Gestão de projetos | 41 | IHC e acessibilidade | 25 |
+| Lógica e matemática | 37 | | |
 
 A cota de sorteio do componente específico — oito questões de engenharia de software, cinco de
 orientação a objetos, quatro de algoritmos, e assim por diante — reproduz a incidência
@@ -165,7 +165,7 @@ enunciado, e quem escreve sobre aquele distrator acaba usando algum deles. Onde 
 é um valor — "13 dias.", "56%." — o distrator é o número, e citá-lo conta como discuti-lo;
 em julgamento de itens e asserção-razão, cujas alternativas são rótulos fixos, o que se exige
 é nomear a afirmativa falsa. Exige-se discutir ao menos dois dos quatro distratores.
-Resultado atual: 99,2%. Cinco questões em 624 ficam fora do alcance da régua, porque seus
+Resultado atual: 99,2%. Cinco questões em 644 ficam fora do alcance da régua, porque seus
 distratores são valores pequenos que o próprio enunciado usa, e o número aparece declarado ao
 lado da medida.
 
